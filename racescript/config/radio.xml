@@ -1,0 +1,24 @@
+﻿<root>
+	<radio id="offs" name="Wyłącz radio" url="http://www.miastomuzyki.pl/n/rmffm.pls" />
+	<radio id="rmffm" name="RMF FM" url="http://www.miastomuzyki.pl/n/rmffm.pls"/>
+	<radio id="rmfmaxxx" name="RMF MAXXX"url="http://www.miastomuzyki.pl/n/rmfmaxxx.pls"/>
+	<radio id="eskarock" name="Eska ROCK" url="http://warszawa.radio.pionier.net.pl:8000/pl/eskarock.mp3"/>
+	<radio id="radiowawa" name="Radio WAWA" url="http://www.radio.pionier.net.pl/stream.pls?radio=wawa"/>
+	<radio id="zloteprzeboje" name="Złote przeboje" url="http://www.radio.pionier.net.pl/stream.pls?radio=tuba9"/>
+	<radio id="radioz" name="Radio Zet" url="http://nadaje.com/playlist/201/m3u/"/>
+	<radio id="radioparty" url="http://radioparty.pl/play/glowny_24aac.m3u"/>
+	<radio id="radiotok" url="http://www.radio.pionier.net.pl/stream.pls?radio=radiotok"/>
+	<radio id="chillizet" url="http://www.chillizet.pl/externals/chillizet-streams/chillizetmp3.pls"/>
+	<radio id="eurodance" url="http://listen.di.fm/public2/eurodance.pls"/>
+	<radio id="eska" name="Radio Eska" url="http://poznan6.radio.pionier.net.pl:8000/eska-warszawa.mp3"/>
+	<radio id="discopolo" name="Disco Polo" url="http://nadaje.com/playlist/1180/m3u"/>
+	<radio id="jedynka" name="Polskie Radio Jedynka" url="http://nadaje.com/playlist/12/m3u"/>
+	<radio id="basedrive" url="http://nadaje.com/playlist/578/m3u/"/>
+	<radio id="dubstep" name="Dubstep FM" url="http://nadaje.com/playlist/917/m3u/"/>
+	<radio id="reggae" url="http://www.polskastacja.pl/play/reggae.asx"/>
+	<radio id="szanty" url="http://www.polskastacja.pl/play/szanty.asx"/>
+	<radio id="antyradio" url="http://94.23.89.48:7000/listen.pls"/>
+	<radio id="hiphop" url="http://www.polskastacja.pl/play/hiphop.asx"/>
+	<radio id="polskihh" url="http://www.polskastacja.pl/play/polskihh.asx"/>
+	<radio id="metal" url="http://streaming.radiopanteon.pl/panel/tunein.php/metal/playlist.asx"/>
+</root>

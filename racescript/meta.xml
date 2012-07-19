@@ -1,0 +1,47 @@
+<meta>
+	<script src="client/client_global.lua" type="client"/>
+	<script src="client/class/metroUI.lua" type="client"/>
+	<script src="client/client_gui_mainPanel.lua" type="client"/>
+	<script src="client/client_gui_statystyki.lua" type="client"/>
+	<script src="client/client_gui_radio.lua" type="client"/>
+	
+	<script src="server/server_global.lua" type="server" />
+	<script src="server/server_statystyki.lua" type="server" />
+	<script src="server/server_database.lua" type="server" />
+	<script src="server/server_login.lua" type="server" />
+	
+	<file src="images/metroUI/colors/niebieski.png" />
+	<file src="images/metroUI/back.png" />
+	<file src="files/font/segoe.ttf" />
+	<file src="images/gui/main/statystyki.png" />
+	<file src="images/gui/main/sklep.png" />
+	<file src="images/gui/main/profil.png" />
+	<file src="images/gui/main/ustawienia.png" />
+	<file src="images/gui/main/radio.png" />
+	<file src="images/gui/main/off.png" />
+	
+	<file src="config/radio.xml" />
+	
+	<file src="images/gui/radio/offs.png" />
+	<file src="images/gui/radio/rmffm.png" />
+	<file src="images/gui/radio/rmfmaxxx.png" />
+	<file src="images/gui/radio/eskarock.png" />
+	<file src="images/gui/radio/radiowawa.png" />
+	<file src="images/gui/radio/zloteprzeboje.png" />
+	<file src="images/gui/radio/radioz.png" />
+	<file src="images/gui/radio/radioparty.png" />
+	<file src="images/gui/radio/radiotok.png" />
+	<file src="images/gui/radio/chillizet.png" />
+	<file src="images/gui/radio/eurodance.png" />
+	<file src="images/gui/radio/eska.png" />
+	<file src="images/gui/radio/discopolo.png" />
+	<file src="images/gui/radio/jedynka.png" />
+	<file src="images/gui/radio/basedrive.png" />
+	<file src="images/gui/radio/dubstep.png" />
+	<file src="images/gui/radio/reggae.png" />
+	<file src="images/gui/radio/szanty.png" />
+	<file src="images/gui/radio/antyradio.png" />
+	<file src="images/gui/radio/hiphop.png" />
+	<file src="images/gui/radio/polskihh.png" />
+	<file src="images/gui/radio/metal.png" />
+</meta>
