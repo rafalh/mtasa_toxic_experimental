@@ -1,6 +1,6 @@
 <meta>
 	<script src="client/client_global.lua" type="client"/>
-	<script src="client/class/metroUI.lua" type="client"/>
+	<script src="client/class/metroUI_tile.lua" type="client"/>
 	<script src="client/class/metroUI_button.lua" type="client"/>
 	<script src="client/class/metroUI_label.lua" type="client"/>
 	<script src="client/client_gui_mainPanel.lua" type="client"/>

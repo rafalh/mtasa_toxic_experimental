@@ -32,6 +32,11 @@ function onMetroUIClick(button,state,absoluteX,absoluteY)
 	end
 end
 
+function setMetroUITilePosition(tile,x,y)
+	local px,py = guiGetPosition(tile,false)
+	guiSetPosition(tile,x or px,y or py,false)
+end
+
 function onMouseEnter()
 	local sr = cache.metroUIKafelek[source]
 	if sr then
