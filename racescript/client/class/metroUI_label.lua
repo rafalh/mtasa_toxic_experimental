@@ -4,13 +4,13 @@ cache.metroUITextRender = {}
 cache.metroUIFontDX = dxCreateFont ("files/font/segoe.ttf",40)
 
 function metroUIText.create(text,x,y,sx,sy,color,scale)
-	local data = setmetatable({text=text,x=x,y=y,sx=sx,sy=sy,color=color,scale=scale,enabled=true},metroUIText)
+	local data = setmetatable({text=text,x=x,y=y,sx=sx,sy=sy,color=color,scale=scale,visible=true},metroUIText)
 	cache.metroUITextRender[data] = true
 	return data
 end
 
 function metroUIText:setVisible(bool)
-	self.enabled = bool
+	self.visible = bool
 end
 
 function metroUIText:setText(text)
@@ -29,7 +29,7 @@ end
 
 function onMetroUIRender()
 	for v,l in pairs(cache.metroUITextRender) do
-		if v.enabled then
+		if v.visible then
 			dxDrawText(v.text,v.x,v.y,v.sx,v.sy,v.color,v.scale,cache.metroUIFontDX)
 		end
 	end
