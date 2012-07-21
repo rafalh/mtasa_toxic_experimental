@@ -1,7 +1,7 @@
 ﻿metroUIButton = {}
 metroUIButton.__index = metroUIButton
 metroUIButtonOnClick = {}
-local guifont = guiCreateFont ("file/segoe.ttf")
+local guifont = guiCreateFont ("files/font/segoe.ttf")
 
 function metroUIButton.create(x,y,sx,sy,text,labelcolor,backgroundcolor,parent)
 	local backgroud = guiCreateStaticImage(x,y,sx,sy,"image/"..backgroundcolor..".png",false,(parent or nil))
