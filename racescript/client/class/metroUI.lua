@@ -57,6 +57,36 @@ function onMetroUIClick(button,state,absoluteX,absoluteY)
 	end
 end
 
+function onMouseEnter()
+	local sr = cache.metroUIKafelek[source]
+	if sr then
+		guiSetAlpha(source,0.5)
+	else
+		local elementParent = getElementParent(source)
+		if elementParent then
+			local sr = cache.metroUIKafelek[elementParent]
+			if sr then
+				guiSetAlpha(elementParent,0.5)
+			end
+		end
+	end
+end
+
+function onMouseLeave()
+	local sr = cache.metroUIKafelek[source]
+	if sr then
+		guiSetAlpha(source,1)
+	else
+		local elementParent = getElementParent(source)
+		if elementParent then
+			local sr = cache.metroUIKafelek[elementParent]
+			if sr then
+				guiSetAlpha(elementParent,1)
+			end
+		end
+	end
+end
+
 function onMetroUIRender()
 	for k,v in pairs(cache.metroUITextDraw) do
 		if v.enabled then
@@ -65,5 +95,7 @@ function onMetroUIRender()
 	end
 end
 
+addEventHandler( "onClientMouseEnter", getResourceRootElement(getThisResource()), onMouseEnter)
+addEventHandler( "onClientMouseLeave", getResourceRootElement(getThisResource()), onMouseLeave)
 addEventHandler("onClientRender",getRootElement(),onMetroUIRender)
 addEventHandler("onClientGUIClick",getResourceRootElement(getThisResource()),onMetroUIClick)
