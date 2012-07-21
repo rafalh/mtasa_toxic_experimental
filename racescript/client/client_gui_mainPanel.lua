@@ -3,7 +3,7 @@ cache.mainpanelText = false
 cache.mainPanelEnabled = false
 
 function onMainPanelStart()
-	cache.mainpanelText = metroUITextcreate("Panel użytkownika",resolution[1]/2-245,resolution[2]/2-285,400,40,tocolor(255,255,255),0.5)
+	cache.mainpanelText = metroUIText.create("Panel użytkownika",resolution[1]/2-245,resolution[2]/2-285,400,40,tocolor(255,255,255),0.5)
 	table.insert(cache.mainpanelKafelki,metroUIcreate(resolution[1]/2-245,resolution[2]/2-245,160, 160,"niebieski","Statystyki","images/gui/main/statystyki.png",{onClick={func=onClickMainPanel,arg="staty"}}))
 	table.insert(cache.mainpanelKafelki,metroUIcreate(resolution[1]/2-80,resolution[2]/2-245,160, 160,"niebieski","Profil","images/gui/main/profil.png",{onClick={func=onClickMainPanel,arg="profil"}}))
 	table.insert(cache.mainpanelKafelki,metroUIcreate(resolution[1]/2+85,resolution[2]/2-245,160, 160,"niebieski","Sklep","images/gui/main/sklep.png",{onClick={func=onClickMainPanel,arg="sklep"}}))
@@ -26,7 +26,7 @@ function setMainPanelVisible(bool)
 		guiSetVisible(v,bool)
 	end
 	cache.mainPanelEnabled = bool
-	metroUITextSetVisible(cache.mainpanelText,bool)
+	cache.mainpanelText:setVisible(bool)
 end
 
 function getMainMetroKafelek(id)

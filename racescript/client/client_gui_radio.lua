@@ -4,7 +4,7 @@ cache.radioActualChannel = false
 cache.radioGUIVisible = false
 
 function onGuiRadioStart()
-	cache.radioNameLabel = metroUITextcreate("Radio",resolution[1]/2-350,resolution[2]/2-275,400,40,tocolor(255,255,255),1)
+	cache.radioNameLabel = metroUIText.create("Radio",resolution[1]/2-350,resolution[2]/2-275,400,40,tocolor(255,255,255),1)
 	cache.radioBackButton = guiCreateStaticImage(resolution[1]/2-400,resolution[2]/2-260,48,48,"images/metroUI/back.png",false)
 	cache.radioScrollPanel = guiCreateScrollPane(resolution[1]/2-350,resolution[2]/2-200, 680,400, false)
 	local radio = xmlLoadFile ( "config/radio.xml")
@@ -41,7 +41,7 @@ function onGuiRadioStop()
 end
 
 function setGuiRadioVisible(bool)
-	metroUITextSetVisible(cache.radioNameLabel,bool)
+	cache.radioNameLabel:setVisible(bool)
 	guiSetVisible(cache.radioBackButton,bool)
 	guiSetVisible(cache.radioScrollPanel,bool)
 	cache.radioGUIVisible = bool
@@ -66,7 +66,7 @@ end
 
 function changeRadioChannel(id)
 	if cache.changeLabel then
-		metroUITextDelete(cache.changeLabel)
+		cache.changeLabel:delete()
 		cache.changeLabel = nil
 	end
 	if id == "offs" then
@@ -78,14 +78,14 @@ function changeRadioChannel(id)
 			killTimer(cache.radioChannelSetTimer)
 			cache.radioChannelSetTimer = nil
 		end
-		metroUITextsetText(cache.radioNameLabel,"Radio")
+		cache.radioNameLabel:setText("Radio")
 		metroUISetTextKafelek(getMainMetroKafelek(5),"Radio")
 		metroUISetKafelekObraz(getMainMetroKafelek(5),"images/gui/main/radio.png")
 		return
 	end
-	cache.changeLabel = metroUITextcreate("zmienianie radia...",resolution[1]/2-350,resolution[2]/2+200,400,40,tocolor(255,255,255),0.5)
+	cache.changeLabel = metroUIText.create("zmienianie radia...",resolution[1]/2-350,resolution[2]/2+200,400,40,tocolor(255,255,255),0.5)
 	if not cache.radioGUIVisible then
-		metroUITextSetPosition(cache.changeLabel,5,resolution[2]-30)
+		cache.changeLabel:setPosition(5,resolution[2]-30)
 	end
 	if isElement(cache.playerSounds) then
 		destroyElement(cache.playerSounds)
@@ -97,10 +97,10 @@ function changeRadioChannel(id)
 	cache.radioChannelSetTimer = setTimer(
 	function ()
 		cache.playerSounds = playSound(cache.radios[id].url)
-		metroUITextsetText(cache.radioNameLabel,"Radio: "..(cache.radios[id].name or id))
+		cache.radioNameLabel:setText("Radio: "..(cache.radios[id].name or id))
 		metroUISetTextKafelek(getMainMetroKafelek(5),"Radio: "..(cache.radios[id].name or id))
 		metroUISetKafelekObraz(getMainMetroKafelek(5),"images/gui/radio/"..id..".png")
-		metroUITextDelete(cache.changeLabel)
+		cache.changeLabel:delete()
 		cache.radioActualChannel = id
 		cache.changeLabel = nil
 	end,500,1)

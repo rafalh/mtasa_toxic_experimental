@@ -2,14 +2,14 @@
 cache.statystyki = {}
 
 function onGuiStatystykiStart()
-	cache.statystykiNameLabel = metroUITextcreate("Statystyki",resolution[1]/2-350,resolution[2]/2-275,400,40,tocolor(255,255,255),1)
+	cache.statystykiNameLabel = metroUIText.create("Statystyki",resolution[1]/2-350,resolution[2]/2-275,400,40,tocolor(255,255,255),1)
 	cache.statystykiBackButton = guiCreateStaticImage(resolution[1]/2-400,resolution[2]/2-260,48,48,"images/metroUI/back.png",false)
 	setStatystykiGUIVisible(false)
 end
 
 function setStatystykiGUIVisible(bool)
 	guiSetVisible(cache.statystykiBackButton,bool)
-	metroUITextSetVisible(cache.statystykiNameLabel,bool)
+	cache.statystykiNameLabel:setVisible(bool)
 	cache.isStatystykiEnabled = bool
 	if bool then
 		triggerServerEvent("racescript:server:statystyki:get",localPlayer)

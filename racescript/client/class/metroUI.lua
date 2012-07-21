@@ -1,6 +1,4 @@
-﻿cache.metroUITextDraw = {}
-cache.metroUIFontGUI = guiCreateFont("files/font/segoe.ttf",12)
-cache.metroUIFontDX = dxCreateFont ("files/font/segoe.ttf",40)
+﻿cache.metroUIFontGUI = guiCreateFont("files/font/segoe.ttf",12)
 cache.inMetroClick = {}
 cache.metroUIKafelek = {}
 
@@ -20,35 +18,12 @@ function metroUIcreate(x,y,sx,sy,color,text,image,addons,parent)
 	return podklad
 end
 
-function metroUITextcreate(text,x,y,sx,sy,color,scale)
-	local id = math.random(1,2000000)
-	cache.metroUITextDraw[id] = {text=text,x=x,y=y,sx=sx,sy=sy,color=color,scale=scale,enabled=true}
-	return id
-end
-
 function metroUISetTextKafelek(pod,texts)
 	guiSetText(cache.metroUIKafelek[pod].text,texts)
 end
 
-function metroUITextSetVisible(id,bool)
-	cache.metroUITextDraw[id].enabled = bool
-end
-
-function metroUITextsetText(id,text)
-	cache.metroUITextDraw[id].text = text
-end
-
-function metroUITextSetPosition(id,x,y)
-	cache.metroUITextDraw[id].x = x
-	cache.metroUITextDraw[id].y = y
-end
-
 function metroUISetKafelekObraz(id,path)
 	guiStaticImageLoadImage (cache.metroUIKafelek[id].obraz, path)
-end
-
-function metroUITextDelete(id)
-	cache.metroUITextDraw[id] = nil
 end
 
 function onMetroUIClick(button,state,absoluteX,absoluteY)
@@ -87,15 +62,6 @@ function onMouseLeave()
 	end
 end
 
-function onMetroUIRender()
-	for k,v in pairs(cache.metroUITextDraw) do
-		if v.enabled then
-			dxDrawText(v.text,v.x,v.y,v.sx,v.sy,v.color,v.scale,cache.metroUIFontDX)
-		end
-	end
-end
-
 addEventHandler( "onClientMouseEnter", getResourceRootElement(getThisResource()), onMouseEnter)
 addEventHandler( "onClientMouseLeave", getResourceRootElement(getThisResource()), onMouseLeave)
-addEventHandler("onClientRender",getRootElement(),onMetroUIRender)
 addEventHandler("onClientGUIClick",getResourceRootElement(getThisResource()),onMetroUIClick)
