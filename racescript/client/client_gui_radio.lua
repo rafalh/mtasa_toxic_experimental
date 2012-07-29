@@ -5,6 +5,7 @@ cache.radioGUIVisible = false
 cache.radiosTile = {}
 cache.radioScreenOut = 0
 cache.radioTempScroll = 0
+cache.chenching = false
 
 function onGuiRadioStart()
 	cache.radioNameLabel = metroUIText.create("Radio",60,resolution[2]/2-235,400,40,tocolor(255,255,255),1)
@@ -31,7 +32,7 @@ function onGuiRadioStart()
 			cache.radios[args.id] = args
 			table.insert(cache.radiosTile,tile)
 		end
-		cache.radioScreenOut = (cache.radioScreenOut - (resolution[1] - 10)) / numerofXTile
+		cache.radioScreenOut = (cache.radioScreenOut - (resolution[1] - 10)) / 100
 		outputChatBox(cache.radioScreenOut)
 		xmlUnloadFile(radio)
 	end
@@ -80,19 +81,23 @@ end
 
 function onRadioScroll(scroller)
 	if scroller == cache.radioScroll then
-		local scroll = guiScrollBarGetScrollPosition(scroller)
-		if cache.radioTempScroll > scroll then
-			for k,v in ipairs(cache.radiosTile) do
-				local px = guiGetPosition(v,false)
-				setMetroUITilePosition(v,px+cache.radioScreenOut)
+		if not cache.chenching then
+			cache.chenching = true
+			local scroll = guiScrollBarGetScrollPosition(scroller)
+			if cache.radioTempScroll > scroll then
+				for k,v in ipairs(cache.radiosTile) do
+					local px = guiGetPosition(v,false)
+					setMetroUITilePosition(v,px+cache.radioScreenOut)
+				end
+			elseif cache.radioTempScroll < scroll then
+				for k,v in ipairs(cache.radiosTile) do
+					local px = guiGetPosition(v,false)
+					setMetroUITilePosition(v,px-cache.radioScreenOut)
+				end
 			end
-		elseif cache.radioTempScroll < scroll then
-			for k,v in ipairs(cache.radiosTile) do
-				local px = guiGetPosition(v,false)
-				setMetroUITilePosition(v,px-cache.radioScreenOut)
-			end
+			cache.radioTempScroll = scroll
+			cache.chenching = false
 		end
-		cache.radioTempScroll = scroll
 	end
 end
 
