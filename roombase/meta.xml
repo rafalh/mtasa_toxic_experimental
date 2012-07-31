@@ -1,0 +1,7 @@
+<meta>
+	<info type="script" name="Server Room" />
+	
+	<script src="room_c.lua" type="client" />
+	
+	<export function="getLoadingProgress" type="client" />
+</meta>

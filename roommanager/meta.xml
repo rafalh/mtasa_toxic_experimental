@@ -1,0 +1,18 @@
+<meta>
+	<info type="script" name="Toxic Room Manager" author="rafalh" version="1" />
+	
+	<script src="mgr_s.lua" type="server" />
+	<script src="loading_c.lua" type="client" />
+	<script src="room_s.lua" type="server" />
+	<script src="player_s.lua" type="server" />
+	<script src="player_res_s.lua" type="server" />
+	<script src="exports_s.lua" type="server" />
+	
+	<export function="createRoom" />
+	<export function="getRooms" />
+	<export function="setPlayerRoom" />
+	<export function="getPlayerRoom" />
+	<export function="startRoomMap" />
+	<export function="stopRoomMap" />
+	<export function="getRoomMapElements" />
+</meta>

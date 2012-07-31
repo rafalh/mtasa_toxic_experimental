@@ -1,0 +1,15 @@
+<meta>
+	<info type="script" name="Toxic Mapmanager" author="rafalh" version="1" />
+	
+	<script src="mgr_s.lua" type="server" />
+	<script src="mgr_c.lua" type="client" />
+	<script src="exports_s.lua" type="server" />
+	<script src="import_s.lua" type="server" />
+	
+	<export function="refreshMapsList" />
+	<export function="findMap" />
+	
+	<settings>
+		<setting name="*maps_dir" value='[ &quot;maps&quot; ]' />
+	</settings>
+</meta>

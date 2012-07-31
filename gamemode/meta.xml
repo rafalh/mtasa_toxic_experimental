@@ -1,0 +1,16 @@
+<meta>
+	<info type="gamemode" name="Toxic Gamemode" author="rafalh" version="1" />
+	
+	<script src="main_s.lua" type="server" />
+	<script src="main_c.lua" type="client" />
+	<script src="import_s.lua" type="server" />
+	<script src="game_s.lua" type="server" />
+	<script src="pickups_c.lua" type="client" />
+	
+	<file src="model/nitro.dff"/>
+	<file src="model/nitro.txd"/>
+	<file src="model/repair.dff"/>
+	<file src="model/repair.txd"/>
+	<file src="model/vehiclechange.dff"/>
+	<file src="model/vehiclechange.txd"/>
+</meta>
