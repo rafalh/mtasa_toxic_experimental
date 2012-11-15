@@ -1,0 +1,44 @@
+<meta>
+
+	<file src="file/segoe.ttf" />
+	<file src="image/modernui/appbar.chevron.down.png" />
+	
+	<script src="client/modernui_main.lua" type="client" />
+	<script src="client/modernui_edit.lua" type="client" />
+	<script src="client/modernui_image.lua" type="client" />
+	<script src="client/modernui_text.lua" type="client" />
+	<script src="client/modernui_combobox.lua" type="client" />
+	<script src="client/modernui_checkbox.lua" type="client" />
+	<script src="client/modernui_window.lua" type="client" />
+	<script src="client/modernui_panel.lua" type="client" />
+	<script src="client/modernui_button.lua" type="client" />
+	<script src="client/modernui_memo.lua" type="client" />
+	<script src="client/modernui_gridlist.lua" type="client" />
+	<script src="client/modernui_progres.lua" type="client" />
+	<script src="client/modernui_tile.lua" type="client" />
+	<script src="client/modernui_shared.lua" type="client" />
+	
+	<export function="dxCreateWindow" type="client"/>
+	<export function="dxCreateButton" type="client"/>
+	<export function="dxCreateMemo" type="client"/>
+	<export function="dxCreateImage" type="client"/>
+	<export function="dxCreateLabel" type="client"/>
+	<export function="dxCreateProgressBar" type="client" />
+	<export function="dxCreateTile" type="client" />
+	<export function="dxCreatePanel" type="client" />
+	<export function="dxCreateComboBox" type="client" />
+	<export function="dxProgressBarSetProgress" type="client" />
+	<export function="dxProgressBarGetProgress" type="client" />
+	<export function="dxComboBoxAddItem" type="client" />
+	<export function="dxComboBoxDeleteAllItem" type="client" />
+	<export function="dxButtonSetType" type="client" />
+	<export function="dxSetColor" type="client"/>
+	<export function="dxSetText" type="client"/>
+	<export function="dxGetText" type="client"/>
+	<export function="dxDelete" type="client"/>
+	<export function="dxSetImage" type="client"/>
+	<export function="dxSetEnabled" type="client"/>
+	<export function="dxSetVisible" type="client" />
+	<export function="dxSetPosition" type="client" />
+	<export function="dxBringToFont" type="client" />
+</meta>
