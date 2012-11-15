@@ -1,10 +1,3 @@
-@set DEBUG_LEVEL=1
-@set RM=del /F /S /Q
-@set MAKE="D:\mingw32\bin\mingw32-make.exe"
-@set LUAC="D:\lua\luac5.1.exe"
-@set LUA="D:\lua\lua5.1.exe"
-@set COPY=copy /Y
-@set OUTPUT=C:\Program Files\MTA San Andreas 1.3\server2\mods\deathmatch\resources\
-@set PATH=%PATH%;D:\MinGW\bin
-@set CPP="D:\MinGW\bin\cpp"
-@set MAKE_RES="D:\lua\tools\meta2makefile.exe"
+@echo off
+call D:\Lua\Projects\config.bat
+set OUTPUT=C:\Program Files\MTA San Andreas 1.3\server2\mods\deathmatch\resources\

@@ -1,7 +1,6 @@
 <meta>
-	<info type="script" name="Server Room" />
+	<info type="map" name="Server Room" author="rafalh" version="0.5" />
 	
-	<script src="room_c.lua" type="client" />
-	
-	<export function="getLoadingProgress" type="client" />
+	<script src="_room_c.lua" type="client" />
+	<script src="_room_s.lua" type="server" />
 </meta>

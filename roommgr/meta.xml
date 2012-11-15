@@ -1,0 +1,36 @@
+<meta>
+	<info type="script" name="Toxic Room Manager" author="rafalh" version="1.0" />
+	
+	<script src="import.lua" type="server" />
+	<script src="mgr_s.lua" type="server" />
+	<script src="mgr_c.lua" type="client" />
+	<script src="room_s.lua" type="server" />
+	<script src="roomRes_s.lua" type="server" />
+	<script src="player_s.lua" type="server" />
+	<script src="meta_s.lua" type="server" />
+	<script src="exports_s.lua" type="server" />
+	<script src="exports_c.lua" type="client" />
+	
+	<export function="createRoom" type="server" />
+	<export function="getRooms" type="server" />
+	<export function="getRoomPlayers" type="server" />
+	<export function="getRoomPlayersCount" type="server" />
+	<export function="setPlayerRoom" type="server" />
+	<export function="getPlayerRoom" type="server" />
+	<export function="startRoomMap" type="server" />
+	<export function="stopRoomMap" type="server" />
+	<export function="getRoomMap" type="server" />
+	<export function="startRoomGamemode" type="server" />
+	<export function="stopRoomGamemode" type="server" />
+	<export function="getRoomMapElements" type="server" />
+	<export function="getRoomMapSettings" type="server" />
+	<export function="getRoomMapInfo" type="server" />
+	<export function="getRoomMapResource" type="server" />
+	<export function="getCurrentRoom" type="client" />
+	<export function="setCurrentRoom" type="client" />
+	<export function="getRooms" type="client" />
+	<export function="getRoomPlayers" type="client" />
+	<export function="getPlayerRoom" type="client" />
+	
+	<include resource="transfermgr" />
+</meta>

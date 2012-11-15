@@ -1,0 +1,10 @@
+<meta>
+	<info type="script" name="Vote Manager" author="rafalh" version="0.5" />
+	
+	<script src="voteMgr_s.lua" type="server" />
+	<script src="vote_s.lua" type="server" />
+	<script src="vote_c.lua" type="client" />
+	<script src="anim_c.lua" type="client" />
+	
+	<export function="createVote" type="server" />
+</meta>

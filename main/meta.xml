@@ -1,0 +1,28 @@
+<meta>
+	<info type="script" name="Main" author="rafalh" version="1.0" />
+	
+	<script src="main_s.lua" type="server" />
+	<script src="main_c.lua" type="client" />
+	<script src="rooms_s.lua" type="server" />
+	<script src="test_s.lua" type="server" />
+	<script src="player_s.lua" type="server" />
+	<script src="voteBetweenMaps_s.lua" type="server" />
+	<script src="import.lua" type="server" />
+	<script src="import.lua" type="client" />
+	
+	<script src="gui/roomSelect_c.lua" type="client" />
+	<script src="gui/gui_c.lua" type="client" />
+	<script src="gui/login_c.lua" type="client" />
+	<script src="gui/register_c.lua" type="client" />
+	
+	<config src="gui/gui.xml" type="client" />
+	
+	<file src="img/login.png"/>
+	<file src="img/register.png"/>
+	
+	<export function="getTimePassed" type="client" />
+	<export function="isSpectateModeEnabled" type="client" />
+	<export function="setSpectateModeEnabled" type="client" />
+	<export function="spectateNext" type="client" />
+	<export function="spectatePrev" type="client" />
+</meta>

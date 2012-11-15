@@ -1,0 +1,21 @@
+<meta>
+	<info type="script" name="Race UI" author="rafalh" version="1" />
+	
+	<script src="ui_c.lua" type="client" />
+	<script src="countdown_c.lua" type="client" />
+	<script src="spectate_c.lua" type="client" />
+	<script src="import.lua" type="client" />
+	<script src="dxlabel_c.lua" type="client" />
+	<script src="dximg_c.lua" type="client" />
+	
+	<file src="img/countdown_0.png" />
+	<file src="img/countdown_1.png" />
+	<file src="img/countdown_2.png" />
+	<file src="img/countdown_3.png" />
+	<file src="img/specprev.png" />
+	<file src="img/specprev_hi.png" />
+	<file src="img/specnext.png" />
+	<file src="img/specnext_hi.png" />
+	
+	<include resource="race" />
+</meta>
