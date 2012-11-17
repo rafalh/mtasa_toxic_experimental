@@ -1,6 +1,4 @@
-UiComboBox = {}
-
-UiComboBox.__mt = {__index = UiComboBox}
+UiComboBox = UiCopyTable(dxMain)
 
 function UiComboBox:Create(x, y, sx, sy,text,parent)
 	local combobox = setmetatable({
@@ -17,6 +15,7 @@ function UiComboBox:Create(x, y, sx, sy,text,parent)
 		enabled = true,
 		types = "combobox",
 		bordercolor = tocolor(184,184,182),
+		backgroudcolor = tocolor(255,255,255),
 		datas = {},
 		list = {visible=false,size=0}
 	}, UiComboBox.__mt)
@@ -34,36 +33,13 @@ function UiComboBox:deleteAllItem()
 	self.redraw = true
 end
 
-function UiComboBox:getEnabled()
-	return self.enabled
-end
-
 function UiComboBox:addItem(text)
 	table.insert(self.datas,text)
 	self.redraw = true
 end
 
-function UiComboBox:getOnScreenPosition()
-	local xp,xy = 0,0
-	if self.parent then
-		xp,xy = self.parent:getOnScreenPosition()
-	end
-	return self.x+xp,self.y+xy
-end
-
-function UiComboBox:getVisible()
-	if self.parent then
-		return (self.parent:getVisible() and self.visible)
-	end
-	return self.visible
-end
-
 function UiComboBox:onMouseMove(x,y)
 
-end
-
-function UiComboBox:getType()
-	return self.types
 end
 
 function UiComboBox:getSize()
@@ -71,18 +47,6 @@ function UiComboBox:getSize()
 		return self.sx,self.sy+(#self.datas*20)
 	end
 	return self.sx,self.sy
-end
-
-function UiComboBox:AddChild(child)
-	table.insert(self.children, child)
-end
-
-function UiComboBox:SetVisible(visible)
-	self.visible = visible
-end
-
-function UiComboBox:getPosition()
-	return self.x,self.y
 end
 
 function UiComboBox:getText()
@@ -102,7 +66,7 @@ function UiComboBox:onRender()
 		self:UpdateRT()
 	end
 	local posx, posy = self:getOnScreenPosition()
-	--dxDrawText(self.text, self.x+xp,self.y+xy,self.sx,self.sy,tocolor(255,255,255), 1,buttonfond, "left", "center")
+	--dxDrawText(self.text, self.x+xp,self.y+xy,self.sx,self.sy,tocolor(255,255,255), 1,cache.Font, "left", "center")
 	dxDrawImage(posx, posy,self.sx,self.sy,self.rt,0,0,0,tocolor(255,255,255,255),true)
 	if self.list.rt and self.list.visible then
 		dxDrawImage(posx,posy+self.sy+2,self.sx,#self.datas*20,self.list.rt,0,0,0,tocolor(255,255,255,255),true)
@@ -146,17 +110,8 @@ function UiComboBox:onMouseClick(btn, state, x, y)
 	end
 end
 
-function UiComboBox:onRestore()
-	self.redraw = true
-end
-
 function UiComboBox:setBorderColor(r,g,b,a)
 	self.bordercolor = tocolor(r or 0,g or 0,b or 0,a or 255)
-end
-
-function UiComboBox:delete()
-	deleteElementFromAllElements(self)
-	self = nil
 end
 
 function UiComboBox:UpdateRT()
@@ -167,13 +122,13 @@ function UiComboBox:UpdateRT()
 	local sizeofimage = self.sy - 10
 	local bordersize = 2
 	dxSetRenderTarget(self.rt,true)
-		dxDrawRectangle(0, 0, self.sx  , self.sy, tocolor(255, 255, 255, 255))
+		dxDrawRectangle(0, 0, self.sx  , self.sy, self.backgroudcolor)
 		dxDrawRectangle(0, 0, self.sx, bordersize, bordercolor)
 		dxDrawRectangle(0, self.sy-bordersize, self.sx, bordersize, bordercolor)
 		dxDrawRectangle(self.sx-bordersize, 0, bordersize,self.sy, bordercolor)
 		dxDrawRectangle(0, 0, bordersize, self.sy, bordercolor)
 		dxDrawRectangle(self.sx - sizeofimage - 10, 0, 2,self.sy, bordercolor)
-		dxDrawText(self.text, 10, 5, self.sx - 5 , self.sy - 5,tocolor(0,0,0), 0.5,buttonfond, "left", "center",false,true)
+		dxDrawText(self.text, 10, 5, self.sx - 5 , self.sy - 5,tocolor(0,0,0), cache.scaleOfFont,cache.Font, "left", "center",false,true)
 		dxDrawImage(self.sx - sizeofimage - 5,5,sizeofimage,sizeofimage,"image/modernui/appbar.chevron.down.png")
 	dxSetRenderTarget()
 	if self.list.rt then
@@ -181,14 +136,14 @@ function UiComboBox:UpdateRT()
 	end
 	self.list.rt = dxCreateRenderTarget(self.sx, #self.datas*20,true)
 	dxSetRenderTarget(self.list.rt,true)
-		dxDrawRectangle(0, 0, self.sx , table.size(self.datas)*20, tocolor(255, 255, 255, 255))
+		dxDrawRectangle(0, 0, self.sx , table.size(self.datas)*20, self.backgroudcolor)
 		dxDrawRectangle(0, (#self.datas*20)-bordersize, self.sx, bordersize, bordercolor)
 		dxDrawRectangle((#self.datas*20)-bordersize, 0, bordersize,self.sy, bordercolor)
 		dxDrawRectangle(0, 0, bordersize, (#self.datas*20), bordercolor)
 		local elid = 0
 		for k,v in pairs(self.datas) do
 			dxDrawRectangle(0, elid*20, self.sx , 20, tocolor(230, 230, 230, 255))
-			dxDrawText(tostring(v), 10, elid*20, self.sx - 5 , 20,tocolor(0,0,0), 0.5,buttonfond)
+			dxDrawText(tostring(v), 10, elid*20, self.sx - 5 , 20,tocolor(0,0,0), cache.scaleOfFont,cache.Font)
 			if eldi ~= 0 then
 				dxDrawRectangle(0, elid*20, self.sx, bordersize, tocolor(184,184,182))
 			end

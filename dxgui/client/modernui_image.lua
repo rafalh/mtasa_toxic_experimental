@@ -1,6 +1,4 @@
-UiImage = {}
-
-UiImage.__mt = {__index = UiImage}
+UiImage = UiCopyTable(dxMain)
 
 function UiImage:Create(x, y, sx, sy,src,parent)
 	local image = setmetatable({
@@ -28,18 +26,6 @@ function UiImage:Create(x, y, sx, sy,src,parent)
 	return image
 end
 
-function UiImage:getOnScreenPosition()
-	local xp,xy = 0,0
-	if self.parent then
-		xp,xy = self.parent:getOnScreenPosition()
-	end
-	return self.x+xp,self.y+xy
-end
-
-function UiImage:getEnabled()
-	return self.enabled
-end
-
 function UiImage:setProperty(prop,val)
 	if prop == "rotation" then
 		self.rotation = val
@@ -48,33 +34,6 @@ function UiImage:setProperty(prop,val)
 	elseif prop == "rotationCenterOffsetY" then
 		self.rotationCenterOffsetY = val
 	end
-end
-
-function UiImage:getVisible()
-	if self.parent then
-		return (self.parent:getVisible() and self.visible)
-	end
-	return self.visible
-end
-
-function UiImage:getType()
-	return self.types
-end
-
-function UiImage:AddChild(child)
-	table.insert(self.children, child)
-end
-
-function UiImage:setVisible(visible)
-	self.visible = visible
-end
-
-function UiImage:getPosition()
-	return self.x,self.y
-end
-
-function UiImage:getSize()
-	return self.sx,self.sy
 end
 
 function UiImage:onRender()
@@ -86,11 +45,6 @@ function UiImage:onRender()
 	end
 	local posx,posy = self:getOnScreenPosition()
 	dxDrawImage(posx,posy,self.sx,self.sy,self.rt,self.rotation,self.rotationCenterOffsetX,self.rotationCenterOffsetY,tocolor(255,255,255,255),true)
-end
-
-function UiImage:delete()
-	deleteElementFromAllElements(self)
-	self = nil
 end
 
 function UiImage:onMouseEnter()
@@ -109,10 +63,6 @@ function UiImage:setImage(src)
 end
 
 function UiImage:onMouseClick(btn, state, x, y)
-end
-
-function UiImage:onRestore()
-	self.redraw = true
 end
 
 function UiImage:UpdateRT()

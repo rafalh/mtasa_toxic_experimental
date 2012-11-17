@@ -168,7 +168,7 @@ function Game:onMapStop()
 end
 
 function Game:onPlayerReady(player)
-	self.readyPlayers = self.readyPlayers + 1
+	self.readyPlayers = (self.readyPlayers or 0) + 1
 	if(self.state == "waiting" and self.readyPlayers == #self.players) then
 		self.waitTimer:destroy()
 		self:startCountDown()

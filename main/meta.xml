@@ -15,6 +15,9 @@
 	<script src="gui/login_c.lua" type="client" />
 	<script src="gui/register_c.lua" type="client" />
 	
+	<include resource="roommgr" />
+	<include resource="votemgr" />
+	<include resource="mapmgr" />
 	<config src="gui/gui.xml" type="client" />
 	
 	<file src="img/login.png"/>

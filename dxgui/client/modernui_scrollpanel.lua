@@ -84,7 +84,7 @@ function UiScrollPanel:onRender()
 	if self.parent then
 		xp,xy = self.parent:getPosition()
 	end
-	--dxDrawText(self.text, self.x+xp,self.y+xy,self.sx,self.sy,tocolor(255,255,255), 1,buttonfond, "left", "center")
+	--dxDrawText(self.text, self.x+xp,self.y+xy,self.sx,self.sy,tocolor(255,255,255), 1,cache.Font, "left", "center")
 	dxDrawImage(self.x+xp,self.y+xy,self.sx,self.sy,self.rt,0,0,0,tocolor(255,255,255,255),true)
 end
 

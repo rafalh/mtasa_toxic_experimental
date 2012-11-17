@@ -479,11 +479,11 @@ function Animation.presets.guiMoveEx(endX, endY, time, loop, startX, startY, str
 		local elem, value, phase = endX, endY, time
 		local progress = getEasingValue(value, phase.strEasingType)
 		if not phase.startX then
-			phase.startX, phase.startY = guiGetPosition(elem, false)
+			phase.startX, phase.startY = dxGetPosition(elem)
 		end
 		local x = phase.startX + progress*(phase.endX - phase.startX)
 		local y = phase.startY + progress*(phase.endY - phase.startY)
-		guiSetPosition(elem, x, y, false)
+		dxSetPosition(elem, x, y)
 	end
 end
 
@@ -497,9 +497,9 @@ function Animation.presets.guiProgressBarSetProgress(endProgress, time, startPro
 		local elem, value, phase = endProgress, time, startProgress
 		local value = getEasingValue(value, phase.strEasingType)
 		if not phase.startProgress then
-			phase.startProgress = guiProgressBarGetProgress(elem)
+			phase.startProgress = dxProgressBarGetProgress(elem)
 		end
 		local progress = phase.startProgress + value*(phase.endProgress - phase.startProgress)
-		guiProgressBarSetProgress(elem, progress)
+		dxProgressBarSetProgress(elem, progress)
 	end
 end

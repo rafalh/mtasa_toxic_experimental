@@ -13,6 +13,7 @@ Vote.elMap = {}
 addEvent("vote_onStart", true)
 addEvent("vote_nextNomination", true)
 addEvent("vote_onOptVotesUpdate", true)
+import("dxgui")
 
 function Vote:updateGUI()
 	local delay = false
@@ -25,23 +26,23 @@ function Vote:updateGUI()
 		killTimer(self.timeoutTimer)
 	end
 	
-	local w, h = 200, 70 + #self.opts*40
+	local w, h = 200, 90 + #self.opts*40
 	if(self.info.subtitle) then
 		h = h + 20
 	end
 	local x, y = g_ScrW - w - 10, g_ScrH - h - 10
-	self.wnd = guiCreateWindow(x, g_ScrH, w, h, self.info.title, false)
+	self.wnd = dxCreateWindow(x, g_ScrH, w, h, self.info.title)
 	
-	local y = 20
+	local y = 35
 	
 	if(self.info.subtitle) then
-		guiCreateLabel(10, y, w - 20, 15, self.info.subtitle, false, self.wnd)
+		dxCreateLabel(10, y, w - 20, 15, self.info.subtitle, self.wnd)
 		y = y + 20
 	end
 	
 	for i, opt in ipairs(self.opts) do
-		opt.label = guiCreateLabel(10, y, w - 20, 15, i..". "..opt[1], false, self.wnd)
-		opt.bar = guiCreateProgressBar(10, y + 15, w - 20, 20, false, self.wnd)
+		opt.label = dxCreateLabel(10, y, w - 20, 15, i..". "..opt[1],  self.wnd)
+		opt.bar = dxCreateProgressBar(10, y + 15, w - 20, 20, self.wnd)
 		
 		local onOptClick = function()
 			self:onVote(i)
@@ -53,14 +54,14 @@ function Vote:updateGUI()
 	end
 	y = y + 5
 	
-	local infoLabel = guiCreateLabel(10, y, w - 20, 15, "Press 1 - "..#self.opts.." to vote", false, self.wnd)
-	guiLabelSetHorizontalAlign(infoLabel, "center")
-	guiSetAlpha(infoLabel, 0.5)
+	local infoLabel = dxCreateLabel(10, y, w - 20, 15, "Press 1 - "..#self.opts.." to vote",  self.wnd)
+	--dxLabelSetHorizontalAlign(infoLabel, "center")
+	--dxSetAlpha(infoLabel, 0.5)
 	y = y + 20
 	
 	self.currentTimeout = self.info.timeout
-	self.timeoutLabel = guiCreateLabel(10, y, w - 20, 15, self.currentTimeout.." seconds left", false, self.wnd)
-	guiLabelSetHorizontalAlign(self.timeoutLabel, "center")
+	self.timeoutLabel = dxCreateLabel(10, y, w - 20, 15, self.currentTimeout.." seconds left", self.wnd)
+	--guiLabelSetHorizontalAlign(self.timeoutLabel, "center")
 	self.timeoutTimer = setTimer(function()
 		self:onTimerTick()
 	end, 1000, self.currentTimeout)
@@ -76,8 +77,8 @@ function Vote:updateGUI()
 end
 
 function Vote:show()
-	local x, y = guiGetPosition(self.wnd, false)
-	local w, h = guiGetSize(self.wnd, false)
+	local x, y = dxGetPosition(self.wnd)
+	local w, h = dxGetSize(self.wnd)
 	Animation.createAndPlay(self.wnd, Animation.presets.guiMoveEx(x, g_ScrH - h - 10, ANIM_MS, false, x, g_ScrH, "OutBack"))
 end
 
@@ -89,22 +90,23 @@ function Vote:hide(destroy)
 		self.timeoutTimer = false
 	end
 	
-	local x, y = guiGetPosition(self.wnd, false)
+	local x, y = dxGetPosition(self.wnd)
 	Animation.createAndPlay(self.wnd, Animation.presets.guiMoveEx(x, g_ScrH, ANIM_MS, false, x, y, "InQuad"))
 	
 	if(destroy) then
-		setTimer(destroyElement, ANIM_MS, 1, self.wnd)
+		setTimer(dxDelete, ANIM_MS, 1, self.wnd)
+		--setTimer(dxSetVisible, ANIM_MS, 1, self.wnd,false)
 		self.wnd = false
 	end
 end
 
 function Vote:onTimerTick()
 	self.currentTimeout = self.currentTimeout - 1
-	guiSetText(self.timeoutLabel, self.currentTimeout.." seconds left")
+	dxSetText(self.timeoutLabel, self.currentTimeout.." seconds left")
 	if(self.currentTimeout <= 3) then
-		guiLabelSetColor(self.timeoutLabel, 255, 0, 0)
+		dxSetColor(self.timeoutLabel, 255, 0, 0)
 	elseif(self.currentTimeout <= 6) then
-		guiLabelSetColor(self.timeoutLabel, 255, 255, 0)
+		dxSetColor(self.timeoutLabel, 255, 255, 0)
 	end
 	
 	if(self.currentTimeout == 0) then
@@ -120,12 +122,12 @@ end
 function Vote:onVote(optIdx)
 	if(self.currentOpt) then
 		if(not self.info.allowChange) then return end
-		guiLabelSetColor(self.currentOpt.label, 255, 255, 255)
+		dxSetColor(self.currentOpt.label, 255, 255, 255)
 	end
 	
 	local opt = self.opts[optIdx]
 	self.currentOpt = opt
-	guiLabelSetColor(opt.label, 0, 255, 0)
+	dxSetColor(opt.label, 0, 255, 0)
 	triggerServerEvent("vote_onPlayerVote", self.el, optIdx)
 end
 
@@ -140,7 +142,7 @@ function Vote:updateOptBars()
 	local playersCount = #getElementsByType("player", self.info.visibleTo)
 	
 	for i, opt in ipairs(self.opts) do
-		guiProgressBarSetProgress(opt.bar, opt.votes / playersCount * 100)
+		dxProgressBarSetProgress(opt.bar, opt.votes / playersCount * 100)
 	end
 end
 

@@ -7,6 +7,7 @@
 	<export function="findMap" />
 	<export function="findMaps" />
 	<export function="getMapsList" />
+	<export function="findMapsByNameTag" />
 	<export function="getMapInfo" />
 	<export function="getMapFullPath" />
 	<export function="isMap" />

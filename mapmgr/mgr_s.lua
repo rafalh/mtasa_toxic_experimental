@@ -1,6 +1,7 @@
 local g_Root = getRootElement()
 local g_ResRoot = getResourceRootElement()
 local g_MapsList = {}
+local g_MapsListByNameTag = {}
 local g_MapInfo = {}
 
 function loadMapInfo(path)
@@ -37,16 +38,22 @@ function getMapInfo(mapPath, key)
 	end
 end
 
-local function loadMapsFromDir(path)
+local function loadMapsFromDir(path,nametag)
 	local fullPath = get("maps_dir").."/"..path
 	local pattern = fullPath.."*"
 	local dirs = fileFind(pattern, "directory")
 	for i, dir in ipairs(dirs) do
 		local dirPath = path..dir
 		if(dir:sub(1, 1) == "[" and dir:sub(dir:len()) == "]") then
-			loadMapsFromDir(path..dir.."/")
+			loadMapsFromDir(path..dir.."/",dir)
 		elseif(fileExists(fullPath..dir.."/meta.xml")) then
 			table.insert(g_MapsList, path..dir)
+			if nametag then
+				if not g_MapsListByNameTag[nametag] then
+					g_MapsListByNameTag[nametag] = {}
+				end
+				table.insert(g_MapsListByNameTag[nametag],path..dir)
+			end
 		end
 	end
 end
@@ -66,6 +73,15 @@ function findMap(str, regExp)
 		end
 	end
 	
+	return false
+end
+
+function findMapsByNameTag(tag)
+	for tg, maps in pairs(g_MapsListByNameTag) do
+		if tg == tag then
+			return maps
+		end
+	end
 	return false
 end
 

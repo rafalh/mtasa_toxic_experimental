@@ -9,23 +9,81 @@ g_Me = getLocalPlayer()
 g_ScrW, g_ScrH = guiGetScreenSize()
 local g_FontHeight = dxGetFontHeight(FONT_SCALE, FONT_FACE)
 local g_DeathTime = false
+local g_TimeGui = {}
+local g_MapInfoGui = {}
+local g_ComponentGui = {}
 
-local function renderTime()
-	if(not getTimePassed) then return end
-	
-	local timePassed, timeLimit = getTimePassed()
-	if(not timePassed or not timeLimit) then return end
-	
-	local secPassed = timePassed/1000
-	local secLimit = timeLimit/1000
-	
+local function createTime()
 	local w, h = 200, 20
 	local x, y = (g_ScrW - w)/2, 10
+	g_TimeGui["progress"] = dxCreateProgressBar(x, y,w, h)
+	g_TimeGui["label"] = dxCreateLabel(0,0,w,h,"123",g_TimeGui["progress"])
+	dxSetLabelAlign(g_TimeGui["label"],"center")
+end
+
+local function createMapInfo()
+	local x, y = 10, g_ScrH - 50
+	g_MapInfoGui["panel"] = dxCreatePanel(x, g_ScrH-40,100,40)
+	dxSetBackground(g_MapInfoGui["panel"],230,230,230,150)
+	g_MapInfoGui["map"] = dxCreateLabel(0, 0,100,20,"123",g_MapInfoGui["panel"])
+	g_MapInfoGui["autor"] = dxCreateLabel(0,20,100,20,"123",g_MapInfoGui["panel"])
+	--dxSetColor(g_MapInfoGui["map"],255,255,255)
+end
+
+function createComponent()
+	local sx = g_ScrW*0.1
+	local x, y = g_ScrW-sx-50, 50
+	g_ComponentGui["panel"] = dxCreatePanel(x,y,0,0)
+	g_ComponentGui["hp"] = dxCreateProgressBar(0, 0,sx, 20,g_ComponentGui["panel"])
+	g_ComponentGui["speed"] = dxCreateProgressBar(0, 25,sx, 20,g_ComponentGui["panel"])
+	dxSetColor(g_ComponentGui["hp"],255,0,0)
+	dxSetColor(g_ComponentGui["speed"],24,80,166)
+end
+
+
+local function renderTime()
+	if(not getTimePassed) then 
+		if dxGetVisible(g_TimeGui["progress"]) then
+			dxSetVisible(g_TimeGui["progress"],false)
+		end
+		return
+	end
+	
+	local timePassed, timeLimit = getTimePassed()
+	if(not timePassed or not timeLimit) then
+		if dxGetVisible(g_TimeGui["progress"]) then
+			dxSetVisible(g_TimeGui["progress"],false)
+		end
+		return
+	end
+	if not dxGetVisible(g_TimeGui["progress"]) then
+		dxSetVisible(g_TimeGui["progress"],true)
+	end
+	local secPassed = timePassed/1000
+	local secLimit = timeLimit/1000
 	local text = ("Time passed: %u:%02u/%u:%02u"):format(secPassed/60, secPassed%60, secLimit/60, secLimit%60)
+	dxSetText(g_TimeGui["label"],text)
 	local progress = timePassed/timeLimit
-	dxDrawRectangle(x, y, w * progress, h, tocolor(64, 0, 255, 64))
-	dxDrawRectangle(x + w * progress, y, w * (1 - progress), h, tocolor(255, 196, 0, 64))
-	dxDrawText(text, x, y, x + w, y + h, FONT_COLOR, 1, "default-bold", "center", "center")
+	dxProgressBarSetProgress(g_TimeGui["progress"],progress*100)
+end
+
+local function renderComponents()
+	local target = getCameraTarget()
+	if(target and getElementType(target) == "vehicle") then
+		local hp = math.floor(math.max(getElementHealth(target) - 250, 0)/75 * 10)
+		local x,y,z = getElementVelocity(target)
+		local kmh = (x^2 + y^2 + z^2) ^ 0.5 * 1.61 * 100
+		local speed = (1-((240-kmh)/240))*100
+		dxProgressBarSetProgress(g_ComponentGui["hp"],hp)
+		dxProgressBarSetProgress(g_ComponentGui["speed"],speed)
+		if not dxGetVisible(g_ComponentGui["panel"]) then
+			dxSetVisible(g_ComponentGui["panel"],true)
+		end
+	else
+		if dxGetVisible(g_ComponentGui["panel"]) then
+			dxSetVisible(g_ComponentGui["panel"],false)
+		end
+	end
 end
 
 local function renderRank()
@@ -51,14 +109,42 @@ end
 
 local function renderMapInfo()
 	local room = getCurrentRoom and getCurrentRoom()
-	if(not room) then return end
+	if(not room) then
+		if dxGetVisible(g_MapInfoGui["panel"]) then
+			dxSetVisible(g_MapInfoGui["panel"],false)
+		end
+		return
+	end
 	
 	local mapInfo = getElementData(room, "mapinfo")
-	if(not mapInfo) then return end
-	
-	local x, y = 10, g_ScrH - 50
-	dxDrawText("Map: "..(mapInfo.name or "unknown"), x, y, x, y, FONT_COLOR, FONT_SCALE, FONT_FACE)
-	dxDrawText("Author: "..(mapInfo.author or "unknown"), x, y + g_FontHeight, x, y + g_FontHeight, FONT_COLOR, FONT_SCALE, FONT_FACE)
+	if(not mapInfo) then
+		if dxGetVisible(g_MapInfoGui["panel"]) then
+			dxSetVisible(g_MapInfoGui["panel"],false)
+		end
+		return 
+	end
+	local maxS = {}
+	local mapName = (mapInfo.name or "unknown")
+	local author = (mapInfo.author or "unknown")
+	if not dxGetVisible(g_MapInfoGui["panel"]) then
+		dxSetVisible(g_MapInfoGui["panel"],true)
+	end
+	if dxGetText(g_MapInfoGui["map"]) ~= mapName then
+		dxSetText(g_MapInfoGui["map"],mapName)
+		local fx = dxGetFontSize(0.5,mapName)
+		dxSetSize(g_MapInfoGui["map"],fx+10,20)
+		table.insert(maxS,fx+15)
+	end
+	if dxGetText(g_MapInfoGui["autor"]) ~= author then
+		dxSetText(g_MapInfoGui["autor"],author)
+		local fx = dxGetFontSize(0.5,author)
+		dxSetSize(g_MapInfoGui["autor"],fx+10,20)
+		table.insert(maxS,fx+15)
+	end
+	if #maxS > 0 then
+		local strmax = math.max(unpack(maxS))
+		dxSetSize(g_MapInfoGui["panel"],strmax,40)
+	end
 end
 
 local function renderRespawnMsg()
@@ -93,10 +179,13 @@ local function render()
 	renderMapInfo()
 	renderRespawnMsg()
 	renderWaitingMsg()
+	renderComponents()
 end
 
 local function onGameStart()
 	outputChatBox("Start!")
+	showPlayerHudComponent ("all", false)
+	showPlayerHudComponent ("radar", true)
 end
 
 local function onGameStop(reason)
@@ -131,6 +220,7 @@ end
 local function initDelayed()
 	import("race")
 	import("roommgr")
+	import("dxgui")
 	
 	if(isPlayerDead(g_Me)) then
 		g_DeathTime = getTickCount()
@@ -138,6 +228,11 @@ local function initDelayed()
 	
 	initCountdown()
 	initSpectate()
+	
+	--gui
+	createTime()
+	createMapInfo()
+	createComponent()
 	
 	addEventHandler("onClientGameStart", g_Root, onGameStart)
 	addEventHandler("onClientGameStop", g_Root, onGameStop)
@@ -150,6 +245,9 @@ local function initDelayed()
 	bindKey("k", "down", kill)
 	
 	bindKey(RESPAWN_KEY, "down", respawn)
+	
+	showPlayerHudComponent ("all", false)
+	showPlayerHudComponent ("radar", true)
 end
 
 local function init()

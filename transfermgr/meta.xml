@@ -1,14 +1,15 @@
 <meta>
-	<info type="script" name="Transfer manager" author="rafalh" version="1.0" />
-	
-	<script src="mgr_s.lua" type="server" />
-	<script src="progress_c.lua" type="client" />
-	<script src="transfer_s.lua" type="server" />
-	<script src="transfer_c.lua" type="client" />
-	
-	<export function="createTransfer" type="server" />
-	<export function="addTransferFile" type="server" />
-	<export function="addTransferData" type="server" />
-	<export function="startTransfer" type="server" />
-	<export function="stopTransfer" type="server" />
+    <info type="script" name="Transfer manager" author="rafalh" version="1.0" />
+    
+    <script src="mgr_s.lua" type="server" />
+    <script src="progress_c.lua" type="client" />
+    <script src="transfer_s.lua" type="server" />
+    <script src="transfer_c.lua" type="client" />
+    
+    <export function="createTransfer" type="server" />
+    <export function="addTransferFile" type="server" />
+    <export function="addTransferData" type="server" />
+    <export function="startTransfer" type="server" />
+    <export function="stopTransfer" type="server" />
+    <min_mta_version server="1.3.0-9.03772" client="1.3.0-9.04584"></min_mta_version>
 </meta>

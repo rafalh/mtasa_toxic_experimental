@@ -79,7 +79,7 @@ function UiGridList:onRender()
 	if self.parent then
 		xp,xy = self.parent:getPosition()
 	end
-	--dxDrawText(self.text, self.x+xp,self.y+xy,self.sx,self.sy,tocolor(255,255,255), 1,buttonfond, "left", "center")
+	--dxDrawText(self.text, self.x+xp,self.y+xy,self.sx,self.sy,tocolor(255,255,255), 1,cache.Font, "left", "center")
 	dxDrawImage(self.x+xp,self.y+xy,self.sx,self.sy,self.buf,0,0,0,tocolor(255,255,255,255),true)
 end
 
@@ -130,7 +130,7 @@ function UiGridList:UpdateRT()
 				dxSetRenderTarget(v.rt)
 				for a,b in pairs(v.vals) do
 					dxDrawRectangle(0, lastposyc,self.sx*v.size, 15, ifElse(a%2==0,tocolor(51,51,51),tocolor(70,70,70)))
-					dxDrawText(b,0,lastposyc,self.sx*v.size,lastposyc+15,tocolor(0,0,0), 0.5,buttonfond, "center", "center")
+					dxDrawText(b,0,lastposyc,self.sx*v.size,lastposyc+15,tocolor(0,0,0), 0.5,cache.Font, "center", "center")
 					lastposyc = lastposyc+15
 				end
 				v.redraw = false
@@ -140,7 +140,7 @@ function UiGridList:UpdateRT()
 				dxDrawImage(actualposx,lastposy-self.scrool,self.sx*v.size,#v.vals*15,v.rt)
 			end
 			dxDrawRectangle(actualposx, 0,self.sx*v.size, 15, tocolor(228,235,242))
-			dxDrawText(v.name,5,0,self.sx*v.size,15,tocolor(0,0,0), 0.5,buttonfond, "center", "center")
+			dxDrawText(v.name,5,0,self.sx*v.size,15,tocolor(0,0,0), 0.5,cache.Font, "center", "center")
 		end
 	dxSetRenderTarget()
 	self.redraw = false

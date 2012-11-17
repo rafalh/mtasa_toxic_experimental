@@ -34,6 +34,7 @@ function Pickups:onPlayerPickup(player, id)
 	local veh = player:getVehicle()
 	if(not veh) then return end
 	
+	playSoundFrontEnd(player.el,46)
 	if(pickup.type == "nitro") then
 		removeVehicleUpgrade(veh, 1010)
 		addVehicleUpgrade(veh, 1010)

@@ -3,12 +3,95 @@ local g_ResRoot = getResourceRootElement()
 local all_elements = {}
 local cache_elements = {}
 local all_elements_revers = {}
-buttonfond = dxCreateFont("file/segoe.ttf",24)
 local resourceChild = {}
 if not cache then
 	cache = {}
 end
+
+cache.Font = dxCreateFont("file/segoe.ttf",24)
+cache.scaleOfFont = 0.5
+
 cache.elementToClass = {}
+
+dxMain = {}
+dxMain.__mt = {__index = dxMain}
+
+function dxMain:delete()
+	deleteElementFromAllElements(self.el)
+	if isElement(self.el) then
+		destroyElement(self.el)
+	end
+	for k,v in ipairs(self.children) do
+		v:delete()
+	end
+	self = nil
+end
+
+function dxMain:setPosition(x,y)
+	self.x,self.y = x,y
+end
+
+function dxMain:AddChild(child)
+	table.insert(self.children, child)
+end
+
+function dxMain:getType()
+	return self.types
+end
+
+function dxMain:setColor(r,g,b,a)
+	self.color = tocolor(r or 255,g or 255,b or 255,a or 255)
+	self.redraw = true
+end
+
+function dxMain:setBackgroud(r,g,b,a)
+	self.backgroudcolor = tocolor(r or 255,g or 255,b or 255,a or 255)
+	self.redraw = true
+end
+
+function dxMain:getEnabled()
+	if self.parent then
+		return (self.parent:getEnabled() and self.visible)
+	end
+	return self.enabled
+end
+
+function dxMain:setEnabled(enabled)
+	self.enabled = enabled
+end
+
+function dxMain:getSize()
+	return self.sx,self.sy
+end
+
+function dxMain:setSize(sx,sy)
+	self.sx, self.sy = sx,sy
+	self.rt = false
+	self.redraw = true
+end
+
+function dxMain:getVisible()
+	if self.parent then
+		return (self.parent:getVisible() and self.visible)
+	end
+	return self.visible
+end
+
+function dxMain:setVisible(visibl)
+	self.visible = visibl
+end
+
+function dxMain:getOnScreenPosition()
+	local xp,xy = 0,0
+	if self.parent then
+		xp,xy = self.parent:getOnScreenPosition()
+	end
+	return self.x+xp,self.y+xy
+end
+
+function dxMain:getPosition()
+	return self.x,self.y
+end
 
 function CheckPtMain(x, y,cx,cy,sx,sy)
 	return (x >= cx and y >= cy and x < cx+sx and y < cy+sy)
@@ -172,11 +255,13 @@ function deleteElementFromAllElements(el)
 	for k,v in pairs(all_elements) do
 		if v.el == el then
 			table.remove(all_elements,k)
+			break
 		end
 	end
 	for k,v in pairs(all_elements_revers) do
 		if v.el == el then
-			table.remove(all_elements,k)
+			table.remove(all_elements_revers,k)
+			break
 		end
 	end
 end
@@ -186,6 +271,7 @@ function UiCopyTable(tbl)
 	for k, v in pairs(tbl) do
 		ret[k] = v
 	end
+	ret.__mt = {__index = ret}
 	return ret
 end
 
@@ -263,6 +349,10 @@ function outputPressedCharacter(character)
 			end
 		end
 	end
+end
+
+function getFontSize(size,text)
+	return dxGetTextWidth (text, size or 0.5, cache.Font),dxGetFontHeight(size or 0.5, cache.Font)
 end
 
 function addChildToResource(res,child)

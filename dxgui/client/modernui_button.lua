@@ -1,11 +1,4 @@
-﻿local g_BtnClr = tocolor(64, 128, 255)
-local g_BtnHoverClr = tocolor(128, 196, 255)
-local g_BtnActiveClr = g_BtnClr
-local g_BtnTextClr = tocolor(255, 255, 255)
-
-UiButton = {}
-
-UiButton.__mt = {__index = UiButton}
+﻿UiButton = UiCopyTable(dxMain)
 
 function UiButton:Create(x, y, sx, sy,title,parent)
 	local btn = setmetatable({
@@ -17,10 +10,7 @@ function UiButton:Create(x, y, sx, sy,title,parent)
 		el = createElement("dxbtn"),
 		btntype = "text",
 		data = title,
-		colors =
-		{
-			normal = tocolor(51,153,51)
-		},
+		color = tocolor(51,153,51),
 		children = {},
 		parent = false,
 		enabled = true,
@@ -37,57 +27,10 @@ function UiButton:Create(x, y, sx, sy,title,parent)
 	return btn
 end
 
-function UiButton:getEnabled()
-	if self.parent then
-		return (self.parent:getEnabled() and self.enabled)
-	end
-	return self.enabled
-end
-
 function UiButton:setEnabled(enabled)
 	self.enabled = enabled
 	self.cacheenabled = enabled
 	self.redraw = true
-end
-
-function UiButton:getOnScreenPosition()
-	local xp,xy = 0,0
-	if self.parent then
-		xp,xy = self.parent:getOnScreenPosition()
-	end
-	return self.x+xp,self.y+xy
-end
-
-function UiButton:setColor(r,g,b,a)
-	self.colors.normal = tocolor(r or 51,g or 153,b or 51,a or 255)
-	self.redraw = true
-end
-
-function UiButton:getVisible()
-	if self.parent then
-		return (self.parent:getVisible() and self.visible)
-	end
-	return self.visible
-end
-
-function UiButton:getType()
-	return self.types
-end
-
-function UiButton:AddChild(child)
-	table.insert(self.children, child)
-end
-
-function UiButton:setVisible(visible)
-	self.visible = visible
-end
-
-function UiButton:getPosition()
-	return self.x,self.y
-end
-
-function UiButton:getSize()
-	return self.sx,self.sy
 end
 
 function UiButton:onRender(clip_rect)
@@ -140,11 +83,6 @@ end
 function UiButton:onMouseMove(x,y)
 end
 
-function UiButton:delete()
-	deleteElementFromAllElements(self)
-	self = nil
-end
-
 function UiButton:onMouseClick(btn, state, x, y)
 	if self:getEnabled() then
 		if(btn == "left") then
@@ -165,20 +103,20 @@ function UiButton:UpdateRT()
 	end
 	dxSetRenderTarget(self.rt,true)
 	
-	local clr = self.colors.normal
+	local clr = self.color
 	if not self:getEnabled() then
 		clr = tocolor(43,42,37)
 	end
 	
 	dxDrawRectangle(0, 0, self.sx, self.sy, clr)
 	if self.btntype == "text" then
-		dxDrawText(self.data, 5, 5, self.sx - 5 , self.sy - 5, g_BtnTextClr, 0.5,buttonfond, "center", "center", true)
+		dxDrawText(self.data, 5, 5, self.sx - 5 , self.sy - 5, tocolor(255,255,255), cache.scaleOfFont,cache.Font, "center", "center", true)
 	elseif self.btntype == "image" then
 		dxDrawImage(self.data.x,self.data.y, self.data.sx , self.data.sy,self.data.src)
 	elseif self.btntype == "mix" then
 		for k,v in ipairs(self.data) do
 			if v.type == "text" then
-				dxDrawText(v.text, v.x,v.y, v.sx , v.sy, g_BtnTextClr, v.scale,buttonfond, v.alignX, v.alignY, true)
+				dxDrawText(v.text, v.x,v.y, v.sx , v.sy, tocolor(255,255,255), v.scale,cache.Font, v.alignX, v.alignY, true)
 			elseif v.type == "image" then
 				dxDrawImage(v.x,v.y,v.sx,v.sy,v.src)
 			end

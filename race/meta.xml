@@ -29,6 +29,7 @@
 	<file src="model/vehiclechange.txd"/>
 	
 	<include resource="roommgr" />
+	<include resource="raceui" />
 	
 	<export function="startGamemodeInRoom" type="server" />
 	<export function="stopGamemodeInRoom" type="server" />

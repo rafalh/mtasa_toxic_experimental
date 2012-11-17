@@ -17,5 +17,6 @@
 	<file src="img/specnext.png" />
 	<file src="img/specnext_hi.png" />
 	
-	<include resource="race" />
+	<!--<include resource="race" />-->
+	<include resource="dxgui" />
 </meta>

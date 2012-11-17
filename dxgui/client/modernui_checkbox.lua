@@ -1,6 +1,4 @@
-UiCheckbox = {}
-
-UiCheckbox.__mt = {__index = UiCheckbox}
+UiCheckbox = UiCopyTable(dxMain)
 
 function UiCheckbox:Create(x, y,wx,text,checked,parent)
 	local check = setmetatable({
@@ -28,26 +26,6 @@ function UiCheckbox:Create(x, y,wx,text,checked,parent)
 	end
 	return check
 end
-
-function UiCheckbox:getEnabled()
-	return self.enabled
-end
-
-function UiCheckbox:setEnabled(bool)
-	self.enabled = bool
-end
-
-function UiCheckbox:getVisible()
-	if self.parent then
-		return (self.parent:getVisible() and self.visible)
-	end
-	return self.visible
-end
-
-function UiCheckbox:getType()
-	return self.types
-end
-
 function UiCheckbox:getChecked()
 	return self.checked
 end
@@ -58,35 +36,6 @@ end
 
 function UiCheckbox:onMouseMove(x,y)
 
-end
-
-function UiCheckbox:AddChild(child)
-	table.insert(self.children, child)
-end
-
-function UiCheckbox:getOnScreenPosition()
-	local xp,xy = 0,0
-	if self.parent then
-		xp,xy = self.parent:getPosition()
-	end
-	return self.x+xp,self.y+xy
-end
-
-function UiCheckbox:SetVisible(visible)
-	self.visible = visible
-end
-
-function UiCheckbox:getPosition()
-	return self.x,self.y
-end
-
-function UiCheckbox:getSize()
-	return self.sx,self.sy
-end
-
-function UiCheckbox:delete()
-	deleteElementFromAllElements(self)
-	self = nil
 end
 
 function UiCheckbox:onRender()
@@ -124,10 +73,6 @@ function UiCheckbox:onMouseClick(btn, state, x, y)
 	triggerEvent("onModernUIClick",localPlayer,self.el,btn,state,x,y)
 end
 
-function UiCheckbox:onRestore()
-	self.redraw = true
-end
-
 function UiCheckbox:UpdateRT()
 	if(not self.rt) then
 		self.rt = dxCreateRenderTarget(self.wx,19,true)
@@ -154,7 +99,7 @@ function UiCheckbox:UpdateRT()
 		else
 			dxDrawRectangle(0, 0, 12, 19,tocolor(0,0,0))
 		end
-		dxDrawText(self.text,55,0,200,19,tocolor(0,0,0), 0.5,buttonfond, "left", "center")
+		dxDrawText(self.text,55,0,200,19,tocolor(0,0,0), 0.5,cache.Font, "left", "center")
 	dxSetRenderTarget()
 	self.redraw = false
 end

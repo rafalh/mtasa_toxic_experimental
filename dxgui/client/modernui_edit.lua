@@ -1,5 +1,4 @@
-UiEdit = {}
-UiEdit.__mt = {__index = UiEdit}
+UiEdit = UiCopyTable(dxMain)
 
 function UiEdit:Create(x, y, sx, sy,title,parent)
 	local edit = setmetatable({
@@ -15,6 +14,7 @@ function UiEdit:Create(x, y, sx, sy,title,parent)
 		redraw = true,
 		active = false,
 		enabled = true,
+		backgroudcolor = tocolor(255,255,255),
 		isPassword = false,
 		types = "edit"
 	}, UiEdit.__mt)
@@ -25,11 +25,6 @@ function UiEdit:Create(x, y, sx, sy,title,parent)
 	end
 	return edit
 end
-
-local g_EditClr = tocolor(204, 217, 204)
-local g_EditHoverClr = tocolor(255, 255, 255)
-local g_EditActiveClr = g_BtnClr
-local g_EditTextClr = tocolor(0, 0, 0)
 
 function UiEdit:onRender()
 	if not self:getVisible() then
@@ -43,26 +38,6 @@ function UiEdit:onRender()
 		xp,xy = self.parent:getPosition()
 	end
 	dxDrawImage(self.x+xp,self.y+xy,self.sx,self.sy,self.buf,0,0,0,tocolor(255,255,255,255),true)
-end
-
-function UiEdit:getEnabled()
-	return self.enabled
-end
-
-function UiEdit:getOnScreenPosition()
-	local xp,xy = 0,0
-	if self.parent then
-		xp,xy = self.parent:getPosition()
-	end
-	return self.x+xp,self.y+xy
-end
-
-function UiEdit:getPosition()
-	return self.x,self.y
-end
-
-function UiEdit:getSize()
-	return self.sx,self.sy
 end
 
 function UiEdit:setIsPassword(bool)
@@ -90,10 +65,6 @@ function UiEdit:getVisible()
 	return self.visible
 end
 
-function UiEdit:setVisible(visibl)
-	self.visible = visibl
-end
-
 function UiEdit:onMouseLeave()
 	self.hover = false
 	self.redraw = true
@@ -102,19 +73,11 @@ end
 function UiEdit:onMouseMove(x,y)
 end
 
-function UiEdit:onRestore()
-	self.redraw = true
-end
-
 function UiEdit:onMouseClick(btn, state, x, y)
 	if(btn == "left") then
 		self.active = true
 		self.redraw = true
 	end
-end
-
-function UiEdit:getType()
-	return self.types
 end
 
 function UiEdit:UpdateBuffer()
@@ -143,9 +106,9 @@ function UiEdit:UpdateBuffer()
 		bordercolor = tocolor(86,157,229)
 	end
 	
-	local long = dxGetTextWidth (text, 0.5, buttonfond)
+	local long = dxGetTextWidth (text, 0.5, cache.Font)
 	
-	dxDrawRectangle(0, 0, self.sx, self.sy, clr)
+	dxDrawRectangle(0, 0, self.sx, self.sy, self.backgroudcolor)
 	dxDrawRectangle(0, 0, self.sx, 1, bordercolor)
 	dxDrawRectangle(0, self.sy-1, self.sx, 1, bordercolor)
 	dxDrawRectangle(self.sx-1, 0, 1,self.sy, bordercolor)
@@ -154,9 +117,9 @@ function UiEdit:UpdateBuffer()
 	if long+15 >self.sx then
 		toaddx = long+15 - self.sx
 	end
-	dxDrawText(text, 5-toaddx, 5, self.sx - 5, self.sy - 5, g_EditTextClr, 0.5, buttonfond, "left", "center", true)
+	dxDrawText(text, 5-toaddx, 5, self.sx - 5, self.sy - 5, self.color, cache.scaleOfFont, cache.Font, "left", "center", true)
 	if self.active then
-		dxDrawText("|", 5 + long - toaddx, 0, self.sx - 5, self.sy - 5, g_EditTextClr, 0.5, buttonfond, "left", "center", true)
+		dxDrawText("|", 5 + long - toaddx, 0, self.sx - 5, self.sy - 5, tocolor(0, 0, 0), cache.scaleOfFont, cache.Font, "left", "center", true)
 		guiSetInputMode ("no_binds")
 	else
 		guiSetInputMode("allow_binds")

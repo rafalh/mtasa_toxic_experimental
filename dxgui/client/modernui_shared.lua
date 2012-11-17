@@ -54,8 +54,8 @@ function dxCreateComboBox(x, y, sx, sy,text,wnd)
 	return element.el
 end
 
-function dxCreatePanel(x, y,wnd)
-	local element = UiPanel:Create(x, y,cache.elementToClass[wnd] or nil)
+function dxCreatePanel(x, y,sx,sy,wnd)
+	local element = UiPanel:Create(x, y,sx,sy,cache.elementToClass[wnd] or nil)
 	cache.elementToClass[element.el] = element
 	addChildToResource(sourceResource,element)
 	return element.el
@@ -105,10 +105,25 @@ function dxGetVisible(element)
 	return false
 end
 
+function dxSetBackground(element,r,g,b,a)
+	local el = cache.elementToClass[element]
+	if el then
+		el:setBackgroud(r,g,b,a)
+	end
+end
+
 function dxGetText(element)
 	local el = cache.elementToClass[element]
 	if el then
 		return el:getText()
+	end
+	return false
+end
+
+function dxGetPosition(element)
+	local el = cache.elementToClass[element]
+	if el then
+		return el:getPosition()
 	end
 	return false
 end
@@ -127,10 +142,35 @@ function dxSetText(element,text)
 	end
 end
 
+function dxSetLabelAlign(element,horizontal,vertical)
+	local el = cache.elementToClass[element]
+	if el then
+		el:SetAlign(horizontal,vertical)
+	end
+end
+
+function dxGetFontSize(size,text)
+	return getFontSize(size,text)
+end
+
 function dxSetColor(element,r,g,b,a)
 	local el = cache.elementToClass[element]
 	if el then
 		el:setColor(r,g,b,a)
+	end
+end
+
+function dxSetSize(element,x,y)
+	local el = cache.elementToClass[element]
+	if el then
+		el:setSize(x,y)
+	end
+end
+
+function dxGetSize(element)
+	local el = cache.elementToClass[element]
+	if el then
+		return el:getSize()
 	end
 end
 

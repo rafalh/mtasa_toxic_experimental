@@ -1,7 +1,7 @@
 local g_Rooms = {
-	{id = "room-dm", title = "Deathmatch", mapPatterns = {"%[DM%]"}},
-	{id = "room-dd", title = "Destruction derby", mapPatterns = {"%[DD%]"}},
-	{id = "room-race", title = "Race", mapPatterns = {"%[Race%]"}},
+	{id = "room-dm", title = "Deathmatch", mapPatterns = "[dm]"},
+	{id = "room-dd", title = "Destruction derby", mapPatterns = "[dd]"},
+	{id = "room-race", title = "Race", mapPatterns = "[race]"},
 }
 
 function initRooms()

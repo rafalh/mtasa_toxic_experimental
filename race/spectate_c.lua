@@ -29,8 +29,9 @@ end
 
 local function spectateSky()
 	g_Target = false
-	local cx, cy, cz = getCameraMatrix()
-	setCameraMatrix(cx, cy, 1000)
+	local cx, cy = getCameraMatrix()
+	local _,_,pz = getElementPosition(localPlayer)
+	setCameraMatrix(cx, cy, 1000+pz)
 end
 
 local function spectatePlayer(player)
