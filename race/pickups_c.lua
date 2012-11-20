@@ -99,8 +99,8 @@ function Pickups.onCollision(veh)
 		if(currentModel == pickup.vehicle) then
 			return
 		end
-		
 		setElementModel(veh, pickup.vehicle)
+		setHelicopterRotorSpeed (veh, 0.2)
 		alignVehicle(veh)
 	else
 		return

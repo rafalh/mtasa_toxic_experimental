@@ -90,6 +90,7 @@ function UiButton:onMouseClick(btn, state, x, y)
 			self.redraw = true
 		end
 		triggerEvent("onModernUIClick",localPlayer,self.el,btn,state,x,y)
+		triggerEvent("onDxGUIClick",self.el,btn,state,x,y)
 	end
 end
 

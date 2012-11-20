@@ -74,12 +74,13 @@ local function freezeCamera()
 end
 
 local function onLocalPlayerWasted()
+	toggleAllControls (false, true, false )
 	freezeCamera()
 	
-	local veh = getPedOccupiedVehicle(g_Me)
+	--[[local veh = getPedOccupiedVehicle(g_Me)
 	if(veh) then
-		setElementFrozen(veh, true)
-	end
+		--setElementFrozen(veh, true)
+	end]]
 end
 
 local function initDelayed()

@@ -9,39 +9,39 @@
 	h - wysokosc
 -->
 <gui>
-	<window id="loginWnd" title="Login" w="280" h="260" cx="0" cy="0" sizeable="false">
-		<image cx="0" ty="25" w="64" h="64" src="img/login.png" />
+	<window id="loginWnd" title="Login" w="300" h="265" cx="0" cy="0" sizeable="false">
+		<image cx="0" ty="30" w="64" h="64" src="img/login.png" />
 		
-		<label id="info" lx="10" rx="10" ty="90" h="15" text="Please login to save your statistics" align="center" />
+		<label id="info" lx="10" rx="10" ty="90" h="20" text="Please login to save your statistics" align="center" />
 		
 		<label lx="30" ty="125" w="80" h="15" text="Username:" />
-		<edit id="name" lx="120" ty="120" w="100" h="25" maxlen="128" focus="true" defbtn="logBtn" />
+		<edit id="name" lx="120" ty="120" w="140" h="25" maxlen="128" focus="true" defbtn="logBtn" />
 		
 		<label lx="30" ty="155" w="80" h="15" text="Password:" />
-		<edit id="pw" lx="120" ty="150" w="100" h="25" maxlen="128" masked="true" defbtn="logBtn" />
+		<edit id="pw" lx="120" ty="150" w="140" h="25" maxlen="128" masked="true" defbtn="logBtn" />
 		
-		<checkbox id="remember" lx="80" ty="180" w="100" h="25" text="Remember me" enabled="false" />
+		<checkbox id="remember" lx="30" ty="180" w="160" h="25" text="Remember me" enabled="false" />
 		
-		<button id="logBtn" cx="-90" ty="220" w="80" h="25" text="Login" />
-		<button id="regBtn" cx="0" ty="220" w="80" h="25" text="Register" />
-		<button id="guestBtn" cx="90" ty="220" w="80" h="25" text="Play as guest" />
+		<button id="logBtn" cx="-95" ty="220" w="80" h="30" text="Login" />
+		<button id="regBtn" cx="-5" ty="220" w="80" h="30" text="Register" />
+		<button id="guestBtn" cx="90" ty="220" w="100" h="30" text="Play as guest" />
 	</window>
 	
-	<window id="registerWnd" title="Register" w="280" h="260" cx="0" cy="0" sizeable="false">
+	<window id="registerWnd" title="Register" w="350" h="260" cx="0" cy="0" sizeable="false">
 		<image cx="0" ty="25" w="64" h="64" src="img/register.png" />
 		
-		<label id="info" lx="10" rx="10" ty="90" h="15" text="Register new account" align="center" />
+		<label id="info" lx="10" rx="10" ty="90" h="20" text="Register new account" align="center" />
 		
-		<label lx="30" ty="125" w="80" h="15" text="Username:" />
-		<edit id="name" lx="120" ty="120" w="100" h="25" maxlen="128" focus="true" />
+		<label lx="5" ty="125" w="125" h="20" text="Username:" />
+		<edit id="name" lx="130" ty="120" w="200" h="25" maxlen="128" focus="true" />
 		
-		<label lx="30" ty="155" w="80" h="15" text="Password:" />
-		<edit id="pw" lx="120" ty="150" w="100" h="25" maxlen="128" masked="true" />
+		<label lx="5" ty="155" w="125" h="20" text="Password:" />
+		<edit id="pw" lx="130" ty="150" w="200" h="25" maxlen="128" masked="true" />
 		
-		<label lx="30" ty="185" w="80" h="15" text="Retry password:" />
-		<edit id="pw2" lx="120" ty="180" w="100" h="25" maxlen="128" masked="true" />
+		<label lx="5" ty="185" w="125" h="20" text="Retry password:" />
+		<edit id="pw2" lx="130" ty="180" w="200" h="25" maxlen="128" masked="true" />
 		
-		<button id="regBtn" cx="-85" ty="220" w="80" h="25" text="Register" />
-		<button id="backBtn" cx="85" ty="220" w="80" h="25" text="Back" />
+		<button id="regBtn" lx="15" ty="220" w="150" h="30" text="Register" />
+		<button id="backBtn" rx="15" ty="220" w="150" h="30" text="Back" />
 	</window>
 </gui>

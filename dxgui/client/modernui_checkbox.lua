@@ -1,12 +1,11 @@
 UiCheckbox = UiCopyTable(dxMain)
 
-function UiCheckbox:Create(x, y,wx,text,checked,parent)
+function UiCheckbox:Create(x, y,sx,sy,text,checked,parent)
 	local check = setmetatable({
 		x=x,
 		y=y,
-		sx = 50,
-		wx = wx,
-		sy = 19,
+		sx = sx,
+		sy = sy,
 		text = text,
 		el = createElement("dxcheck"),
 		checked = checked,
@@ -49,7 +48,7 @@ function UiCheckbox:onRender()
 	if self.parent then
 		xp,xy = self.parent:getPosition()
 	end
-	dxDrawImage(self.x+xp,self.y+xy,self.wx,19,self.rt,0,0,0,tocolor(255,255,255,255),true)
+	dxDrawImage(self.x+xp,self.y+xy,self.sx,19,self.rt,0,0,0,tocolor(255,255,255,255),true)
 end
 
 function UiCheckbox:onMouseEnter()
@@ -75,7 +74,7 @@ end
 
 function UiCheckbox:UpdateRT()
 	if(not self.rt) then
-		self.rt = dxCreateRenderTarget(self.wx,19,true)
+		self.rt = dxCreateRenderTarget(self.sx,19,true)
 	end
 	local color = tocolor(25, 153, 0, 255)
 	if self.checked then

@@ -28,8 +28,8 @@ function UiText:Create(x, y, sx, sy,text,parent)
 end
 
 function UiText:SetAlign(horizontal,vertical)
-	self.alignX = horizontal or "left"
-	self.alignY = vertical or "center"
+	self.alignX = horizontal or (self.alignX or "left")
+	self.alignY = vertical or (self.alignY or "center")
 	self.redraw = true
 end
 
@@ -71,6 +71,7 @@ end
 function UiText:onMouseClick(btn, state, x, y)
 	if self:getEnabled() then
 		triggerEvent("onModernUIClick",localPlayer,self.el,btn,state,x,y)
+		triggerEvent("onDxGUIClick",self.el,btn,state,x,y)
 	end
 end
 

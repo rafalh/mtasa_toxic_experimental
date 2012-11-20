@@ -5,7 +5,8 @@ g_ScrW, g_ScrH = guiGetScreenSize()
 
 local function initDelayed()
 	import("roommgr")
-	
+	import("dxgui")
+	addEvent("onDxGUIClick",true)
 	triggerServerEvent("main_onReady", g_ResRoot)
 end
 

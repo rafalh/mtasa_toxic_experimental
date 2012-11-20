@@ -47,7 +47,7 @@ end
 function GUI.computeCtrlPlacement(tpl, parent)
 	local pw, ph
 	if(parent) then
-		pw, ph = guiGetSize(parent, false)
+		pw, ph = dxGetSize(parent)
 	else
 		pw, ph = guiGetScreenSize()
 	end
@@ -93,60 +93,60 @@ function GUI:createControl(tpl, parent)
 	
 	local ctrl
 	if ( tpl.type == "window") then
-		ctrl = guiCreateWindow(x, y, w, h, tpl.title or "", false)
+		ctrl = dxCreateWindow(x, y, w, h, tpl.title or "")
 		if(tpl.sizeable == "false") then
-			guiWindowSetSizable(ctrl, false)
+			--guiWindowSetSizable(ctrl, false)
 		end
 	elseif(tpl.type == "button") then
-		ctrl = guiCreateButton(x, y, w, h, tpl.text or "", false, parent)
+		ctrl = dxCreateButton(x, y, w, h, tpl.text or "", parent)
 	elseif(tpl.type == "checkbox") then
-		ctrl = guiCreateCheckBox(x, y, w, h, tpl.text or "", tpl.selected == "true", false, parent)
+		ctrl = dxCreateCheckBox(x, y, w, h, tpl.text or "", tpl.selected == "true", parent)
 	elseif(tpl.type == "edit") then
-		ctrl = guiCreateEdit(x, y, w, h, tpl.text or "", false, parent)
+		ctrl = dxCreateEdit(x, y, w, h, tpl.text or "", parent)
 		if (tpl.readonly == "true") then
-			guiEditSetReadOnly(ctrl, true)
+			--guiEditSetReadOnly(ctrl, true)
 		end
 		if(tonumber(tpl.maxlen)) then
-			guiEditSetMaxLength(ctrl, tonumber(tpl.maxlen))
+			--guiEditSetMaxLength(ctrl, tonumber(tpl.maxlen))
 		end
 		if(tpl.masked == "true") then
-			guiEditSetMasked(ctrl, true)
+			dxEditSetMasked(ctrl, true)
 		end
 	elseif(tpl.type == "memo") then
-		ctrl = guiCreateMemo(x, y, w, h, tpl.text or "", false, parent)
+		ctrl = dxCreateMemo(x, y, w, h, tpl.text or "", parent)
 		if(tpl.readonly == "true") then
-			guiMemoSetReadOnly(ctrl, true)
+			--guiMemoSetReadOnly(ctrl, true)
 		end
 	elseif(tpl.type == "label") then
-		ctrl = guiCreateLabel(x, y, w, h, tpl.text or "", false, parent)
+		ctrl = dxCreateLabel(x, y, w, h, tpl.text or "", parent)
 		if(tpl.align) then
-			guiLabelSetHorizontalAlign(ctrl, tpl.align)
+			dxSetLabelAlign(ctrl, tpl.align)
 		end
 		if(tpl.color) then
 			local r, g, b = getColorFromString(tpl.color)
-			guiLabelSetColor(ctrl, r or 255, g or 255, b or 255)
+			dxSetColor(ctrl, r or 255, g or 255, b or 255)
 		end
 	elseif(tpl.type == "image") then
-		ctrl = guiCreateStaticImage(x, y, w, h, tpl.src or "", false, parent)
-	elseif(tpl.type == "list") then
-		ctrl = guiCreateGridList( x, y, w, h, false, parent )
+		ctrl = dxCreateImage(x, y, w, h, tpl.src or "", parent)
+	--[[elseif(tpl.type == "list") then
+		--ctrl = guiCreateGridList( x, y, w, h, false, parent )
 	elseif(tpl.type == "column") then
-		ctrl = guiGridListAddColumn(parent, tpl.text or "", tpl.w or 0.5)
+		--ctrl = guiGridListAddColumn(parent, tpl.text or "", tpl.w or 0.5)]]
 	else
 		assert (false)
 	end
 	
 	if(tpl.visible == "false") then
-		guiSetVisible(ctrl, false)
+		dxSetVisible(ctrl, false)
 	end
 	if(tpl.alpha) then
-		guiSetAlpha(ctrl, (tonumber(tpl.alpha) or 255)/255)
+		--guiSetAlpha(ctrl, (tonumber(tpl.alpha) or 255)/255)
 	end
 	if(tpl.font) then
-		guiSetFont(ctrl, tpl.font)
+		--guiSetFont(ctrl, tpl.font)
 	end
 	if(tpl.enabled == "false") then
-		guiSetEnabled(ctrl, false)
+		dxSetEnabled(ctrl, false)
 	end
 	
 	if(tpl.id) then
@@ -155,14 +155,14 @@ function GUI:createControl(tpl, parent)
 	if(tpl.focus == "true") then
 		self.focus = ctrl
 	end
-	if(tpl.defbtn) then
+	--[[if(tpl.defbtn) then
 		addEventHandler("onClientGUIAccepted", ctrl, function()
 			local btn = self[tpl.defbtn]
 			if(btn) then
 				triggerEvent("onClientGUIClick", btn, "left", "up")
 			end
 		end, false)
-	end
+	end]]
 	
 	return ctrl
 end
@@ -176,7 +176,7 @@ function GUI:createControls(tpl, parent)
 end
 
 function GUI:destroy()
-	destroyElement(self.wnd)
+	dxDelete(self.wnd)
 end
 
 function GUI.create(id, parent)
@@ -193,7 +193,7 @@ function GUI.create(id, parent)
 	if(not self.focus) then
 		self.focus = self.wnd
 	end
-	guiBringToFront(self.focus)
+	dxBringToFont(self.focus)
 	
 	return self
 end

@@ -26,6 +26,20 @@ function dxCreateMemo(x,y,sx,sy,text,wnd)
 	return Memo.el
 end
 
+function dxCreateEdit(x,y,sx,sy,text,wnd)
+	local element = UiEdit:Create(x,y,sx,sy,text,cache.elementToClass[wnd] or nil)
+	cache.elementToClass[element.el] = element
+	addChildToResource(sourceResource,element)
+	return element.el
+end
+
+function dxCreateCheckBox(x,y,sx,sy,text,checked,wnd)
+	local element = UiCheckbox:Create(x,y,sx,sy,text,checked,cache.elementToClass[wnd] or nil)
+	cache.elementToClass[element.el] = element
+	addChildToResource(sourceResource,element)
+	return element.el
+end
+
 function dxCreateImage(x,y,sx,sy,src,wnd)
 	local image = UiImage:Create(x,y,sx,sy,":"..getResourceName(sourceResource).."/"..src,cache.elementToClass[wnd] or nil)
 	cache.elementToClass[image.el] = image
@@ -105,6 +119,14 @@ function dxGetVisible(element)
 	return false
 end
 
+function dxEditSetMasked(element,bool)
+	local el = cache.elementToClass[element]
+	if el and getElementType(element) == "dxEdit" then
+		el:setIsPassword(bool)
+	end
+	return false
+end
+
 function dxSetBackground(element,r,g,b,a)
 	local el = cache.elementToClass[element]
 	if el then
@@ -171,6 +193,13 @@ function dxGetSize(element)
 	local el = cache.elementToClass[element]
 	if el then
 		return el:getSize()
+	end
+end
+
+function dxGetEnabled(element)
+	local el = cache.elementToClass[element]
+	if el then
+		return el:getEnabled()
 	end
 end
 

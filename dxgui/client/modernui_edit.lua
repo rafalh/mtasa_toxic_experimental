@@ -5,8 +5,8 @@ function UiEdit:Create(x, y, sx, sy,title,parent)
 		text = title,
 		x=x,
 		y=y, 
-		sx = sx,
-		sy = sy,
+		sx = tostring(sx) or 0,
+		sy = tonumber(sy) or 0,
 		children = {},
 		parent = false,
 		visible = true,
@@ -14,9 +14,11 @@ function UiEdit:Create(x, y, sx, sy,title,parent)
 		redraw = true,
 		active = false,
 		enabled = true,
+		color = tocolor(0,0,0),
 		backgroudcolor = tocolor(255,255,255),
 		isPassword = false,
-		types = "edit"
+		types = "edit",
+		el = createElement("dxEdit")
 	}, UiEdit.__mt)
 	addToAllRender(edit)
 	if parent then
@@ -106,7 +108,7 @@ function UiEdit:UpdateBuffer()
 		bordercolor = tocolor(86,157,229)
 	end
 	
-	local long = dxGetTextWidth (text, 0.5, cache.Font)
+	local long = dxGetTextWidth (text, 0.5, cache.Font) or 0
 	
 	dxDrawRectangle(0, 0, self.sx, self.sy, self.backgroudcolor)
 	dxDrawRectangle(0, 0, self.sx, 1, bordercolor)
@@ -114,7 +116,7 @@ function UiEdit:UpdateBuffer()
 	dxDrawRectangle(self.sx-1, 0, 1,self.sy, bordercolor)
 	dxDrawRectangle(0, 0, 1, self.sy, bordercolor)
 	local toaddx = 0
-	if long+15 >self.sx then
+	if long+15 > tonumber(self.sx) then
 		toaddx = long+15 - self.sx
 	end
 	dxDrawText(text, 5-toaddx, 5, self.sx - 5, self.sy - 5, self.color, cache.scaleOfFont, cache.Font, "left", "center", true)

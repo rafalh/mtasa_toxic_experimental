@@ -130,7 +130,9 @@ function Vote:destroy(ignoreEl)
 	Vote.elMap[self.el] = nil
 	
 	if(not ignoreEl) then
-		destroyElement(self.el)
+		if isElement(self.el) then
+			destroyElement(self.el)
+		end
 	end
 	
 	--outputChatBox("Vote:destroy "..tostring(ignoreEl))

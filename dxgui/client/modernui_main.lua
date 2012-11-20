@@ -51,7 +51,7 @@ end
 
 function dxMain:getEnabled()
 	if self.parent then
-		return (self.parent:getEnabled() and self.visible)
+		return (self.parent:getEnabled() and self.enabled)
 	end
 	return self.enabled
 end
@@ -91,6 +91,10 @@ end
 
 function dxMain:getPosition()
 	return self.x,self.y
+end
+
+function dxMain:onRestore()
+	self.redraw = true
 end
 
 function CheckPtMain(x, y,cx,cy,sx,sy)

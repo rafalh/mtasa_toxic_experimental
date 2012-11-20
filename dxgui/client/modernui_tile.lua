@@ -97,6 +97,7 @@ function UiTile:onMouseClick(btn, state, x, y)
 			self.down = (state == "down")
 		end
 		triggerEvent("onModernUIClick",localPlayer,self.el,btn,state,x,y)
+		triggerEvent("onDxGUIClick",self.el,btn,state,x,y)
 	end
 end
 

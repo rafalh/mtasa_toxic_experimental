@@ -231,7 +231,9 @@ end
 
 function Player:unfreezeAfterRespawn()
 	if(not self.alive) then return end
+	toggleAllControls (self.el,true, true, false )
 	self:setFrozen(false)
+	--setTimer(function() self:loadPos() end,50,1)
 	self:loadPos()
 end
 

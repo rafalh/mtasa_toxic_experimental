@@ -42,7 +42,6 @@ function Pickups:onPlayerPickup(player, id)
 		fixVehicle(veh)
 	elseif(pickup.type == "vehiclechange" and pickup.vehicle) then
 		setElementModel(veh, pickup.vehicle)
-		
 		if(self.game.isDM and DM_VEHICLES[pickup.vehicle]) then
 			self.game:onPlayerFinish(self)
 		end

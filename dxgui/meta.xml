@@ -22,6 +22,8 @@
 	<export function="dxCreateButton" type="client"/>
 	<export function="dxCreateMemo" type="client"/>
 	<export function="dxCreateImage" type="client"/>
+	<export function="dxCreateEdit" type="client"/>
+	<export function="dxCreateCheckBox" type="client"/>
 	<export function="dxCreateLabel" type="client"/>
 	<export function="dxCreateProgressBar" type="client" />
 	<export function="dxCreateTile" type="client" />
@@ -34,6 +36,7 @@
 	<export function="dxComboBoxDeleteAllItem" type="client" />
 	<export function="dxButtonSetType" type="client" />
 	<export function="dxSetColor" type="client"/>
+	<export function="dxEditSetMasked" type="client" />
 	<export function="dxSetText" type="client"/>
 	<export function="dxGetText" type="client"/>
 	<export function="dxDelete" type="client"/>
@@ -41,6 +44,7 @@
 	<export function="dxGetSize" type="client"/>
 	<export function="dxSetImage" type="client"/>
 	<export function="dxGetPosition" type="client"/>
+	<export function="dxGetEnabled" type="client"/>
 	<export function="dxSetEnabled" type="client"/>
 	<export function="dxGetVisible" type="client" />
 	<export function="dxSetBackground" type="client" />

@@ -13,7 +13,6 @@ Vote.elMap = {}
 addEvent("vote_onStart", true)
 addEvent("vote_nextNomination", true)
 addEvent("vote_onOptVotesUpdate", true)
-import("dxgui")
 
 function Vote:updateGUI()
 	local delay = false
@@ -218,6 +217,10 @@ addEventHandler("onClientElementDestroy", g_Root, function()
 	local vote = Vote.elMap[source]
 	if(not vote) then return end
 	vote:destroy()
+end)
+
+addEventHandler("onClientResourceStart", g_Root, function()
+	setTimer(import,50,1,"dxgui")
 end)
 
 addEventHandler("vote_onStart", g_Root, function(info, opts)
