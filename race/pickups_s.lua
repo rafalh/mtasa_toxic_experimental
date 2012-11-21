@@ -43,7 +43,7 @@ function Pickups:onPlayerPickup(player, id)
 	elseif(pickup.type == "vehiclechange" and pickup.vehicle) then
 		setElementModel(veh, pickup.vehicle)
 		if(self.game.isDM and DM_VEHICLES[pickup.vehicle]) then
-			self.game:onPlayerFinish(self)
+			self.game:onPlayerFinish(player)
 		end
 	end
 end

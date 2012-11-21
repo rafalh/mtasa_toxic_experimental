@@ -42,7 +42,15 @@ local function ghostmode(source)
 	end
 end
 
+local function voteMap(player)
+	local room = getPlayerRoom(player)
+	if(room) then
+		startVote(room)
+	end
+end
+
 addCommandHandler("rooms", roomsCmd)
 addCommandHandler("room", roomCmd)
+addCommandHandler("votemap", voteMap)
 addCommandHandler("refreshmaps", refreshMapsCmd)
 addCommandHandler("gm", ghostmode)

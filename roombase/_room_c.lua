@@ -17,10 +17,11 @@ addEvent("onClientMapStopping")
 
 local function createDbgTimer()
 	local ticks = getTickCount()
-	local func = function(title)
+	local func = function(title,time)
 		local dt = getTickCount() - ticks
+		local time = time or 50
 		ticks = ticks + dt
-		if(dt > 50) then
+		if(dt > time) then
 			outputDebugString("Too slow ("..dt.." ms) - "..(title or "unknown place"), 2)
 		end
 	end
@@ -209,8 +210,10 @@ local function loadObject(data)
 			end
 		else
 			outputDebugString("Failed to create object "..model, 2)
+			return false
 		end
 	end
+	return true
 end
 
 local function loadVehicle(data)
@@ -239,8 +242,10 @@ local function loadVehicle(data)
 			end
 		else
 			outputDebugString("Failed to create vehicle "..model, 2)
+			return false
 		end
 	end
+	return true
 end
 
 local function loadMarker(data)
@@ -263,8 +268,10 @@ local function loadMarker(data)
 			end
 		else
 			outputDebugString("Failed to create marker", 2)
+			return false
 		end
 	end
+	return true
 end
 
 local function loadElement(name, data)
@@ -275,7 +282,9 @@ local function loadElement(name, data)
 		end
 	else
 		outputDebugString("Failed to create element "..name, 2)
+		return false
 	end
+	return true
 end
 
 local function loadMap(mapStr)
@@ -286,26 +295,44 @@ local function loadMap(mapStr)
 	end
 	
 	local objCount, vehCount, markerCount, elCount = 0, 0, 0, 0
+	local objCountFailed, vehCountFailed, markerCountFailed, elCountFailed = 0, 0, 0, 0
 	
 	for elType, elList in pairs(mapEl) do
 		for i, data in ipairs(elList) do
 			if(elType == "object") then
-				loadObject(data)
-				objCount = objCount + 1
+				local b = loadObject(data)
+				if b then
+					objCount = objCount + 1
+				else
+					objCountFailed = objCountFailed + 1
+				end
 			elseif(elType == "vehicle") then
-				loadVehicle(data)
+				local b = loadVehicle(data)
 				vehCount = vehCount + 1
+				if b then
+					vehCount = vehCount + 1
+				else
+					vehCountFailed = vehCountFailed + 1
+				end
 			elseif(elType == "marker") then
-				loadMarker(data)
-				markerCount = markerCount + 1
+				local b = loadMarker(data)
+				if b then
+					markerCount = markerCount + 1
+				else
+					markerCountFailed = markerCountFailed + 1
+				end
 			else
-				loadElement(elType, data)
-				elCount = elCount + 1
+				local b = loadElement(elType, data)
+				if b then
+					elCount = elCount + 1
+				else
+					elCountFailed = elCountFailed + 1
+				end
 			end
 		end
 	end
 	
-	outputDebugString("Loaded "..objCount.." objects, "..vehCount.." vehicles, "..markerCount.." markers and "..elCount.." elements", 3)
+	outputDebugString("Loaded "..objCount.." ("..objCountFailed..") objects, "..vehCount.." ("..vehCountFailed..") vehicles, "..markerCount.." ("..markerCountFailed..") markers and "..elCount.." ("..elCountFailed..") elements", 3)
 	
 	return true
 end
@@ -327,7 +354,7 @@ local function onMapStartReq(files)
 	
 	loadMap(g_MapStr)
 	g_MapStr = ""
-	dbgTimer("loadMap")
+	dbgTimer("loadMap",200)
 	
 	for i, path in ipairs(g_Files.script) do
 		execScript(path)

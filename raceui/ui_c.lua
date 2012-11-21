@@ -174,12 +174,14 @@ local function renderWaitingMsg()
 end
 
 local function render()
-	renderTime()
 	renderRank()
-	renderMapInfo()
 	renderRespawnMsg()
 	renderWaitingMsg()
-	renderComponents()
+	if getResourceFromName("dxgui") then
+		renderMapInfo()
+		renderTime()
+		renderComponents()
+	end
 end
 
 local function onGameStart()
@@ -217,10 +219,16 @@ local function respawn()
 	requestRespawn()
 end
 
+function createDxGui()
+	createTime()
+	createMapInfo()
+	createComponent()
+end
+
 local function initDelayed()
 	import("race")
 	import("roommgr")
-	import("dxgui")
+	import("dxgui",createDxGui)
 	
 	if(isPlayerDead(g_Me)) then
 		g_DeathTime = getTickCount()
@@ -230,9 +238,7 @@ local function initDelayed()
 	initSpectate()
 	
 	--gui
-	createTime()
-	createMapInfo()
-	createComponent()
+	createDxGui()
 	
 	addEventHandler("onClientGameStart", g_Root, onGameStart)
 	addEventHandler("onClientGameStop", g_Root, onGameStop)

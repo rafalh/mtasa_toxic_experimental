@@ -54,13 +54,13 @@ function Vote:updateGUI()
 	y = y + 5
 	
 	local infoLabel = dxCreateLabel(10, y, w - 20, 15, "Press 1 - "..#self.opts.." to vote",  self.wnd)
-	--dxLabelSetHorizontalAlign(infoLabel, "center")
-	--dxSetAlpha(infoLabel, 0.5)
+	dxSetLabelAlign(infoLabel, "center")
+	dxSetColor(infoLabel,0,0,0,(255*0.8))
 	y = y + 20
 	
 	self.currentTimeout = self.info.timeout
 	self.timeoutLabel = dxCreateLabel(10, y, w - 20, 15, self.currentTimeout.." seconds left", self.wnd)
-	--guiLabelSetHorizontalAlign(self.timeoutLabel, "center")
+	dxSetLabelAlign(self.timeoutLabel, "center")
 	self.timeoutTimer = setTimer(function()
 		self:onTimerTick()
 	end, 1000, self.currentTimeout)
@@ -167,6 +167,7 @@ function Vote:bindKeys()
 	
 	for i, opt in ipairs(self.opts) do
 		bindKey(tostring(i), "down", Vote.onKeyDown, self.el)
+		bindKey("num_"..tostring(i), "down", Vote.onKeyDown, self.el)
 	end
 end
 
@@ -176,6 +177,7 @@ function Vote:unbindKeys()
 	
 	for i, opt in ipairs(self.opts) do
 		unbindKey(tostring(i), "down", Vote.onKeyDown)
+		unbindKey(tostring("num_"..i), "down", Vote.onKeyDown)
 	end
 end
 
@@ -207,6 +209,9 @@ function Vote.create(el, info, opts)
 end
 
 function Vote.onKeyDown(key, keyState, voteEl)
+	if string.find(tostring(key),"num_") then
+		key = key:gsub("num_","")
+	end
 	local optIdx = tonumber(key)
 	local vote = Vote.elMap[voteEl]
 	if(not vote or not optIdx) then return end

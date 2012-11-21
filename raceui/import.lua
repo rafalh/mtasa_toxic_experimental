@@ -1,7 +1,8 @@
 local g_Root = getRootElement()
 local g_Imports = {}
+local g_OnReimportFunc = {}
 
-function import(resName)
+function import(resName,func)
 	local res = getResourceFromName(resName)
 	if(not res) then
 		outputDebugString("Failed to import from"..resName, 2)
@@ -9,7 +10,9 @@ function import(resName)
 	end
 	
 	g_Imports[resName] = {}
-	
+	if func then
+		g_OnReimportFunc[resName] = func
+	end
 	local functions = getResourceExportedFunctions(res)
 	for i, func in ipairs(functions) do
 		_G[func] = function(...) return call(res, func, ...) end
@@ -23,6 +26,9 @@ local function onResStart(res)
 	local resName = getResourceName(res)
 	if(g_Imports[resName]) then
 		import(resName)
+		if g_OnReimportFunc[resName] then
+			g_OnReimportFunc[resName]()
+		end
 	end
 end
 

@@ -278,7 +278,9 @@ function Game:onPlayerFinish(player)
 			self:stopGame("playerwon")
 		end
 	else
-		outputChatBox(player:getName().." has finished!")
+		local timePassed = self:getTimePassed()
+		local secPassed = timePassed/1000
+		outputChatBox(player:getName().." has finished! Time: "..("%u:%02u"):format(secPassed/60, secPassed%60))
 	end
 end
 
