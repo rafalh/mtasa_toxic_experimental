@@ -1,0 +1,18 @@
+<meta>
+	<info type="script" name="Debugger" author="rafalh" version="1.0.1" />
+	
+	<script src="dbg_s.lua" type="server" />
+	<script src="dbg_c.lua" type="client" />
+	<script src="gui_c.lua" type="client" />
+	<script src="playersList_c.lua" type="client" />
+	<script src="runCode_s.lua" type="server" />
+	<script src="runCode_c.lua" type="client" />
+	<script src="screenShot_s.lua" type="server" />
+	<script src="screenShot_c.lua" type="client" />
+	<script src="perfStats_s.lua" type="server" />
+	<script src="perfStats_c.lua" type="client" />
+	<script src="netStats_s.lua" type="server" />
+	<script src="netStats_c.lua" type="client" />
+	<script src="utils.lua" type="server" />
+	<script src="utils.lua" type="client" />
+</meta>
