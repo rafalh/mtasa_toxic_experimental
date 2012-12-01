@@ -72,9 +72,6 @@ function UiEdit:onMouseLeave()
 	self.redraw = true
 end
 
-function UiEdit:onMouseMove(x,y)
-end
-
 function UiEdit:onMouseClick(btn, state, x, y)
 	if(btn == "left") then
 		self.active = true

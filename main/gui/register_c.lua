@@ -11,7 +11,7 @@ end
 
 local function onRegisterClick(btn,state)
 	if btn ~= "left" or state ~= "up" then return end
-	local name = guiGetText(g_GUI.name)
+	local name = dxGetText(g_GUI.name)
 	local pw = dxGetText(g_GUI.pw)
 	local pw2 = dxGetText(g_GUI.pw2)
 	

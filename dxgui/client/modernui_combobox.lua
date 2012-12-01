@@ -129,7 +129,7 @@ function UiComboBox:UpdateRT()
 		dxDrawRectangle(0, 0, bordersize, self.sy, bordercolor)
 		dxDrawRectangle(self.sx - sizeofimage - 10, 0, 2,self.sy, bordercolor)
 		dxDrawText(self.text, 10, 5, self.sx - 5 , self.sy - 5,tocolor(0,0,0), cache.scaleOfFont,cache.Font, "left", "center",false,true)
-		dxDrawImage(self.sx - sizeofimage - 5,5,sizeofimage,sizeofimage,"image/modernui/appbar.chevron.down.png")
+		dxDrawImage(self.sx - sizeofimage - 5,5,sizeofimage,sizeofimage,"image/appbar.chevron.down.png")
 	dxSetRenderTarget()
 	if self.list.rt then
 		destroyElement(self.list.rt)

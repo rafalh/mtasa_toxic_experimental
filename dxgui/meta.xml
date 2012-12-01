@@ -1,9 +1,16 @@
 <meta>
 
 	<file src="file/segoe.ttf" />
-	<file src="image/modernui/appbar.chevron.down.png" />
+	<file src="image/appbar.chevron.down.png" />
+	<file src="image/appbar.chevron.up.png" />
+	<file src="image/appbar.chevron.left.png" />
+	<file src="image/appbar.chevron.right.png" />
+	<file src="image/radioButton/radioButtonNormal.png" />
+	<file src="image/radioButton/radioButtonSelected.png" />
+	<file src="image/radioButton/radioButtonLight.png" />
 	
 	<script src="client/modernui_main.lua" type="client" />
+	<script src="client/modernui_dxmain.lua" type="client" />
 	<script src="client/modernui_edit.lua" type="client" />
 	<script src="client/modernui_image.lua" type="client" />
 	<script src="client/modernui_text.lua" type="client" />
@@ -16,33 +23,63 @@
 	<script src="client/modernui_gridlist.lua" type="client" />
 	<script src="client/modernui_progres.lua" type="client" />
 	<script src="client/modernui_tile.lua" type="client" />
+	<script src="client/modernui_radio.lua" type="client" />
+	<script src="client/modernui_scrollBar.lua" type="client" />
 	<script src="client/modernui_shared.lua" type="client" />
 	
 	<export function="dxCreateWindow" type="client"/>
+	
 	<export function="dxCreateButton" type="client"/>
+	<export function="dxButtonSetType" type="client" />
+	
 	<export function="dxCreateMemo" type="client"/>
+	
 	<export function="dxCreateImage" type="client"/>
+	<export function="dxSetImage" type="client"/>
+	
 	<export function="dxCreateEdit" type="client"/>
+	<export function="dxEditSetMasked" type="client" />
+	
 	<export function="dxCreateCheckBox" type="client"/>
+	
 	<export function="dxCreateLabel" type="client"/>
-	<export function="dxCreateProgressBar" type="client" />
-	<export function="dxCreateTile" type="client" />
-	<export function="dxCreatePanel" type="client" />
-	<export function="dxCreateComboBox" type="client" />
-	<export function="dxProgressBarSetProgress" type="client" />
 	<export function="dxSetLabelAlign" type="client" />
+	
+	<export function="dxCreateProgressBar" type="client" />
 	<export function="dxProgressBarGetProgress" type="client" />
+	<export function="dxProgressBarSetProgress" type="client" />
+	
+	<export function="dxCreateTile" type="client" />
+	
+	<export function="dxCreatePanel" type="client" />
+	
+	<export function="dxCreateRadioButton" type="client" />
+	<export function="dxRadioButtonGetSelected" type="client" />
+	<export function="dxRadioButtonSetSelected" type="client" />
+	
+	<export function="dxCreateScrollBar" type="client" />
+	<export function="dxScrollBarSetScrollPosition" type="client" />
+	<export function="dxScrollBarGetScrollPosition" type="client" />
+	
+	<export function="dxCreateComboBox" type="client" />
 	<export function="dxComboBoxAddItem" type="client" />
 	<export function="dxComboBoxDeleteAllItem" type="client" />
-	<export function="dxButtonSetType" type="client" />
+	
+	<export function="dxCreateGridList" type="client" />
+	<export function="dxGridListAddColumn" type="client" />
+	<export function="dxGridListaddValToColumn" type="client" />
+	<export function="dxGridListGetRowCount" type="client" />
+	<export function="dxGridListGetItemText" type="client" />
+	<export function="dxGridListRemoveRow" type="client" />
+	<export function="dxGridListGetSelectedItem" type="client" />
+	<export function="dxGridListClearColumn" type="client" />
+	
 	<export function="dxSetColor" type="client"/>
-	<export function="dxEditSetMasked" type="client" />
 	<export function="dxSetText" type="client"/>
 	<export function="dxGetText" type="client"/>
 	<export function="dxDelete" type="client"/>
 	<export function="dxSetSize" type="client"/>
 	<export function="dxGetSize" type="client"/>
-	<export function="dxSetImage" type="client"/>
 	<export function="dxGetPosition" type="client"/>
 	<export function="dxGetEnabled" type="client"/>
 	<export function="dxSetEnabled" type="client"/>

@@ -27,18 +27,6 @@ function UiPanel:setBackgroud(r,g,b,a)
 	self.backgroundColor = {r=r or 0,g=g or 0,b=b or 0,a=a or 0}
 end
 
-function UiPanel:onMouseEnter()
-end
-
-function UiPanel:onMouseLeave()
-end
-
-function UiPanel:onMouseMove(x, y)
-end
-
-function UiPanel:onMouseClick(btn, state, x, y)
-end
-
 function UiPanel:onRender()
 	if not self:getVisible() then
 		return

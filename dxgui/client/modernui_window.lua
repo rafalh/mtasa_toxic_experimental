@@ -66,15 +66,3 @@ function UiWindow:UpdateRT()
 	dxSetRenderTarget()
 	self.redraw = false
 end
-
-function UiWindow:onMouseEnter()
-end
-
-function UiWindow:onMouseLeave()
-end
-
-function UiWindow:onMouseMove(x, y)
-end
-
-function UiWindow:onMouseClick(btn, state, x, y)
-end

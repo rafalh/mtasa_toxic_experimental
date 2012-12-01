@@ -29,10 +29,6 @@ function UiMemo:setText(text)
 	self.redraw = true
 end
 
-function UiMemo:onMouseMove(x,y)
-
-end
-
 function UiMemo:onRender()
 	if not self:getVisible() then
 		return
@@ -46,15 +42,6 @@ function UiMemo:onRender()
 	end
 	--dxDrawText(self.text, self.x+xp,self.y+xy,self.sx,self.sy,tocolor(255,255,255), 1,cache.Font, "left", "center")
 	dxDrawImage(self.x+xp,self.y+xy,self.sx,self.sy,self.rt,0,0,0,tocolor(255,255,255,255),true)
-end
-
-function UiMemo:onMouseEnter()
-end
-
-function UiMemo:onMouseLeave()
-end
-
-function UiMemo:onMouseClick(btn, state, x, y)
 end
 
 function UiMemo:setBorderColor(r,g,b,a)

@@ -61,6 +61,111 @@ function dxCreateProgressBar(x, y, sx, sy,wnd)
 	return element.el
 end
 
+function dxCreateGridList(x, y, sx, sy,wnd)
+	local element = UiGridList:Create(x, y, sx, sy,cache.elementToClass[wnd] or nil)
+	cache.elementToClass[element.el] = element
+	addChildToResource(sourceResource,element)
+	return element.el
+end
+
+function dxCreateRadioButton(x, y, sx, sy,text,wnd)
+	local element = UiRadio:Create(x, y, sx, sy,text,cache.elementToClass[wnd] or nil)
+	cache.elementToClass[element.el] = element
+	addChildToResource(sourceResource,element)
+	return element.el
+end
+
+function dxCreateScrollBar(x, y, sx, sy,horizontal,wnd)
+	local element = UiScrollBar:Create(x, y, sx, sy,horizontal,cache.elementToClass[wnd] or nil)
+	cache.elementToClass[element.el] = element
+	addChildToResource(sourceResource,element)
+	return element.el
+end
+
+function dxRadioButtonSetSelected(element,bool)
+	local el = cache.elementToClass[element]
+	if el then
+		el:setSelected(bool)
+	end
+end
+
+function dxRadioButtonGetSelected(element)
+	local el = cache.elementToClass[element]
+	if el then
+		return el:isSelected()
+	end
+	return false
+end
+
+function dxScrollBarSetScrollPosition(element,int)
+	local el = cache.elementToClass[element]
+	if el then
+		el:getScrollPos(int)
+	end
+end
+
+function dxScrollBarGetScrollPosition(element)
+	local el = cache.elementToClass[element]
+	if el then
+		return el:getScrollPos()
+	end
+	return false
+end
+
+function dxGridListAddColumn(element,name,size)
+	local el = cache.elementToClass[element]
+	if el then
+		return el:addColumn(name,size)
+	end
+	return false
+end
+
+function dxGridListaddValToColumn(element,col,text)
+	local el = cache.elementToClass[element]
+	if el then
+		return el:addValToColumn(col,text)
+	end
+	return
+end
+
+function dxGridListGetRowCount(element,col)
+	local el = cache.elementToClass[element]
+	if el then
+		return el:getItemCount(col)
+	end
+	return false
+end
+
+function dxGridListRemoveRow(element,col,idx)
+	local el = cache.elementToClass[element]
+	if el then
+		el:deleteItem(col,idx)
+	end
+end
+
+function dxGridListClearColumn(element,col)
+	local el = cache.elementToClass[element]
+	if el then
+		el:clearColumn(col,idx)
+	end
+end
+
+function dxGridListGetSelectedItem (element)
+	local el = cache.elementToClass[element]
+	if el then
+		return el:getSelectedItem()
+	end
+	return false
+end
+
+function dxGridListGetItemText(element,col,idx)
+	local el = cache.elementToClass[element]
+	if el then
+		return el:getItemText(col,idx)
+	end
+	return false
+end
+
 function dxCreateComboBox(x, y, sx, sy,text,wnd)
 	local element = UiComboBox:Create(x, y, sx, sy,text,cache.elementToClass[wnd] or nil)
 	cache.elementToClass[element.el] = element

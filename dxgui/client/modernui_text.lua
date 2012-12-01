@@ -59,15 +59,6 @@ function UiText:setScale(size)
 	self.redraw = true
 end
 
-function UiText:onMouseEnter()
-end
-
-function UiText:onMouseLeave()
-end
-
-function UiText:onMouseMove(x,y)
-end
-
 function UiText:onMouseClick(btn, state, x, y)
 	if self:getEnabled() then
 		triggerEvent("onModernUIClick",localPlayer,self.el,btn,state,x,y)

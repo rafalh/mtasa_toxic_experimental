@@ -80,9 +80,6 @@ function UiButton:onMouseLeave()
 	self.redraw = true
 end
 
-function UiButton:onMouseMove(x,y)
-end
-
 function UiButton:onMouseClick(btn, state, x, y)
 	if self:getEnabled() then
 		if(btn == "left") then
@@ -92,10 +89,6 @@ function UiButton:onMouseClick(btn, state, x, y)
 		triggerEvent("onModernUIClick",localPlayer,self.el,btn,state,x,y)
 		triggerEvent("onDxGUIClick",self.el,btn,state,x,y)
 	end
-end
-
-function UiButton:onRestore()
-	self.redraw = true
 end
 
 function UiButton:UpdateRT()
@@ -111,7 +104,7 @@ function UiButton:UpdateRT()
 	
 	dxDrawRectangle(0, 0, self.sx, self.sy, clr)
 	if self.btntype == "text" then
-		dxDrawText(self.data, 5, 5, self.sx - 5 , self.sy - 5, tocolor(255,255,255), cache.scaleOfFont,cache.Font, "center", "center", true)
+		dxDrawText(self.data, 0, 0, self.sx , self.sy, tocolor(255,255,255), cache.scaleOfFont,cache.Font, "center", "center", true)
 	elseif self.btntype == "image" then
 		dxDrawImage(self.data.x,self.data.y, self.data.sx , self.data.sy,self.data.src)
 	elseif self.btntype == "mix" then

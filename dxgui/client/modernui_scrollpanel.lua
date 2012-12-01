@@ -123,10 +123,10 @@ function UiScrollPanel:UpdateRT()
 	dxSetRenderTarget(self.rt,true)
 		dxDrawRectangle(0, 0, self.sx, self.sy, tocolor(255,255,255,105))
 		dxDrawRectangle(self.sx-30, 0, 30, 30, tocolor(240,240,240,255))
-		dxDrawImage(self.sx-30,0,30,30,"image/modernui/appbar.chevron.up.png")
+		dxDrawImage(self.sx-30,0,30,30,"image/appbar.chevron.up.png")
 		dxDrawRectangle(self.sx-30, 100, 30, 30, tocolor(205,205,205,255))
 		dxDrawRectangle(self.sx-30, self.sy-30, 30, 30, tocolor(240,240,240,255))
-		dxDrawImage(self.sx-30,self.sy-30,30,30,"image/modernui/appbar.chevron.down.png")
+		dxDrawImage(self.sx-30,self.sy-30,30,30,"image/appbar.chevron.down.png")
 	dxSetRenderTarget()
 	self.redraw = false
 end

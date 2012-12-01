@@ -33,10 +33,6 @@ function UiCheckbox:setChecked(bool)
 	self.checked = bool
 end
 
-function UiCheckbox:onMouseMove(x,y)
-
-end
-
 function UiCheckbox:onRender()
 	if not self:getVisible() then
 		return

@@ -38,18 +38,6 @@ function UiProgress:onRender()
 	dxDrawImage(xp,xy,self.sx,self.sy,self.rt,0,0,0,tocolor(255,255,255,255),true)
 end
 
-function UiProgress:onMouseEnter()
-end
-
-function UiProgress:onMouseLeave()
-end
-
-function UiProgress:onMouseMove(x,y)
-end
-
-function UiProgress:onMouseClick(btn, state, x, y)
-end
-
 function UiProgress:setProgress(num)
 	self.progress = num
 	self.redraw = true

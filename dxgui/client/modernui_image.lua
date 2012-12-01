@@ -47,22 +47,9 @@ function UiImage:onRender()
 	dxDrawImage(posx,posy,self.sx,self.sy,self.rt,self.rotation,self.rotationCenterOffsetX,self.rotationCenterOffsetY,tocolor(255,255,255,255),true)
 end
 
-function UiImage:onMouseEnter()
-end
-
-function UiImage:onMouseLeave()
-end
-
-function UiImage:onMouseMove(x,y)
-	
-end
-
 function UiImage:setImage(src)
 	self.src = src
 	self.redraw = true
-end
-
-function UiImage:onMouseClick(btn, state, x, y)
 end
 
 function UiImage:UpdateRT()

@@ -13,92 +13,8 @@ cache.scaleOfFont = 0.5
 
 cache.elementToClass = {}
 
-dxMain = {}
-dxMain.__mt = {__index = dxMain}
-
-function dxMain:delete()
-	deleteElementFromAllElements(self.el)
-	if isElement(self.el) then
-		destroyElement(self.el)
-	end
-	for k,v in ipairs(self.children) do
-		v:delete()
-	end
-	self = nil
-end
-
-function dxMain:setPosition(x,y)
-	self.x,self.y = x,y
-end
-
-function dxMain:AddChild(child)
-	table.insert(self.children, child)
-end
-
-function dxMain:getType()
-	return self.types
-end
-
-function dxMain:setColor(r,g,b,a)
-	self.color = tocolor(r or 255,g or 255,b or 255,a or 255)
-	self.redraw = true
-end
-
-function dxMain:setBackgroud(r,g,b,a)
-	self.backgroudcolor = tocolor(r or 255,g or 255,b or 255,a or 255)
-	self.redraw = true
-end
-
-function dxMain:getEnabled()
-	if self.parent then
-		return (self.parent:getEnabled() and self.enabled)
-	end
-	return self.enabled
-end
-
-function dxMain:setEnabled(enabled)
-	self.enabled = enabled
-end
-
-function dxMain:getSize()
-	return self.sx,self.sy
-end
-
-function dxMain:setSize(sx,sy)
-	self.sx, self.sy = sx,sy
-	self.rt = false
-	self.redraw = true
-end
-
-function dxMain:getVisible()
-	if self.parent then
-		return (self.parent:getVisible() and self.visible)
-	end
-	return self.visible
-end
-
-function dxMain:setVisible(visibl)
-	self.visible = visibl
-end
-
-function dxMain:getOnScreenPosition()
-	local xp,xy = 0,0
-	if self.parent then
-		xp,xy = self.parent:getOnScreenPosition()
-	end
-	return self.x+xp,self.y+xy
-end
-
-function dxMain:getPosition()
-	return self.x,self.y
-end
-
-function dxMain:onRestore()
-	self.redraw = true
-end
-
 function CheckPtMain(x, y,cx,cy,sx,sy)
-	return (x >= cx and y >= cy and x < cx+sx and y < cy+sy)
+	return (math.between(x,cx,cx+sx) and math.between(y,cy,cy+sy))
 end
 
 function GetChildFromPtMain(x, y)
@@ -135,65 +51,36 @@ function GetChildFromPtMain(x, y)
 end
 
 local function UiInit()	
-	--local edit = UiEdit:Create(200, 200, 200, 30,"",wnd)
-	--[[--local wnd = UiCreateWindow("Test", 100, 100, 200, 200)
-	local wnd = UiPanel:Create(resolution[1]/2-160,resolution[2]/2-100)
-	--local btn = UiButton:Create("OK", 200, 400, 100, 30,tocolor(64, 128, 255),tocolor(128, 196, 255),wnd)
-	wnd:setBackgroud(235,100,tocolor(88,88,88))
-	local btn2 = UiButton:Create("", 205, 70, 30, 30,wnd)
-	btn2:setType("image",{src="image/modernui/appbar.arrow.right.png",x=1,y=1,sx=28,sy=28})
-	local edit = UiEdit:Create("", 105, 70, 100, 30,wnd)
-	local text = UiText:Create("", 105, 0, 200, 30,wnd)
-	local text2 = UiText:Create("Bober", 105, 30, 200, 30,wnd)
-	local image = UiImage:Create("image/avatars/7984_1346631010.jpg",0,0,100,100,wnd)
-	--wnd:setColor(0,255)
-	--
-	wnd:setVisible(false)
-	local wnd2 = UiWindow:Create("Jakiś text",200,200,200,200)
-	UiButton:Create("Zapisz i zamknij", 50, 100, 130, 30,wnd2)
-	--wnd2:setColor(0,255)
-	--window:setVisible(false)
-	--UiCheckbox:Create(200, 200,false)
-	--edit:setIsPassword(true)
-	]]
-
-	--[[local btn4 = UiButton:Create("", resolution[1]/2, resolution[2]-100, 200, 50)
-	btn4:setType("mix",
-	{
-		{type="image",src="image/modernui/appbar.add.png",x=1,y=1,sx=48,sy=48},
-		{type="text",x=55,y=15,sx=250,sy=50,text="Dodaj nowe konto",scale=0.5,alignX="left",alignY="top"}
-	})]]
-	--[[local grid = UiGridList:Create(200,200,200,200)
+	--[[local grid = UiGridList:Create(200,200,200,390)
 	local col = grid:addColumn("asdf",1)
-	for i=1,50 do
-		grid:addValToColumn(col,tostring(i))
-	end]]
-	--[[local val = 0
-	setTimer(function () val=val+3 grid:setScrool(val) end,50,200)
-	setTimer(function ()
-	for i=51,100 do
+	for i=1,19 do
 		grid:addValToColumn(col,tostring(i))
 	end
-	setTimer(function () val=val+3 grid:setScrool(val) end,50,200)
-	end,11000,1)]]
-	--[[local progress = UiProgress:Create(200,200,200,50)
-	setTimer(function () progress:setProgress(progress:getProgress() + 1) end,200,100)]]
-	--local tile = UiTile:Create(200,200,120,120,"image/avatars/7984_1346631010.jpg","DM")
-	--local tile = UiTile:Create(400,200,120,120,"image/modernui/appbar.add.png","Jakiś text")
-	--[[local btn3 = UiButton:Create("", resolution[1]/2-210, resolution[2]-100, 200, 50)
-	btn3:setType("mix",
-	{
-	{type="image",src="image/modernui/appbar.add.png",x=1,y=1,sx=48,sy=48},
-	{type="text",x=40,y=15,sx=250,sy=50,text="Dodaj istniejące konto",scale=0.5,alignX="left",alignY="top"}
-	})]]
+	--grid:setItemText(col,35,"troll")
+	--grid:deleteItem(col,36)
+	setTimer(function() grid:clearColumn(col) end,1000,1)]]
 	--showCursor(true)
-	--[[local wnd2 = UiWindow:Create(200,300,300,200,"Jakiś text")
-	local combo = UiComboBox:Create(50, 50, 200, 24,"asdf",wnd2)
-	for i=1,10 do
-	combo:addItem(i)
-	end]]
-	--UiScrollPanel:Create(200, 200, 200, 200)
+	--UiRadio:Create(200,200,200,15,"Text")
+	--UiRadio:Create(200,250,200,15,"Text")
+	--outputChatBox(skroctext("Jakiś text",30))
+	--UiScrollBar:Create(200, 200, 30, 200,false)
+	
+	--UiScrollBar:Create(250, 200, 200, 30,true)
 end
+
+--[[function skroctext(text,longs)
+	local long = string.len(text)
+	local ls = 0
+	for i=1,long do
+		local letter = string.sub(text,i,i)
+		local l = dxGetTextWidth (letter)
+		ls = ls + l
+		if ls > longs then
+			return string.sub(text,1,i-3).."..."
+		end
+	end
+	return text
+end]]
 
 local function UiRender()
 	local videomem = dxGetStatus ().VideoMemoryFreeForMTA
@@ -355,6 +242,10 @@ function outputPressedCharacter(character)
 	end
 end
 
+function getAllElements()
+	return all_elements
+end
+
 function getFontSize(size,text)
 	return dxGetTextWidth (text, size or 0.5, cache.Font),dxGetFontHeight(size or 0.5, cache.Font)
 end
@@ -424,12 +315,31 @@ function table.size(tab)
     return length
 end
 
+function ifElse(check,retA,retB)
+	if check then return retA end
+	return retB
+end
+
+function math.between(val,min,max)
+	if val >= min and val <= max then
+		return true
+	end
+	return false
+end
+
+function UiMouseWheel(upOrDown)
+	for i, child in pairs(all_elements) do
+		child:onMouseWheel(upOrDown == -1)
+	end
+end
+
 addCommandHandler("modernuiwklej",modernuiwklej)
 addEventHandler("onClientResourceStart", g_ResRoot, UiInit)
 addEventHandler("onClientResourceStop", g_Root, ResStop)
 addEventHandler("onClientRender", g_Root, UiRender)
 addEventHandler("onClientRestore", g_Root, UiRestore)
 addEventHandler("onClientCursorMove", g_Root, UiCursorMove)
+--addEventHandler("onClientMouseWheel", g_Root, UiMouseWheel)
 addEventHandler("onClientClick", g_Root, UiClick)
 addEventHandler("onClientCharacter", g_Root, outputPressedCharacter)
 addEventHandler("onClientKey", g_Root, outputPressedKey)

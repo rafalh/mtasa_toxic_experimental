@@ -87,10 +87,6 @@ function UiTile:onMouseLeave()
 	end
 end
 
-function UiTile:onMouseMove(x,y)
-
-end
-
 function UiTile:onMouseClick(btn, state, x, y)
 	if self:getEnabled() then
 		if btn == "left" then
