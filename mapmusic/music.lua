@@ -45,7 +45,11 @@ local function startMusic(res, room)
 		g_Music[room].res = res
 		g_Music[room].res_name = res_name
 		g_Music[room].path = path
-		g_Music[room].url = "http://"..g_ServerAddress.."/"..g_Music[room].res_name.."/"..g_Music[room].path
+		local url = path
+		if(not url:match("^%a+://")) then
+			url =  "http://"..g_ServerAddress.."/"..g_Music[room].res_name.."/"..path
+		end
+		g_Music[room].url = url
 		
 		for player, playerRoom in pairs ( g_Players ) do
 			if(playerRoom == room) then
