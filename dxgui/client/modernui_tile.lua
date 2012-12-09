@@ -1,4 +1,4 @@
-﻿UiTile = UiCopyTable(dxMain)
+UiTile = UiCopyTable(dxMain)
 
 function UiTile:Create(x, y, sx, sy,image,text,parent)
 	local tile = setmetatable({
@@ -20,7 +20,12 @@ function UiTile:Create(x, y, sx, sy,image,text,parent)
 		image = image,
 		imagedata = {fullsize=false},
 		text = text,
+		oldimg = false,
+		newimg = false,
+		animset = false,
 		cacheenabled = true,
+		tickStart = 0,
+		animationEnabled = true,
 	}, UiTile.__mt)
 	addToAllRender(tile)
 	if image then
@@ -47,16 +52,57 @@ function UiTile:setImage(image,fullsize)
 		local width, height = dxGetMaterialSize( myTexture )
 		self.imagedata = {x=width,y=height,fullsize=false}
 		destroyElement(myTexture)
+		self.image = image
+		self.redraw = true
 	else
-		self.imagedata = {x=self.sx,y=self.sy,fullsize=true}
+		if self.animationEnabled then
+			self.oldimg = (type(self.image)=="string" and dxCreateTexture(self.image) or self.image)
+			self.newimg = (type(image)=="string" and dxCreateTexture(image) or image)
+			self.shader = dxCreateShader ( "file/rotationShader.fx" )
+			dxSetShaderValue ( self.shader, "g_Texture", self.oldimg )
+			self.imagedata = {x=self.sx,y=self.sy,fullsize=true}
+			self.animset = true
+			self.tickStart = getTickCount ()
+		else
+			self.imagedata = {x=self.sx,y=self.sy,fullsize=true}
+			self.image = image
+			self.redraw = true
+		end
 	end
-	self.image = image
-	self.redraw = true
 end
 
 function UiTile:onRender()
 	if not self:getVisible() then
 		return
+	end
+	if self.animset then
+		local a = math.fmod ( ( getTickCount () - self.tickStart+1500 ) / 1000, 2 * math.pi )
+		dxSetShaderValue ( self.shader, "g_Pos", self.sx/2, self.sy/2 )
+		dxSetShaderValue ( self.shader, "g_ScrSize", self.sx,self.sy )
+		if a > math.pi-(math.pi*0.5) and a < math.pi+(math.pi*0.5) then
+			if ( a < math.pi ) then
+				dxSetShaderValue ( self.shader, "g_Texture", self.oldimg )
+				dxSetShaderValue ( self.shader, "g_fAngle", math.pi/2 - a )
+			else
+				dxSetShaderValue ( self.shader, "g_Texture", self.newimg )
+				dxSetShaderValue ( self.shader, "g_fAngle", math.pi/2 - a + math.pi )
+			end
+			self.image = self.shader
+			self.redraw = true
+		elseif a > math.pi+(math.pi*0.5) then
+			self.animset = false
+			self.image = self.newimg
+			self.newimg = false
+			if isElement(self.oldimg) then
+				destroyElement(self.oldimg)
+			end
+			if isElement(self.shader) then
+				destroyElement(self.shader)
+			end
+			self.shader = false
+			self.oldimg = false
+			self.redraw = true
+		end
 	end
 	if(self.redraw) then
 		self:UpdateRT()
@@ -71,6 +117,12 @@ function UiTile:onRender()
 		dxDrawRectangle(posx-3+clicked, posy-3+clicked, self.sx+6-(clicked*2), self.sy+6-(clicked*2),tocolor(33,87,33,255),true)
 	end
 	dxDrawImage(posx+clicked,posy+clicked,self.sx-(clicked*2),self.sy-(clicked*2),self.rt,0,0,0,tocolor(255,255,255,255),true)
+end
+
+function UiTile:setProperty(name,arg1)
+	if name == "animationEnabled" then
+		self.animationEnabled = arg1
+	end
 end
 
 function UiTile:onMouseEnter()

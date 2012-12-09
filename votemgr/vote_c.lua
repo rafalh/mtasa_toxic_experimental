@@ -121,7 +121,7 @@ end
 function Vote:onVote(optIdx)
 	if(self.currentOpt) then
 		if(not self.info.allowChange) then return end
-		dxSetColor(self.currentOpt.label, 255, 255, 255)
+		dxSetColor(self.currentOpt.label, 0, 0, 0)
 	end
 	
 	local opt = self.opts[optIdx]

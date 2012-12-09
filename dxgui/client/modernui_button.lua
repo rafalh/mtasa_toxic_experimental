@@ -1,4 +1,4 @@
-﻿UiButton = UiCopyTable(dxMain)
+UiButton = UiCopyTable(dxMain)
 
 function UiButton:Create(x, y, sx, sy,title,parent)
 	local btn = setmetatable({
@@ -11,6 +11,8 @@ function UiButton:Create(x, y, sx, sy,title,parent)
 		btntype = "text",
 		data = title,
 		color = tocolor(51,153,51),
+		textcolor = tocolor(255,255,255),
+		hovercolor = tocolor(33,87,33,255),
 		children = {},
 		parent = false,
 		enabled = true,
@@ -51,10 +53,20 @@ function UiButton:onRender(clip_rect)
 			clicked = 2
 		end
 		if self.hover then
-			dxDrawRectangle(posx-3+clicked, posy-3+clicked, self.sx+6-(clicked*2), self.sy+6-(clicked*2),tocolor(33,87,33,255),true)
+			dxDrawRectangle(posx-3+clicked, posy-3+clicked, self.sx+6-(clicked*2), self.sy+6-(clicked*2),self.hovercolor,true)
 		end
 	end
 	dxDrawImage(posx+clicked,posy+clicked,self.sx-(clicked*2),self.sy-(clicked*2),self.rt,0,0,0,tocolor(255,255,255,255),true)
+end
+
+function UiButton:setProperty(name,r,g,b,a)
+	if name == "textColor" then
+		self.textcolor = tocolor(r,g,b)
+		self.redraw = true
+	elseif name == "hoverColor" then
+		self.hovercolor = tocolor(r,g,b)
+		self.redraw = true
+	end
 end
 
 function UiButton:setType(type,datas)
@@ -104,13 +116,13 @@ function UiButton:UpdateRT()
 	
 	dxDrawRectangle(0, 0, self.sx, self.sy, clr)
 	if self.btntype == "text" then
-		dxDrawText(self.data, 0, 0, self.sx , self.sy, tocolor(255,255,255), cache.scaleOfFont,cache.Font, "center", "center", true)
+		dxDrawText(self.data, 0, 0, self.sx , self.sy, self.textcolor, cache.scaleOfFont,cache.Font, "center", "center", true)
 	elseif self.btntype == "image" then
 		dxDrawImage(self.data.x,self.data.y, self.data.sx , self.data.sy,self.data.src)
 	elseif self.btntype == "mix" then
 		for k,v in ipairs(self.data) do
 			if v.type == "text" then
-				dxDrawText(v.text, v.x,v.y, v.sx , v.sy, tocolor(255,255,255), v.scale,cache.Font, v.alignX, v.alignY, true)
+				dxDrawText(v.text, v.x,v.y, v.sx , v.sy, self.textcolor, v.scale,cache.Font, v.alignX, v.alignY, true)
 			elseif v.type == "image" then
 				dxDrawImage(v.x,v.y,v.sx,v.sy,v.src)
 			end

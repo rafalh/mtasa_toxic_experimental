@@ -1,6 +1,7 @@
 <meta>
-
+	<min_mta_version server="1.3.0-9.03772" client="1.3.0-9.04431" />
 	<file src="file/segoe.ttf" />
+	<file src="file/rotationShader.fx" />
 	<file src="image/appbar.chevron.down.png" />
 	<file src="image/appbar.chevron.up.png" />
 	<file src="image/appbar.chevron.left.png" />
@@ -41,6 +42,8 @@
 	<export function="dxEditSetMasked" type="client" />
 	
 	<export function="dxCreateCheckBox" type="client"/>
+	<export function="dxCheckBoxSetSelected" type="client" />
+	<export function="dxCheckBoxGetSelected" type="client" />
 	
 	<export function="dxCreateLabel" type="client"/>
 	<export function="dxSetLabelAlign" type="client" />
@@ -75,6 +78,7 @@
 	<export function="dxGridListClearColumn" type="client" />
 	
 	<export function="dxSetColor" type="client"/>
+	<export function="dxSetElementProperty" type="client" />
 	<export function="dxSetText" type="client"/>
 	<export function="dxGetText" type="client"/>
 	<export function="dxDelete" type="client"/>
@@ -89,4 +93,5 @@
 	<export function="dxSetPosition" type="client" />
 	<export function="dxBringToFont" type="client" />
 	<export function="dxGetFontSize" type="client" />
+	<export function="getDxFont" type="client" />
 </meta>

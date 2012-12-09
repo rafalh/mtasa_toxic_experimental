@@ -19,6 +19,21 @@ function dxButtonSetType(element,type,datas)
 	end
 end
 
+function dxCheckBoxGetSelected(element)
+	local el = cache.elementToClass[element]
+	if el then
+		return el:getChecked()
+	end
+	return false
+end
+
+function dxCheckBoxSetSelected(element,state)
+	local el = cache.elementToClass[element]
+	if el and getElementType(element) == "dxcheck" then
+		el:setChecked(state)
+	end
+end
+
 function dxCreateMemo(x,y,sx,sy,text,wnd)
 	local Memo = UiMemo:Create(x,y,sx,sy,text,cache.elementToClass[wnd] or nil)
 	cache.elementToClass[Memo.el] = Memo
@@ -101,6 +116,13 @@ function dxScrollBarSetScrollPosition(element,int)
 	local el = cache.elementToClass[element]
 	if el then
 		el:getScrollPos(int)
+	end
+end
+
+function dxSetElementProperty(element,...)
+	local el = cache.elementToClass[element]
+	if el then
+		el:setProperty(...)
 	end
 end
 
@@ -341,4 +363,8 @@ function dxBringToFont(element)
 	if el then
 		dxMoveToFont(el)
 	end
+end
+
+function getDxFont()
+	return cache.Font
 end

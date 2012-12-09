@@ -24,7 +24,7 @@ end
 local function createMapInfo()
 	local x, y = 10, g_ScrH - 50
 	g_MapInfoGui["panel"] = dxCreatePanel(x, g_ScrH-40,100,40)
-	dxSetBackground(g_MapInfoGui["panel"],230,230,230,150)
+	dxSetColor(g_MapInfoGui["panel"],230,230,230,150)
 	g_MapInfoGui["map"] = dxCreateLabel(0, 0,100,20,"123",g_MapInfoGui["panel"])
 	g_MapInfoGui["autor"] = dxCreateLabel(0,20,100,20,"123",g_MapInfoGui["panel"])
 	--dxSetColor(g_MapInfoGui["map"],255,255,255)

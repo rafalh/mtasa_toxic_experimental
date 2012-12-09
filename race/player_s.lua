@@ -25,14 +25,16 @@ function Player:spawn(sp)
 	
 	local veh = createVehicle(vehModel, x, y, z, rx, ry, rz)
 	self:setVehicle(veh)
-	
 	self.alive = true
 	self.spawnTime = getTickCount()
 	self.deathTime = false
+	self.winner = false
 	
 	setCameraTarget(self.el, self.el)
 	fadeCamera(self.el, true)
-	
+	setPedStat(self.el, 160, 1000)
+	setPedStat(self.el, 229, 1000)
+	setPedStat(self.el, 230, 1000)
 	toggleAllControls(self.el, true)
 	toggleControl(self.el, "enter_exit", false)
 	

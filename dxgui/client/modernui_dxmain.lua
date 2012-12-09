@@ -6,6 +6,9 @@ function dxMain:delete()
 	if isElement(self.el) then
 		destroyElement(self.el)
 	end
+	if isElement(self.rt) then
+		destroyElement(self.rt)
+	end
 	for k,v in ipairs(self.children) do
 		v:delete()
 	end

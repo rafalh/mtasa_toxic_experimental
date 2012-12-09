@@ -65,7 +65,7 @@ function UiCheckbox:onMouseClick(btn, state, x, y)
 		end
 		self.redraw = true
 	end
-	triggerEvent("onModernUIClick",localPlayer,self.el,btn,state,x,y)
+	triggerEvent("onDxGUIClick",self.el,btn,state,x,y)
 end
 
 function UiCheckbox:UpdateRT()

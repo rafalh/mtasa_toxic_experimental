@@ -7,7 +7,7 @@ function UiPanel:Create(x, y,sx,sy,parent)
 		y=y, 
 		sx = sx,
 		sy = sy,
-		backgroundColor = {r=0,g=0,b=0},
+		color = tocolor(255,255,255,0),
 		children = {},
 		parent = false,
 		visible = true,
@@ -23,16 +23,12 @@ function UiPanel:Create(x, y,sx,sy,parent)
 	return panel
 end
 
-function UiPanel:setBackgroud(r,g,b,a)
-	self.backgroundColor = {r=r or 0,g=g or 0,b=b or 0,a=a or 0}
-end
-
 function UiPanel:onRender()
 	if not self:getVisible() then
 		return
 	end
 	if self.sx ~= 0 and self.sy ~= 0 then
 		local posx,posy = self:getOnScreenPosition()
-		dxDrawRectangle(posx,posy, self.sx, self.sy, tocolor(self.backgroundColor.r,self.backgroundColor.g,self.backgroundColor.b,self.backgroundColor.a))
+		dxDrawRectangle(posx,posy, self.sx, self.sy, self.color,true)
 	end
 end

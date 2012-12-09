@@ -66,7 +66,7 @@ function UiGridList:onMouseMove(x, y)
 	if self.isSliderActive then
 		local posx,posy = self:getOnScreenPosition()
 		local sizex,sizey = self:getSize()
-		local size = self.x*0.1
+		local size = self.sx*0.1
 		local maxy = sizey-20-(size*2)-20
 		self.posYOfSlider = y - (posy+15+size+15)
 		if self.posYOfSlider < 0 then
@@ -152,7 +152,7 @@ function UiGridList:onMouseClick(btn, state, x, y)
 	if btn == "left" then
 		local posx,posy = self:getOnScreenPosition()
 		local sizex,sizey = self:getSize()
-		local size = self.x*0.1
+		local size = self.sx*0.1
 		if state == "down" then
 			if self.showSlider then
 				if math.between(x,posx+sizex-size,posx+sizex) and math.between(y,posy+20+size,posy+sizey-size) then
@@ -242,13 +242,13 @@ function UiGridList:UpdateRT()
 			dxDrawText(v.name,5,0,self.sx*v.size,20,tocolor(0,0,0), 0.5,cache.Font, "center", "center")
 		end
 		if self.showSlider then
-		local size = self.x*0.1
-			dxDrawRectangle(self.x-size, 20+size,size, self.sy-(size*2)-20, tocolor(240,240,240,200))
-			dxDrawRectangle(self.x-size, 20,size, size, tocolor(240,240,240,255))
-			dxDrawImage(self.x-size+2, 20+2,size-4, size-4,"image/appbar.chevron.up.png")
-			dxDrawRectangle(self.x-size, self.sy-size,size, size, tocolor(240,240,240,255))
-			dxDrawImage(self.x-size+2, self.sy-size+2,size-4, size-4,"image/appbar.chevron.down.png")
-			dxDrawRectangle(self.x-size, 20+size+self.posYOfSlider,size, size, tocolor(32,165,233,255))
+			local size = self.sx*0.1
+			dxDrawRectangle(self.sx-size, 20+size,size, self.sy-(size*2)-20, tocolor(240,240,240,200))
+			dxDrawRectangle(self.sx-size, 20,size, size, tocolor(240,240,240,255))
+			dxDrawImage(self.sx-size+2, 20+2,size-4, size-4,"image/appbar.chevron.up.png")
+			dxDrawRectangle(self.sx-size, self.sy-size,size, size, tocolor(240,240,240,255))
+			dxDrawImage(self.sx-size+2, self.sy-size+2,size-4, size-4,"image/appbar.chevron.down.png")
+			dxDrawRectangle(self.sx-size, 20+size+self.posYOfSlider,size, size, tocolor(32,165,233,255))
 		end
 	dxSetRenderTarget()
 	self.redraw = false

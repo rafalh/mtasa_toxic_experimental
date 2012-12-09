@@ -1,4 +1,4 @@
-﻿UiRadio = UiCopyTable(dxMain)
+UiRadio = UiCopyTable(dxMain)
 
 function UiRadio:Create(x, y, sx, sy,text,parent)
 	local element = setmetatable({

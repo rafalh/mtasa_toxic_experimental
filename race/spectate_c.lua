@@ -45,7 +45,6 @@ local function spectateNextPrev(dir)
 	if(not g_SpectateMode) then return end
 	
 	local players = getPlayersForSpectate()
-	
 	if(#players == 0) then
 		spectateSky()
 	else
@@ -76,6 +75,7 @@ local function onSpectate(enabled)
 		spectateNext()
 	else
 		setCameraTarget(g_Me)
+		g_Target = false
 		Checkpoints.spectate(false)
 	end
 	triggerEvent("onClientSpectateMode", g_Me, enabled)

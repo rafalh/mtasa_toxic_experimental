@@ -17,6 +17,7 @@
 	
 	<include resource="roommgr" />
 	<include resource="votemgr" />
+	<include resource="dxgui" />
 	<include resource="mapmgr" />
 	<config src="gui/gui.xml" type="client" />
 	

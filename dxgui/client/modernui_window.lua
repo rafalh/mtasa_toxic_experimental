@@ -44,9 +44,11 @@ function UiWindow:setColor(r,g,b,a)
 	self.redraw = true
 end
 
-function UiWindow:setTextColor(r,g,b,a)
-	self.textcolor = tocolor(r or 0,g or 0,b or 0,a or 255)
-	self.redraw = true
+function UiWindow:setProperty(name,r,g,b,a)
+	if name == "textColor" then
+		self.textcolor = tocolor(r,g,b)
+		self.redraw = true
+	end
 end
 
 function UiWindow:UpdateRT()

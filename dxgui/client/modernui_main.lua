@@ -1,4 +1,4 @@
-﻿local g_Root = getRootElement()
+local g_Root = getRootElement()
 local g_ResRoot = getResourceRootElement()
 local all_elements = {}
 local cache_elements = {}
@@ -50,22 +50,8 @@ function GetChildFromPtMain(x, y)
 	end
 end
 
-local function UiInit()	
-	--[[local grid = UiGridList:Create(200,200,200,390)
-	local col = grid:addColumn("asdf",1)
-	for i=1,19 do
-		grid:addValToColumn(col,tostring(i))
-	end
-	--grid:setItemText(col,35,"troll")
-	--grid:deleteItem(col,36)
-	setTimer(function() grid:clearColumn(col) end,1000,1)]]
-	--showCursor(true)
-	--UiRadio:Create(200,200,200,15,"Text")
-	--UiRadio:Create(200,250,200,15,"Text")
-	--outputChatBox(skroctext("Jakiś text",30))
-	--UiScrollBar:Create(200, 200, 30, 200,false)
-	
-	--UiScrollBar:Create(250, 200, 200, 30,true)
+local function UiInit()
+	--
 end
 
 --[[function skroctext(text,longs)
@@ -81,7 +67,6 @@ end
 	end
 	return text
 end]]
-
 local function UiRender()
 	local videomem = dxGetStatus ().VideoMemoryFreeForMTA
 	if videomem == 0 then
@@ -237,6 +222,7 @@ function outputPressedCharacter(character)
 			if child.active then
 				child.text = tostring(child.text) .. tostring(character)
 				child.redraw = true
+				triggerEvent("onDxGUIChanged",child.el)
 			end
 		end
 	end
@@ -276,11 +262,13 @@ function outputPressedKey(key,pressOrRelease)
 					if child.active then
 						child.text = tostring(child.text):sub(1,string.len(child.text)-1)
 						child.redraw = true
+						triggerEvent("onDxGUIChanged",child.el)
 						cache.isActiveTimerDeleteText = setTimer(
 						function()
 							if child.active then
 								child.text = tostring(child.text):sub(1,string.len(child.text)-1)
 								child.redraw = true
+								triggerEvent("onDxGUIChanged",child.el)
 							else
 								killTimer(cache.isActiveTimerDeleteText)
 								cache.isActiveTimerDeleteText = nil
@@ -304,6 +292,7 @@ function modernuiwklej(komenda,text)
 			if child.active then
 				child.text = tostring(child.text) .. tostring(text)
 				child.redraw = true
+				triggerEvent("onDxGUIChanged",child.el)
 			end
 		end
 	end

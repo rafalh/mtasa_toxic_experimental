@@ -95,7 +95,7 @@ function UiComboBox:onMouseClick(btn, state, x, y)
 						self.text = v
 						self:onMouseLeave()
 						self.list.visible = false
-						triggerEvent("onModernUIChanged",localPlayer,self.el)
+						triggerEvent("onDxGUIChanged",self.el)
 						return
 					end
 					ids = ids + 1

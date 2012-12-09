@@ -354,6 +354,10 @@ function Room:removePlayer(player)
 			table.remove(self.players, i)
 			
 			outputChatBox(player:getName().." left "..self.id.." room!")
+			if #self.players == 0 then
+				self:stopMap()
+				self:resetMap()
+			end
 			return true
 		end
 	end

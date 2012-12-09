@@ -268,7 +268,11 @@ function Game:onPlayerFinish(player)
 	triggerEvent("onPlayerFinish", player.el)
 	
 	if(self.finishedCount == 1) then
-		self:onPlayerWin(player)
+		outputChatBox("trig")
+		if not player.winner then
+			self:onPlayerWin(player)
+			player.winner = true
+		end
 		
 		if(self.activeCount == 0) then
 			self:stopGame("noplayers")
@@ -293,7 +297,10 @@ function Game:onPlayerWasted(player)
 		local activePlayers = self:getActivePlayers()
 		assert(#activePlayers == 1)
 		local winner = activePlayers[1]
-		self:onPlayerWin(winner)
+		if not winner.winner then
+			self:onPlayerWin(winner)
+			winner.winner = true
+		end
 		
 		if(not self.isDM) then
 			self:stopGame("playerwon")
