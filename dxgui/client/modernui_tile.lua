@@ -18,7 +18,7 @@ function UiTile:Create(x, y, sx, sy,image,text,parent)
 		color = tocolor(41,123,237),
 		bordercolor = tocolor(60,128,238),
 		image = image,
-		imagedata = {fullsize=false},
+		imagedata = {x=0,y=0,fullsize=false},
 		text = text,
 		oldimg = false,
 		newimg = false,
@@ -28,11 +28,13 @@ function UiTile:Create(x, y, sx, sy,image,text,parent)
 		animationEnabled = true,
 	}, UiTile.__mt)
 	addToAllRender(tile)
-	if image then
+	if image and image ~= "" and fileExists(image) then
 		local myTexture = dxCreateTexture(image)
 		local width, height = dxGetMaterialSize( myTexture )
 		tile.imagedata = {x=width,y=height}
 		destroyElement(myTexture)
+	else
+		tile.image = false
 	end
 	if parent then
 		tile.parent = parent
@@ -113,15 +115,21 @@ function UiTile:onRender()
 		clicked = 2
 	end
 	--dxDrawText(self.text, self.x+xp,self.y+xy,self.sx,self.sy,tocolor(255,255,255), 1,cache.Font, "left", "center")
-	if self.hover then
+	if self.hover and self:getEnabled() then
 		dxDrawRectangle(posx-3+clicked, posy-3+clicked, self.sx+6-(clicked*2), self.sy+6-(clicked*2),tocolor(33,87,33,255),true)
+	else
+		self.hover = false
 	end
 	dxDrawImage(posx+clicked,posy+clicked,self.sx-(clicked*2),self.sy-(clicked*2),self.rt,0,0,0,tocolor(255,255,255,255),true)
 end
 
-function UiTile:setProperty(name,arg1)
+function UiTile:setProperty(name,...)
+	local args = {...}
 	if name == "animationEnabled" then
-		self.animationEnabled = arg1
+		self.animationEnabled = args[1]
+	elseif name == "bordercolor" then
+		self.bordercolor = tocolor(args[1],args[2],args[3],args[4] or 255)
+		self.redraw = true
 	end
 end
 
@@ -149,9 +157,9 @@ function UiTile:onMouseClick(btn, state, x, y)
 	end
 end
 
-function UiTile:setColor(r,g,b)
-	self.bordercolor = tocolor(r or 0,g or 0,b or 0)
-end
+--function UiTile:setColor(r,g,b)
+	--self.bordercolor = tocolor(r or 0,g or 0,b or 0)
+--end
 
 function UiTile:UpdateRT()
 	if(not self.rt) then
@@ -183,7 +191,9 @@ function UiTile:UpdateRT()
 		dxDrawRectangle(0, self.sy-3, self.sx, 3,borderclr)
 		dxDrawRectangle(self.sx-3, 0, 3,self.sy, borderclr)
 		dxDrawRectangle(0, 0, 3, self.sy,borderclr)
-		dxDrawImage(imageposx,imageposy, imagesizex,imagesizey,self.image,0,0,0,tocolor(255,255,255,255))
+		if self.image then
+			dxDrawImage(imageposx,imageposy, imagesizex,imagesizey,self.image,0,0,0,tocolor(255,255,255,255))
+		end
 		dxDrawText(self.text, 18, self.sy-fontheight-9+1, self.sx , 20,tocolor(0,0,0,255), 0.4,cache.Font)
 		dxDrawText(self.text, 17, self.sy-fontheight-9, self.sx , 20,tocolor(255,255,255,255), 0.4,cache.Font)
 	dxSetRenderTarget()

@@ -71,7 +71,7 @@ function UiText:UpdateRT()
 		self.rt = dxCreateRenderTarget(self.sx, self.sy,true)
 	end
 	dxSetRenderTarget(self.rt,true)
-		dxDrawText(self.text, 5, 5, self.sx - 5 , self.sy - 5,self.color, (cache.scale or cache.scaleOfFont),cache.Font, self.alignX,self.alignY)
+		dxDrawText(self.text, 5, 5, self.sx - 5 , self.sy - 5,self.color, (self.scale or cache.scaleOfFont),cache.Font, self.alignX,self.alignY)
 	dxSetRenderTarget()
 	self.redraw = false
 end

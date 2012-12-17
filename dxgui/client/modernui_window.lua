@@ -12,6 +12,7 @@ function UiWindow:Create(x, y, sx, sy,title)
 		types = "text",
 		children = {},
 		visible = true,
+		image = false,
 		redraw = true,
 		enabled = true,
 		types = "window",
@@ -44,6 +45,13 @@ function UiWindow:setColor(r,g,b,a)
 	self.redraw = true
 end
 
+function UiWindow:setImage(src)
+	if fileExists(src) then
+		self.image = src
+		self.redraw = true
+	end
+end
+
 function UiWindow:setProperty(name,r,g,b,a)
 	if name == "textColor" then
 		self.textcolor = tocolor(r,g,b)
@@ -64,6 +72,9 @@ function UiWindow:UpdateRT()
 	dxDrawRectangle(0, self.sy-5, self.sx, 5, self.color)
 	dxDrawRectangle(self.sx-5, 0, 5,self.sy, self.color)
 	dxDrawRectangle(0, 0, 5, self.sy,self.color)
+	if self.image then
+		dxDrawImage(5,1,28,28,self.image)
+	end
 	
 	dxSetRenderTarget()
 	self.redraw = false

@@ -18,6 +18,7 @@ function UiEdit:Create(x, y, sx, sy,title,parent)
 		backgroudcolor = tocolor(255,255,255),
 		isPassword = false,
 		types = "edit",
+		defaultText = "",
 		el = createElement("dxEdit")
 	}, UiEdit.__mt)
 	addToAllRender(edit)
@@ -33,13 +34,15 @@ function UiEdit:onRender()
 		return
 	end
 	if(self.redraw) then
-		self:UpdateBuffer()
+		self:UpdateRT()
 	end
-	local xp,xy = 0,0
-	if self.parent then
-		xp,xy = self.parent:getPosition()
-	end
-	dxDrawImage(self.x+xp,self.y+xy,self.sx,self.sy,self.buf,0,0,0,tocolor(255,255,255,255),true)
+	local posx,posy = self:getOnScreenPosition()
+	dxDrawImage(posx,posy,self.sx,self.sy,self.rt,0,0,0,tocolor(255,255,255,255),true)
+end
+
+function UiEdit:setDefaultText(text)
+	self.defaultText = text
+	self.redraw = true
 end
 
 function UiEdit:setIsPassword(bool)
@@ -79,11 +82,11 @@ function UiEdit:onMouseClick(btn, state, x, y)
 	end
 end
 
-function UiEdit:UpdateBuffer()
-	if(not self.buf) then
-		self.buf = dxCreateRenderTarget(self.sx, self.sy)
+function UiEdit:UpdateRT()
+	if(not self.rt) then
+		self.rt = dxCreateRenderTarget(self.sx, self.sy)
 	end
-	dxSetRenderTarget(self.buf,true)
+	dxSetRenderTarget(self.rt,true)
 	
 	local text = self.text
 	local cachetext = ""
@@ -116,9 +119,12 @@ function UiEdit:UpdateBuffer()
 	if long+15 > tonumber(self.sx) then
 		toaddx = long+15 - self.sx
 	end
-	dxDrawText(text, 5-toaddx, 5, self.sx - 5, self.sy - 5, self.color, cache.scaleOfFont, cache.Font, "left", "center", true)
+	dxDrawText(text, 5-toaddx, 1, self.sx - 5, self.sy - 2, self.color, cache.scaleOfFont, cache.Font, "left", "center", true)
+	if text == "" then
+		dxDrawText(self.defaultText, 5, 1, self.sx-5, self.sy-2, tocolor(126,126,126,255), cache.scaleOfFont,cache.Font, "left", "center", true)
+	end
 	if self.active then
-		dxDrawText("|", 5 + long - toaddx, 0, self.sx - 5, self.sy - 5, tocolor(0, 0, 0), cache.scaleOfFont, cache.Font, "left", "center", true)
+		dxDrawText("|", 5 + long - toaddx, 1, self.sx - 5, self.sy - 2, tocolor(0, 0, 0), cache.scaleOfFont, cache.Font, "left", "center", true)
 		guiSetInputMode ("no_binds")
 	else
 		guiSetInputMode("allow_binds")

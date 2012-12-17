@@ -19,6 +19,13 @@ function dxButtonSetType(element,type,datas)
 	end
 end
 
+function dxEditSetDefaultText(element,text)
+	local el = cache.elementToClass[element]
+	if el then
+		el:setDefaultText(text)
+	end
+end
+
 function dxCheckBoxGetSelected(element)
 	local el = cache.elementToClass[element]
 	if el then
@@ -258,6 +265,13 @@ function dxSetBackground(element,r,g,b,a)
 	local el = cache.elementToClass[element]
 	if el then
 		el:setBackgroud(r,g,b,a)
+	end
+end
+
+function dxSetScale(element,int)
+	local el = cache.elementToClass[element]
+	if el then
+		el:setScale(int)
 	end
 end
 

@@ -47,6 +47,27 @@ function UiImage:onRender()
 	dxDrawImage(posx,posy,self.sx,self.sy,self.rt,self.rotation,self.rotationCenterOffsetX,self.rotationCenterOffsetY,tocolor(255,255,255,255),true)
 end
 
+function UiImage:onMouseEnter()
+	triggerEvent("onDxGUIEnter",self.el)
+end
+
+function UiImage:onMouseLeave()
+	triggerEvent("onDxGUILeave",self.el)
+end
+
+function UiImage:onMouseClick(btn, state, x, y)
+	triggerEvent("onDxGUIClick",self.el,btn,state,x,y)
+	if state == "down" then
+		triggerEvent("onDxGUIDown",self.el,btn,x,y)
+	elseif state == "up" then
+		triggerEvent("onDxGUIUp",self.el,btn,x,y)
+	end
+end
+
+function UiImage:onMouseMove(x,y)
+	triggerEvent("onDxGUIMove",self.el,x,y)
+end
+
 function UiImage:setImage(src)
 	self.src = src
 	self.redraw = true

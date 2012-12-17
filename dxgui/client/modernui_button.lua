@@ -105,7 +105,7 @@ end
 
 function UiButton:UpdateRT()
 	if(not self.rt) then
-		self.rt = dxCreateRenderTarget(self.sx, self.sy)
+		self.rt = dxCreateRenderTarget(self.sx, self.sy,true)
 	end
 	dxSetRenderTarget(self.rt,true)
 	

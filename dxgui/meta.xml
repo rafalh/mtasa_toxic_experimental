@@ -32,6 +32,7 @@
 	
 	<export function="dxCreateButton" type="client"/>
 	<export function="dxButtonSetType" type="client" />
+	<export function="dxEditSetDefaultText" type="client" />
 	
 	<export function="dxCreateMemo" type="client"/>
 	
@@ -94,4 +95,5 @@
 	<export function="dxBringToFont" type="client" />
 	<export function="dxGetFontSize" type="client" />
 	<export function="getDxFont" type="client" />
+	<export function="dxSetScale" type="client"/>
 </meta>
