@@ -67,7 +67,7 @@ function openRunCodeWnd()
 	addEventHandler("onClientGUISize", g_Wnd, onResize, false)
 	
 	guiCreateLabel(10, 25+2, 50, 20, "Target:", false, g_Wnd)
-	g_TargetsList = PlayersList.create(60, 25, 150, 100, g_Wnd)
+	g_TargetsList = PlayersList.create(60, 25, 150, 250, g_Wnd)
 	g_TargetsList:addStaticElement("Server", g_ResRoot)
 	g_TargetsList:addStaticElement("All clients", g_Root)
 	g_TargetsList:setDefault(g_Target)

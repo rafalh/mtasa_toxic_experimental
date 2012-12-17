@@ -176,7 +176,9 @@ function openDbgLogWnd()
 	btnX = btnX + 120 + 10
 	
 	guiCreateLabel(10, 65+2, 40, 20, "Player:", false, g_Wnd)
-	g_PlayersList = PlayersList.create(50, 65, 150, 100, g_Wnd)
+	g_PlayersList = PlayersList.create(50, 65, 150, 250, g_Wnd)
+	g_PlayersList:addStaticElement("Server", g_Root)
+	g_PlayersList:setDefault(g_Root)
 	g_PlayersList:updatePlayers()
 	g_PlayersList.callback = onPlayerChange
 	
@@ -198,7 +200,7 @@ function openDbgLogWnd()
 	guiGridListSetSortingEnabled(g_LogList, false)
 	guiGridListAddColumn(g_LogList, "Level", 0.1)
 	guiGridListAddColumn(g_LogList, "Location", 0.25)
-	guiGridListAddColumn(g_LogList, "Message", 0.6)
+	guiGridListAddColumn(g_LogList, "Message", 0.7)
 	
 	g_CloseBtn = guiCreateButton(w - 80 - 10, h - 25 - 10, 80, 25, "Close", false, g_Wnd)
 	addEventHandler("onClientGUIClick", g_CloseBtn, closeDbgLogWnd, false)

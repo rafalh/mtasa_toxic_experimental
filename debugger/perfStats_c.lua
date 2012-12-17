@@ -121,7 +121,7 @@ function openPerfStatsWnd()
 	addEventHandler("onClientGUISize", g_Wnd, onResize, false)
 	
 	guiCreateLabel(10, 25+2, 50, 20, "Target:", false, g_Wnd)
-	g_TargetsList = PlayersList.create(60, 25, 100, 100, g_Wnd)
+	g_TargetsList = PlayersList.create(60, 25, 100, 250, g_Wnd)
 	g_TargetsList:addStaticElement("Server", g_Root)
 	g_TargetsList:setDefault(g_Root)
 	g_TargetsList:updatePlayers()

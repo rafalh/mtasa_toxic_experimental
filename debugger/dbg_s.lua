@@ -59,7 +59,7 @@ local function onLogSyncReq(player)
 	g_Players[client].logSync = player
 	
 	if(player) then
-		local logData = mergeLogs(g_Players[g_Root], g_Players[player])
+		local logData = player == "Server" and g_Players[g_Root] or g_Players[player]
 		triggerClientEvent(client, "dbg_onLogSync", player, logData)
 	end
 end
