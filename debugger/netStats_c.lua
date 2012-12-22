@@ -25,7 +25,7 @@ local function onTargetChange(target)
 end
 
 local function onNetStats(netStats, target)
-	if(target ~= g_Target) then return end
+	if(not g_Wnd or target ~= g_Target) then return end
 	
 	guiGridListClear(g_StatsList)
 	

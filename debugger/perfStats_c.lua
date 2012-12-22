@@ -19,7 +19,7 @@ local function updateStats()
 end
 
 local function onStats(cols, rows, cat, opts, filter)
-	if(source ~= g_Target) then return end
+	if(not g_Wnd or source ~= g_Target) then return end
 	
 	if(cat == "") then -- Categories sync
 		local cat = guiGetText(g_CatsList)
