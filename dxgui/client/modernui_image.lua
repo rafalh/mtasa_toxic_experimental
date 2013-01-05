@@ -52,15 +52,19 @@ function UiImage:onMouseEnter()
 end
 
 function UiImage:onMouseLeave()
-	triggerEvent("onDxGUILeave",self.el)
+	if isElement(self.el) then
+		triggerEvent("onDxGUILeave",self.el)
+	end
 end
 
 function UiImage:onMouseClick(btn, state, x, y)
 	triggerEvent("onDxGUIClick",self.el,btn,state,x,y)
-	if state == "down" then
-		triggerEvent("onDxGUIDown",self.el,btn,x,y)
-	elseif state == "up" then
-		triggerEvent("onDxGUIUp",self.el,btn,x,y)
+	if isElement(self.el) then
+		if state == "down" then
+			triggerEvent("onDxGUIDown",self.el,btn,x,y)
+		elseif state == "up" then
+			triggerEvent("onDxGUIUp",self.el,btn,x,y)
+		end
 	end
 end
 

@@ -1,3 +1,4 @@
+resolution = {guiGetScreenSize()}
 local g_Root = getRootElement()
 local g_ResRoot = getResourceRootElement()
 local all_elements = {}
@@ -30,12 +31,14 @@ function GetChildFromPtMain(x, y)
 			if contin then
 				if #child.children > 0 then
 					for a,childs in pairs(child.children) do
-						local childx,childy = 0,0
-						local posx,posy = childs:getOnScreenPosition()
-						local sizex,sizey = childs:getSize()
-						local var = CheckPtMain(x, y,posx, posy,sizex,sizey)
-						if var then
-							return childs
+						if childs:getVisible() and childs:getEnabled() then
+							local childx,childy = 0,0
+							local posx,posy = childs:getOnScreenPosition()
+							local sizex,sizey = childs:getSize()
+							local var = CheckPtMain(x, y,posx, posy,sizex,sizey)
+							if var then
+								return childs
+							end
 						end
 					end
 				end
@@ -51,7 +54,16 @@ function GetChildFromPtMain(x, y)
 end
 
 local function UiInit()
-	--
+	--local cb = UiComboBox:Create(200, 200, 200, 200,"asdf")
+	--[[local cb = UiGridList:Create( 200, 200, 200, 100)]]
+	--[[for i=1,11 do
+		cb:addItem(i)
+		--cb:addValToColumn(cl,i)
+	end--]]
+	--UiScrollBar:Create(200,200, 20, 100,false)
+	--local tb = UiTab:Create(200,200,200,200)
+	--tb:addTab("text")
+	--tb:addTab("text2")
 end
 
 --[[function skroctext(text,longs)
@@ -127,15 +139,17 @@ local function UiRestore()
 	end
 end
 
-function deleteElementFromAllElements(el)
+function deleteElementFromAllElements(element)
 	for k,v in pairs(all_elements) do
-		if v.el == el then
+		if v.el == element then
+			--outputChatBox("remove element id:"..k.." from: all_elements type: "..getElementType(v.el))
 			table.remove(all_elements,k)
 			break
 		end
 	end
 	for k,v in pairs(all_elements_revers) do
-		if v.el == el then
+		if v.el == element then
+			--outputChatBox("remove element id: "..k.." from: all_elements_revers type: "..getElementType(v.el))
 			table.remove(all_elements_revers,k)
 			break
 		end
@@ -196,6 +210,7 @@ local function UiClick(btn, state, x, y)
 					child.redraw = true
 				elseif child:getType() == "combobox" then
 					child.list.visible = false
+					child:onMouseLeave()
 				end
 			end
 		end
@@ -210,6 +225,7 @@ local function UiClick(btn, state, x, y)
 				child.redraw = true
 			elseif child:getType() == "combobox" then
 				child.list.visible = false
+				child:onMouseLeave()
 			end
 		end
 	end
@@ -316,12 +332,17 @@ function math.between(val,min,max)
 	return false
 end
 
-function UiMouseWheel(upOrDown)
-	for i, child in pairs(all_elements) do
+function UiMouseWheel(_,_,upOrDown)
+	if not isCursorShowing () then return end
+	local x,y = getCursorPosition ( )
+	local child = GetChildFromPtMain(x*resolution[1], y*resolution[2])
+	if(child) then
 		child:onMouseWheel(upOrDown == -1)
 	end
 end
 
+bindKey( "mouse_wheel_up", "down", UiMouseWheel, -1 )
+bindKey( "mouse_wheel_down", "down", UiMouseWheel, 1 )
 addCommandHandler("modernuiwklej",modernuiwklej)
 addEventHandler("onClientResourceStart", g_ResRoot, UiInit)
 addEventHandler("onClientResourceStop", g_Root, ResStop)

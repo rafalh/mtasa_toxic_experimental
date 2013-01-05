@@ -13,6 +13,8 @@ function UiMemo:Create(x, y, sx, sy,text,parent)
 		visible = true,
 		redraw = true,
 		enabled = true,
+		alignX = "left",
+		alignY = "center",
 		types = "text",
 		bordercolor = tocolor(0,0,0)
 	}, UiMemo.__mt)
@@ -26,6 +28,12 @@ end
 
 function UiMemo:setText(text)
 	self.text = text
+	self.redraw = true
+end
+
+function UiMemo:SetAlign(horizontal,vertical)
+	self.alignX = horizontal or (self.alignX or "left")
+	self.alignY = vertical or (self.alignY or "center")
 	self.redraw = true
 end
 
@@ -59,7 +67,7 @@ function UiMemo:UpdateRT()
 		dxDrawRectangle(0, self.sy-1, self.sx, 1, bordercolor)
 		dxDrawRectangle(self.sx-1, 0, 1,self.sy, bordercolor)
 		dxDrawRectangle(0, 0, 1, self.sy, bordercolor)
-		dxDrawText(self.text, 5, 5, self.sx - 5 , self.sy - 5,tocolor(0,0,0), 0.5,cache.Font, "left", "center",false,true)
+		dxDrawText(self.text, 5, 5, self.sx - 5 , self.sy - 5,tocolor(0,0,0), 0.5,cache.Font,self.alignX,self.alignY,false,true)
 	dxSetRenderTarget()
 	self.redraw = false
 end

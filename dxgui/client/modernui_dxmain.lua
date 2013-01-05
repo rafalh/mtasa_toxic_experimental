@@ -12,6 +12,7 @@ function dxMain:delete()
 	for k,v in ipairs(self.children) do
 		v:delete()
 	end
+	--delete element from pairs childer -- NEED FIX
 	self = nil
 end
 

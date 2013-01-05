@@ -128,7 +128,6 @@ function UiScrollBar:onRender()
 	end
 	local posx, posy = self:getOnScreenPosition()
 	local sx,sy = self:getSize()
-	--dxDrawText(self.text, self.x+xp,self.y+xy,self.sx,self.sy,tocolor(255,255,255), 1,cache.Font, "left", "center")
 	dxDrawImage(posx,posy,sx,sy,self.rt,0,0,0,tocolor(255,255,255,255),true)
 end
 
@@ -156,18 +155,14 @@ function UiScrollBar:UpdateRT()
 	self.redraw = false
 end
 
---[[function UiGridList:onMouseWheel(down)
+function UiScrollBar:onMouseWheel(down)
 	if self.isActive then
 		if down then
-			if self.scrool - 7 < 0 then
-				self:setScrool(0)
-				return
-			end
-			self:setScrool(self.scrool - 7)
-			return
+			if self.scroll - 1 < 0 then return end
+			self:setScrollPos(self.scroll - 1)
 		else
-			self:setScrool(self.scrool + 7)
-			return
+			if self.scroll + 1 > 100 then return end
+			self:setScrollPos(self.scroll + 1)
 		end
 	end
-end]]
+end

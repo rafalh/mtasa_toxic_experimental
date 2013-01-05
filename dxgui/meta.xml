@@ -12,6 +12,7 @@
 	
 	<script src="client/modernui_main.lua" type="client" />
 	<script src="client/modernui_dxmain.lua" type="client" />
+	<script src="client/modernui_tab.lua" type="client" />
 	<script src="client/modernui_edit.lua" type="client" />
 	<script src="client/modernui_image.lua" type="client" />
 	<script src="client/modernui_text.lua" type="client" />
