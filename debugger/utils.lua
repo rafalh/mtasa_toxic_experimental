@@ -38,3 +38,13 @@ function dbgOutput(str, player)
 		outputChatBox(part, player or g_Root, 128, 128, 255)
 	end
 end
+
+function getRealTimeFromTimeStamp(sek)
+	local time = getRealTime(sek)
+	if time.hour < 10 then time.hour = "0"..time.hour end
+	if time.minute < 10 then time.minute = "0"..time.minute end
+	if time.second < 10 then time.second = "0"..time.second end
+	if time.month+1 < 10 then time.month = "0"..(time.month+1) end
+	if time.monthday < 10 then time.monthday = "0"..time.monthday end
+	return (time.year+1900).."-"..time.month.."-"..time.monthday.." "..time.hour..":"..time.minute..":"..time.second
+end

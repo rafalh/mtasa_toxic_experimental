@@ -1,7 +1,8 @@
 <meta>
-	<info type="script" name="Debugger" author="rafalh" version="1.0.1" />
+	<info type="script" name="Debugger" author="rafalh" version="1.0.1" showInResourceBrowser="true" />
 	
 	<script src="dbg_s.lua" type="server" />
+	<script src="dbg_http.lua" type="server" />
 	<script src="dbg_c.lua" type="client" />
 	<script src="gui_c.lua" type="client" />
 	<script src="playersList_c.lua" type="client" />
@@ -15,4 +16,10 @@
 	<script src="netStats_c.lua" type="client" />
 	<script src="utils.lua" type="server" />
 	<script src="utils.lua" type="client" />
+	
+	<html src="http/main.html" />
+	<html src="http/script.js" raw="true" />
+	<html src="http/css.css" raw="true" />
+	<export function="getDebuggerHTTPRequest" http="true" />
+	<export function="getTangerList" http="true" />
 </meta>

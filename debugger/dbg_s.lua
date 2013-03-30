@@ -10,7 +10,7 @@ addEvent("dbg_onLogSyncReq", true)
 
 local function addDbgMsg(msg, lvl, file, line, player)
 	local ticks = getTickCount()
-	local info = {ticks, msg, lvl, file, line}
+	local info = {ticks, msg, lvl, file, line,getTimeStamp ()}
 	
 	if(not g_Players[player]) then
 		g_Players[player] = {}
@@ -94,6 +94,11 @@ addCommandHandler("dbg", function(player)
 	local logData = mergeLogs(g_Players[g_Root], g_Players[player])
 	triggerClientEvent(player, "dbg_onDisplayReq", g_ResRoot, logData)
 end)
+
+function getTimeStamp ()
+	local t = getRealTime()
+	return t.timestamp
+end
 
 addEventHandler("onDebugMessage", g_Root, onServerDbgMsg)
 addEventHandler("dbg_onMsg", g_Root, onPlayerDbgMsg)

@@ -4,7 +4,7 @@ local MAX_ROWS = 50
 
 local g_InputCounter = 0
 local g_Wnd, g_LogList, g_PlayersList, g_FilterEdit
-local g_CloseBtn, g_CopyRightLabel
+local g_CloseBtn, g_CopyRightLabel,g_LoadingLabel
 local g_RefreshTimer
 local g_Level = 2
 local g_Player = g_Me
@@ -43,6 +43,7 @@ local function addRowToList(info)
 	local level = DBG_LEVEL_NAMES[info[3]] or tostring(info[3])
 	local msg = tostring(info[2])
 	local location = tostring(info[4])..":"..tostring(info[5])
+	local times = tostring(info[6])
 	
 	local filter = guiGetText(g_FilterEdit):lower()
 	if(filter ~= "" and 
@@ -59,6 +60,8 @@ local function addRowToList(info)
 	guiGridListSetItemColor(g_LogList, row, 2, r, g, b)
 	guiGridListSetItemText(g_LogList, row, 3, msg, false, false)
 	guiGridListSetItemColor(g_LogList, row, 3, r, g, b)
+	guiGridListSetItemText(g_LogList, row, 4, getRealTimeFromTimeStamp(times), false, false)
+	guiGridListSetItemColor(g_LogList, row, 4, r, g, b)
 end
 
 local function addLogRow(info)
@@ -76,6 +79,7 @@ local function refreshList()
 	for i, info in ipairs(g_DbgLog) do
 		addRowToList(info)
 	end
+	guiSetVisible(g_LoadingLabel,false)
 end
 
 local function onLogSync(data, player)
@@ -84,6 +88,7 @@ local function onLogSync(data, player)
 	for i, info in ipairs(data) do
 		addLogRow(info)
 	end
+	guiSetVisible(g_LoadingLabel,false)
 end
 
 local function onPlayerChange(player)
@@ -91,6 +96,7 @@ local function onPlayerChange(player)
 	guiGridListClear(g_LogList)
 	g_DbgLog = {}
 	triggerServerEvent("dbg_onLogSyncReq", g_ResRoot, player)
+	guiSetVisible(g_LoadingLabel,true)
 end
 
 local function resetUpdateTimer()
@@ -119,6 +125,7 @@ local function onResize()
 	
 	guiSetPosition(g_CloseBtn, w - 80 - 10, h - 25 - 10, false)
 	guiSetPosition(g_CopyRightLabel, 10, h - 15 - 10, false)
+	guiSetPosition(g_LoadingLabel, 160, h - 15 - 10, false)
 	
 	resetUpdateTimer()
 end
@@ -200,13 +207,18 @@ function openDbgLogWnd()
 	guiGridListSetSortingEnabled(g_LogList, false)
 	guiGridListAddColumn(g_LogList, "Level", 0.1)
 	guiGridListAddColumn(g_LogList, "Location", 0.25)
-	guiGridListAddColumn(g_LogList, "Message", 0.7)
+	guiGridListAddColumn(g_LogList, "Message", 0.4)
+	guiGridListAddColumn(g_LogList, "Time", 0.2)
 	
 	g_CloseBtn = guiCreateButton(w - 80 - 10, h - 25 - 10, 80, 25, "Close", false, g_Wnd)
 	addEventHandler("onClientGUIClick", g_CloseBtn, closeDbgLogWnd, false)
 	
 	g_CopyRightLabel = guiCreateLabel(10, h - 15 - 10, 160, 15, "Copyright (c) 2012 rafalh", false, g_Wnd)
 	guiSetFont(g_CopyRightLabel, "default-small")
+	
+	g_LoadingLabel = guiCreateLabel(130, h - 15 - 10, 160, 15, "Loading...", false, g_Wnd)
+	guiSetFont(g_LoadingLabel, "default-small")
+	guiSetVisible(g_LoadingLabel,false)
 	
 	guiSetInputEnabled(true)
 end

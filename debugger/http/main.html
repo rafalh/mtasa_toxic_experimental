@@ -1,0 +1,32 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<script type="text/javascript" src="http/script.js"></script>
+		<link rel="stylesheet" type="text/css" href="http/css.css" />
+		<* = call ( getResourceFromName("ajax"), "start", getResourceName(getThisResource()) ) *>
+	</head>
+	<body onLoad="onRequestUpdate();updateTangerList();">
+		<div id="toparea">
+			Tanger: <select name="queryTarget" id="queryTarget" onchange="onRequestUpdate()">
+			<option SELECTED>Server</option>
+			</select>
+			Level: <select name="queryLevel" id="queryLevel" onchange="onRequestUpdate()">
+			<option>Custom</option>
+			<option>Error</option>
+			<option>Warning</option>
+			<option SELECTED>Info</option>
+			</select>
+			Filter: <input type="text" id="queryFilter" onchange="onRequestUpdate()" onkeyup="onRequestUpdate()"/>
+		</div>
+		<table width='100%'>
+			<tr class="header">
+				<th width='10%'>Level</th>
+				<th width='40%'>Location</th>
+				<th width='40%'>Message</th>
+				<th width='10%'>Time</th>
+			</tr>
+			<tbody id="maindata">
+			</tbody>
+		</table>
+	</body>
+</html>
