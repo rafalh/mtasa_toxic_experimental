@@ -4,7 +4,7 @@ addEvent("dbg_onRunCodeResult", true)
 local function onRunCodeReq(codeStr, target)
 	if(not g_Players[client].admin) then return end
 	
-	if(target == g_ResRoot) then
+	if(target == resourceRoot) then
 		local func = loadstring(codeStr)
 		if(not func) then
 			dbgOutput("Failed to load code", client)
@@ -31,5 +31,5 @@ local function onRunCodeResult(resultStr)
 	end
 end
 
-addEventHandler("dbg_onRunCodeReq", g_Root, onRunCodeReq)
-addEventHandler("dbg_onRunCodeResult", g_Root, onRunCodeResult)
+addEventHandler("dbg_onRunCodeReq", root, onRunCodeReq)
+addEventHandler("dbg_onRunCodeResult", root, onRunCodeResult)

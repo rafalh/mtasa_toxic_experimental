@@ -7,7 +7,7 @@ local g_Wnd, g_LogList, g_PlayersList, g_FilterEdit
 local g_CloseBtn, g_CopyRightLabel,g_LoadingLabel
 local g_RefreshTimer
 local g_Level = 2
-local g_Player = g_Me
+local g_Player = localPlayer
 local g_DbgLog = {}
 
 addEvent("dbg_onDisplayReq", true)
@@ -95,7 +95,7 @@ local function onPlayerChange(player)
 	g_Player = player
 	guiGridListClear(g_LogList)
 	g_DbgLog = {}
-	triggerServerEvent("dbg_onLogSyncReq", g_ResRoot, player)
+	triggerServerEvent("dbg_onLogSyncReq", resourceRoot, player)
 	guiSetVisible(g_LoadingLabel,true)
 end
 
@@ -138,7 +138,7 @@ end
 function closeDbgLogWnd()
 	if(not g_Wnd) then return end
 	
-	triggerServerEvent("dbg_onLogSyncReq", g_ResRoot, false)
+	triggerServerEvent("dbg_onLogSyncReq", resourceRoot, false)
 	
 	if(g_RefreshTimer) then
 		killTimer(g_RefreshTimer)
@@ -156,7 +156,7 @@ function openDbgLogWnd()
 		return
 	end
 	
-	g_Player = g_Me
+	g_Player = localPlayer
 	
 	local w, h = 640, 560
 	local x, y = (g_ScrW - w)/2, (g_ScrH - h)/2
@@ -184,8 +184,8 @@ function openDbgLogWnd()
 	
 	guiCreateLabel(10, 65+2, 40, 20, "Player:", false, g_Wnd)
 	g_PlayersList = PlayersList.create(50, 65, 150, 250, g_Wnd)
-	g_PlayersList:addStaticElement("Server", g_Root)
-	g_PlayersList:setDefault(g_Root)
+	g_PlayersList:addStaticElement("Server", root)
+	g_PlayersList:setDefault(root)
 	g_PlayersList:updatePlayers()
 	g_PlayersList.callback = onPlayerChange
 	
@@ -213,21 +213,30 @@ function openDbgLogWnd()
 	g_CloseBtn = guiCreateButton(w - 80 - 10, h - 25 - 10, 80, 25, "Close", false, g_Wnd)
 	addEventHandler("onClientGUIClick", g_CloseBtn, closeDbgLogWnd, false)
 	
-	g_CopyRightLabel = guiCreateLabel(10, h - 15 - 10, 160, 15, "Copyright (c) 2012 rafalh", false, g_Wnd)
+	g_CopyRightLabel = guiCreateLabel(10, h - 15 - 10, 200, 15, "Copyright (c) 2012-2013 rafalh and Bober", false, g_Wnd)
 	guiSetFont(g_CopyRightLabel, "default-small")
 	
-	g_LoadingLabel = guiCreateLabel(130, h - 15 - 10, 160, 15, "Loading...", false, g_Wnd)
+	g_LoadingLabel = guiCreateLabel(guiLabelGetTextExtent (g_CopyRightLabel) + 10 + 5, h - 15 - 10, 160, 15, "Loading...", false, g_Wnd)
 	guiSetFont(g_LoadingLabel, "default-small")
 	guiSetVisible(g_LoadingLabel,false)
 	
 	guiSetInputEnabled(true)
 end
 
-addEventHandler("dbg_onDisplayReq", g_ResRoot, function(data)
+local function onStop()
+	if guiGetVisible(g_Wnd) then
+		showCursor(false)
+		guiSetInputEnabled(false)
+	end
+end
+
+addEventHandler("dbg_onDisplayReq", resourceRoot, function(data)
 	openDbgLogWnd()
-	onLogSync(data, g_Me)
+	onLogSync(data, localPlayer)
 end)
 
-addEventHandler("dbg_onLogSync", g_Root, function(data)
+addEventHandler("dbg_onLogSync", root, function(data)
 	onLogSync(data, source)
 end)
+
+addEventHandler ("onClientResourceStop", resourceRoot, onStop)

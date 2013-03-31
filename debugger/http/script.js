@@ -10,22 +10,28 @@ var DBG_LEVEL_COLORS = {}
 	DBG_LEVEL_COLORS[2] = "#FFFF00" 
 	DBG_LEVEL_COLORS[3] = "#00FF00"
 
+var needUpdateDebug = true
+var needUpdateTargerList = true
+
 function onRequestUpdate()
 {
-	var element = document.getElementById("maindata")
-	while (element.hasChildNodes())
-	{
-		element.removeChild ( element.firstChild );
-    }
 
 	var queryTarget = document.getElementById("queryTarget").value;
-	var selectedLevel = document.getElementById("queryLevel").selectedIndex;
-	var filter = document.getElementById("queryFilter").value;
 	getDebuggerHTTPRequest
-	(queryTarget,
+	(queryTarget,needUpdateDebug,
 		function(list)
 		{
-			var wartosc = ""
+			if (typeof(list) == "boolean") return;
+			var element = document.getElementById("maindata")
+			while (element.hasChildNodes())
+			{
+				element.removeChild ( element.firstChild );
+			}
+			var queryLevelElement = document.getElementById("queryLevel");
+			var selectedLevel = queryLevelElement.selectedIndex;
+			queryLevelElement.style.color = DBG_LEVEL_COLORS[selectedLevel];
+			var filter = document.getElementById("queryFilter").value;
+			//alert(list.length)
 			for (i=0;i<list.length;i++)
 			{
 				var debugLevel = list[i][2];
@@ -73,22 +79,33 @@ function onRequestUpdate()
 			}
 		}
 	)
-	setTimeout ( "onRequestUpdate()" , 5000 )
+	setTimeout ( "onRequestUpdate()" , 7000 )
+	needUpdateDebug = false
 }
 
-function updateTangerList()
+function setNeedUpdateDebug()
 {
-	var queryTarget = document.getElementById("queryTarget").value;
-	var element = document.getElementById("queryTarget")
-	while (element.hasChildNodes())
-	{
-		element.removeChild ( element.firstChild );
-    }
-	getTangerList
-	(
+	needUpdateDebug = true
+}
+
+function setNeedUpdateTargerList()
+{
+	needUpdateTargerList = true
+}
+
+function updateTargerList()
+{
+	getTargerList
+	(needUpdateTargerList,
 		function(list)
 		{
-
+			if (typeof(list) == "boolean") return;
+			var queryTarget = document.getElementById("queryTarget").value;
+			var element = document.getElementById("queryTarget")
+			while (element.hasChildNodes())
+			{
+				element.removeChild ( element.firstChild );
+			}
 			list.splice( 0,0, "Server");
 			var tangerElement = document.getElementById("queryTarget");
 			for (i = 0; i < list.length; i++)
@@ -100,9 +117,12 @@ function updateTangerList()
 				if (queryTarget == columnName)
 					document.getElementById("queryTarget").selectedIndex = i;
 			}
+			if (list.length == 1)
+				document.getElementById("queryTarget").selectedIndex = 0
 		}
 	)
-	setTimeout ( "updateTangerList()" , 5000 )
+	setTimeout ( "updateTargerList()" , 5000 )
+	needUpdateTargerList = false
 }
 
 

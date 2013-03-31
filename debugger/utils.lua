@@ -35,7 +35,7 @@ function dbgOutput(str, player)
 	while(str:len() > 0) do
 		local part = str:sub(1, 130)
 		str = str:sub(part:len() + 1)
-		outputChatBox(part, player or g_Root, 128, 128, 255)
+		outputChatBox(part, player or root, 128, 128, 255)
 	end
 end
 

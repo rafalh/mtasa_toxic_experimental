@@ -4,7 +4,7 @@ local function onNetStatsReq(target)
 	if(not g_Players[client].admin) then return end
 	
 	local netStats
-	if(target == g_Root) then
+	if(target == root) then
 		netStats = getNetworkStats()
 	else
 		netStats = getNetworkStats(target)
@@ -12,4 +12,4 @@ local function onNetStatsReq(target)
 	triggerClientEvent(client, "dbg_onNetStats", source, netStats, target)
 end
 
-addEventHandler("dbg_onNetStatsReq", g_Root, onNetStatsReq)
+addEventHandler("dbg_onNetStatsReq", root, onNetStatsReq)

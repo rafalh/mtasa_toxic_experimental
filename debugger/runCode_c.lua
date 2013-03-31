@@ -1,5 +1,5 @@
 local g_Wnd = false
-local g_Target = g_ResRoot
+local g_Target = resourceRoot
 local g_CodeEdit
 local g_CloseBtn, g_CopyRightLabel
 
@@ -15,9 +15,9 @@ end
 local function onTargetChange(target)
 	g_Target = target
 	
-	if(target == g_Root) then
+	if(target == root) then
 		guiSetText(g_Wnd, "Run code - All clients")
-	elseif(target == g_ResRoot) then
+	elseif(target == resourceRoot) then
 		guiSetText(g_Wnd, "Run code - Server")
 	else
 		local targetName = getPlayerName(g_Target):gsub ("#%x%x%x%x%x%x", "")
@@ -27,7 +27,7 @@ end
 
 local function runCode()
 	local code = guiGetText(g_CodeEdit)
-	triggerServerEvent("dbg_onRunCodeReq", g_ResRoot, code, g_Target)
+	triggerServerEvent("dbg_onRunCodeReq", resourceRoot, code, g_Target)
 end
 
 local function onResize()
@@ -68,8 +68,8 @@ function openRunCodeWnd()
 	
 	guiCreateLabel(10, 25+2, 50, 20, "Target:", false, g_Wnd)
 	g_TargetsList = PlayersList.create(60, 25, 150, 250, g_Wnd)
-	g_TargetsList:addStaticElement("Server", g_ResRoot)
-	g_TargetsList:addStaticElement("All clients", g_Root)
+	g_TargetsList:addStaticElement("Server", resourceRoot)
+	g_TargetsList:addStaticElement("All clients", root)
 	g_TargetsList:setDefault(g_Target)
 	g_TargetsList:updatePlayers()
 	g_TargetsList.callback = onTargetChange
@@ -82,10 +82,10 @@ function openRunCodeWnd()
 	g_CloseBtn = guiCreateButton(w - 80 - 10, h - 25 - 10, 80, 25, "Close", false, g_Wnd)
 	addEventHandler("onClientGUIClick", g_CloseBtn, closeRunCodeWnd, false)
 	
-	g_CopyRightLabel = guiCreateLabel(10, h - 15 - 10, 160, 15, "Copyright (c) 2012 rafalh", false, g_Wnd)
+	g_CopyRightLabel = guiCreateLabel(10, h - 15 - 10, 200, 15, "Copyright (c) 2012-2013 rafalh and Bober", false, g_Wnd)
 	guiSetFont(g_CopyRightLabel, "default-small")
 	
 	guiSetInputEnabled(true)
 end
 
-addEventHandler("dbg_onRunCodeReq", g_Root, onRunCodeReq)
+addEventHandler("dbg_onRunCodeReq", root, onRunCodeReq)

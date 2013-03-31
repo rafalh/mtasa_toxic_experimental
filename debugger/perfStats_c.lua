@@ -113,7 +113,7 @@ function openPerfStatsWnd()
 		return
 	end
 	
-	g_Target = g_Root
+	g_Target = root
 	
 	local w, h = 640, 480
 	local x, y = (g_ScrW - w)/2, (g_ScrH - h)/2
@@ -122,8 +122,8 @@ function openPerfStatsWnd()
 	
 	guiCreateLabel(10, 25+2, 50, 20, "Target:", false, g_Wnd)
 	g_TargetsList = PlayersList.create(60, 25, 100, 250, g_Wnd)
-	g_TargetsList:addStaticElement("Server", g_Root)
-	g_TargetsList:setDefault(g_Root)
+	g_TargetsList:addStaticElement("Server", root)
+	g_TargetsList:setDefault(root)
 	g_TargetsList:updatePlayers()
 	g_TargetsList.callback = onTargetChange
 	
@@ -146,7 +146,7 @@ function openPerfStatsWnd()
 	g_CloseBtn = guiCreateButton(w - 80 - 10, h - 25 - 10, 80, 25, "Close", false, g_Wnd)
 	addEventHandler("onClientGUIClick", g_CloseBtn, closePerfStatsWnd, false)
 	
-	g_CopyRightLabel = guiCreateLabel(10, h - 15 - 10, 160, 15, "Copyright (c) 2012 rafalh", false, g_Wnd)
+	g_CopyRightLabel = guiCreateLabel(10, h - 15 - 10, 200, 15, "Copyright (c) 2012-2013 rafalh and Bober", false, g_Wnd)
 	guiSetFont(g_CopyRightLabel, "default-small")
 	
 	g_Timer = setTimer(updateStats, REFRESH_INTERVAL, 0)
@@ -158,5 +158,5 @@ local function onPerfStatsReq(cols, rows, cat, opts, filter, player)
 	triggerServerEvent("dbg_onPerfStats", source, cols, rows, cat, opts, filter, player)
 end
 
-addEventHandler("dbg_onPerfStats", g_Root, onStats)
-addEventHandler("dbg_onPerfStatsReq", g_Root, onPerfStatsReq)
+addEventHandler("dbg_onPerfStats", root, onStats)
+addEventHandler("dbg_onPerfStatsReq", root, onPerfStatsReq)

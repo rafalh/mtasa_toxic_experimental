@@ -42,5 +42,5 @@ local function onPlayerScreenShot(res, status, imageData)
 	end
 end
 
-addEventHandler("dbg_onScreenShotReq", g_Root, onScreenShotReq)
-addEventHandler("onPlayerScreenShot", g_Root, onPlayerScreenShot)
+addEventHandler("dbg_onScreenShotReq", root, onScreenShotReq)
+addEventHandler("onPlayerScreenShot", root, onPlayerScreenShot)

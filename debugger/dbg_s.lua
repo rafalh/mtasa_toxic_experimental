@@ -1,7 +1,7 @@
-g_Root = getRootElement()
 g_Res = getThisResource()
-g_ResRoot = getResourceRootElement()
+resourceRoot = getResourceRootElement()
 g_Players = {}
+g_updatePlayerList = 0
 
 local MAX_PLAYER_MESSAGES = 30
 
@@ -20,9 +20,10 @@ local function addDbgMsg(msg, lvl, file, line, player)
 		table.remove(g_Players[player], 1)
 	end
 	table.insert(g_Players[player], info)
+	--g_Players[player].lastTimeAdded = getTimeStamp ()
 	
 	for player2, pdata in pairs(g_Players) do
-		if(pdata.logSync and (player == g_Root or pdata.logSync == player)) then
+		if(pdata.logSync and (player == root or pdata.logSync == player)) then
 			triggerClientEvent(player2, "dbg_onLogSync", pdata.logSync, {info})
 		end
 	end
@@ -46,11 +47,13 @@ local function mergeLogs(log1, log2)
 end
 
 local function onServerDbgMsg(msg, lvl, file, line)
-	addDbgMsg(msg, lvl, file or "", line or "", g_Root)
+	addDbgMsg(msg, lvl, file or "", line or "", root)
+	g_Players[root].lastTimeAdded = getTimeStamp ()
 end
 
 local function onPlayerDbgMsg(msg, lvl, file, line)
 	addDbgMsg(msg, lvl, file, line, client)
+	g_Players[client].lastTimeAdded = getTimeStamp ()
 end
 
 local function onLogSyncReq(player)
@@ -59,17 +62,23 @@ local function onLogSyncReq(player)
 	g_Players[client].logSync = player
 	
 	if(player) then
-		local logData = player == "Server" and g_Players[g_Root] or g_Players[player]
+		local logData = player == "Server" and g_Players[root] or g_Players[player]
 		triggerClientEvent(client, "dbg_onLogSync", player, logData)
 	end
 end
 
 local function onPlayerJoin()
 	g_Players[source] = {}
+	g_updatePlayerList = getTimeStamp ()
 end
 
 local function onPlayerQuit()
 	g_Players[source] = nil
+	g_updatePlayerList = getTimeStamp ()
+end
+
+local function onPlayerChangeNick()
+	g_updatePlayerList = getTimeStamp ()
 end
 
 local function init()
@@ -77,7 +86,7 @@ local function init()
 		g_Players[player] = {}
 	end
 	
-	g_Players[g_Root] = {}
+	g_Players[root] = {}
 end
 
 addCommandHandler("dbg", function(player)
@@ -91,8 +100,8 @@ addCommandHandler("dbg", function(player)
 	end
 	
 	g_Players[player].logSync = player
-	local logData = mergeLogs(g_Players[g_Root], g_Players[player])
-	triggerClientEvent(player, "dbg_onDisplayReq", g_ResRoot, logData)
+	local logData = mergeLogs(g_Players[root], g_Players[player])
+	triggerClientEvent(player, "dbg_onDisplayReq", resourceRoot, logData)
 end)
 
 function getTimeStamp ()
@@ -100,9 +109,10 @@ function getTimeStamp ()
 	return t.timestamp
 end
 
-addEventHandler("onDebugMessage", g_Root, onServerDbgMsg)
-addEventHandler("dbg_onMsg", g_Root, onPlayerDbgMsg)
-addEventHandler("dbg_onLogSyncReq", g_Root, onLogSyncReq)
-addEventHandler("onPlayerJoin", g_Root, onPlayerJoin)
-addEventHandler("onPlayerQuit", g_Root, onPlayerQuit)
-addEventHandler("onResourceStart", g_ResRoot, init)
+addEventHandler("onDebugMessage", root, onServerDbgMsg)
+addEventHandler("dbg_onMsg", root, onPlayerDbgMsg)
+addEventHandler("dbg_onLogSyncReq", root, onLogSyncReq)
+addEventHandler("onPlayerJoin", root, onPlayerJoin)
+addEventHandler("onPlayerQuit", root, onPlayerQuit)
+addEventHandler("onPlayerChangeNick",root,onPlayerChangeNick)
+addEventHandler("onResourceStart", resourceRoot, init)

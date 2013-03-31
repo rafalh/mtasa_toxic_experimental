@@ -5,18 +5,18 @@
 		<link rel="stylesheet" type="text/css" href="http/css.css" />
 		<* = call ( getResourceFromName("ajax"), "start", getResourceName(getThisResource()) ) *>
 	</head>
-	<body onLoad="onRequestUpdate();updateTangerList();">
+	<body onLoad="onRequestUpdate();updateTargerList();">
 		<div id="toparea">
-			Tanger: <select name="queryTarget" id="queryTarget" onchange="onRequestUpdate()">
+			Player: <select name="queryTarget" id="queryTarget" onchange="setNeedUpdateDebug();onRequestUpdate()">
 			<option SELECTED>Server</option>
 			</select>
-			Level: <select name="queryLevel" id="queryLevel" onchange="onRequestUpdate()">
-			<option>Custom</option>
-			<option>Error</option>
-			<option>Warning</option>
-			<option SELECTED>Info</option>
+			Level: <select style="color:#00FF00" name="queryLevel" id="queryLevel" onchange="setNeedUpdateDebug();onRequestUpdate()">
+			<option style="color:#FFFFFF">Custom</option>
+			<option style="color:#FF0000">Error</option>
+			<option style="color:#FFFF00">Warning</option>
+			<option style="color:#00FF00" SELECTED>Info</option>
 			</select>
-			Filter: <input type="text" id="queryFilter" onchange="onRequestUpdate()" onkeyup="onRequestUpdate()"/>
+			Filter: <input type="text" id="queryFilter" onchange="setNeedUpdateDebug();onRequestUpdate()" onkeyup="setNeedUpdateDebug();onRequestUpdate()"/>
 		</div>
 		<table width='100%'>
 			<tr class="header">

@@ -4,7 +4,7 @@ addEvent("dbg_onPerfStats", true)
 local function onPerfStatsReq(cat, opts, filter)
 	if(not g_Players[client].admin) then return end
 	
-	if(source == g_Root) then
+	if(source == root) then
 		local cols, rows = getPerformanceStats(cat, opts, filter)
 		triggerClientEvent(client, "dbg_onPerfStats", source, cols, rows, cat, opts, filter)
 	else
@@ -18,5 +18,5 @@ local function onPerfStatsSync(cols, rows, cat, opts, filter, player)
 	triggerClientEvent(player, "dbg_onPerfStats", client, cols, rows, cat, opts, filter)
 end
 
-addEventHandler("dbg_onPerfStatsReq", g_Root, onPerfStatsReq)
-addEventHandler("dbg_onPerfStats", g_Root, onPerfStatsSync)
+addEventHandler("dbg_onPerfStatsReq", root, onPerfStatsReq)
+addEventHandler("dbg_onPerfStats", root, onPerfStatsSync)
