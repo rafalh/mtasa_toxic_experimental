@@ -1,21 +1,21 @@
 g_ScrW, g_ScrH = guiGetScreenSize()
 
-local localPlayerssages = {}
+local g_Messages = {}
 
 local MIN_MSG_DELAY = 500
 
 local function onDbgMsg(message, level, file, line)
 	local msgId = md5(message..level..(file or "")..(line or ""))
 	local ticks = getTickCount()
-	if(not localPlayerssages[msgId] or ticks - localPlayerssages[msgId] > MIN_MSG_DELAY) then
-		localPlayerssages[msgId] = ticks
+	if(not g_Messages[msgId] or ticks - g_Messages[msgId] > MIN_MSG_DELAY) then
+		g_Messages[msgId] = ticks
 		triggerServerEvent("dbg_onMsg", resourceRoot, message, level, file or "", line or "")
 	end
 end
 
 local function updateList()
 	local ticks = getTickCount()
-	local msgId, msgTicks = next(localPlayerssages, msgId)
+	local msgId, msgTicks = next(g_Messages, msgId)
 	
 	while(msgId) do
 		local deleteID = msgId
@@ -23,10 +23,10 @@ local function updateList()
 			deleteID = msgId
 		end
 		
-		msgId, msgTicks = next(localPlayerssages, msgId)
+		msgId, msgTicks = next(g_Messages, msgId)
 		
 		if(deleteID) then
-			localPlayerssages[deleteID] = nil
+			g_Messages[deleteID] = nil
 		end
 	end
 end
