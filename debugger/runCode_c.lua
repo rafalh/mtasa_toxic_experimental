@@ -51,7 +51,7 @@ function closeRunCodeWnd()
 	destroyElement(g_Wnd)
 	g_Wnd = false
 	
-	guiSetInputEnabled(false)
+	showCursor(false)
 end
 
 function openRunCodeWnd()
@@ -85,7 +85,7 @@ function openRunCodeWnd()
 	g_CopyRightLabel = guiCreateLabel(10, h - 15 - 10, 200, 15, "Copyright (c) 2012-2013 rafalh and Bober", false, g_Wnd)
 	guiSetFont(g_CopyRightLabel, "default-small")
 	
-	guiSetInputEnabled(true)
+	showCursor(true)
 end
 
 addEventHandler("dbg_onRunCodeReq", root, onRunCodeReq)

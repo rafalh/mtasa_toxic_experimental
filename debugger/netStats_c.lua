@@ -58,7 +58,7 @@ function closeNetStatsWnd()
 	killTimer(g_Timer)
 	g_Wnd = false
 	
-	guiSetInputEnabled(false)
+	showCursor(false)
 end
 
 function openNetStatsWnd()
@@ -92,7 +92,7 @@ function openNetStatsWnd()
 	updateStats()
 	g_Timer = setTimer(updateStats, REFRESH_INTERVAL, 0)
 	
-	guiSetInputEnabled(true)
+	showCursor(true)
 end
 
 addEventHandler("dbg_onNetStats", root, onNetStats)

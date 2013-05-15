@@ -104,7 +104,7 @@ function closePerfStatsWnd()
 	destroyElement(g_Wnd)
 	g_Wnd = false
 	
-	guiSetInputEnabled(false)
+	showCursor(false)
 end
 
 function openPerfStatsWnd()
@@ -150,7 +150,7 @@ function openPerfStatsWnd()
 	guiSetFont(g_CopyRightLabel, "default-small")
 	
 	g_Timer = setTimer(updateStats, REFRESH_INTERVAL, 0)
-	guiSetInputEnabled(true)
+	showCursor(true)
 end
 
 local function onPerfStatsReq(cols, rows, cat, opts, filter, player)

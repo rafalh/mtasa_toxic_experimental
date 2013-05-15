@@ -13,20 +13,27 @@ local g_DbgLog = {}
 addEvent("dbg_onDisplayReq", true)
 addEvent("dbg_onLogSync", true)
 
-local _guiSetInputEnabled = guiSetInputEnabled
-function guiSetInputEnabled(enabled)
-	if(enabled) then
+local _showCursor = showCursor
+function showCursor(visible)
+	if(visible) then
 		g_InputCounter = g_InputCounter + 1
-		if(g_InputCounter == 1) then
-			_guiSetInputEnabled(true)
+		if(g_InputCounter > 0) then
+			_showCursor(true)
 		end
 	else
 		g_InputCounter = g_InputCounter - 1
-		if(g_InputCounter == 0) then
-			_guiSetInputEnabled(false)
+		if(g_InputCounter <= 0) then
+			_showCursor(false)
 		end
+		
+		assert(g_Counter >= 0, tostring(g_Counter))
 	end
 end
+
+function guiSetInputEnabled()
+	assert(false, "guiSetInputEnabled is deprecated")
+end
+
 
 local function addRowToList(info)
 	if(info[3] > g_Level) then return end
@@ -146,7 +153,7 @@ function closeDbgLogWnd()
 	end
 	destroyElement(g_Wnd)
 	
-	guiSetInputEnabled(false)
+	showCursor(false)
 	g_Wnd = false
 end
 
@@ -220,13 +227,13 @@ function openDbgLogWnd()
 	guiSetFont(g_LoadingLabel, "default-small")
 	guiSetVisible(g_LoadingLabel,false)
 	
-	guiSetInputEnabled(true)
+	guiSetInputMode("no_binds_when_editing")
+	showCursor(true)
 end
 
 local function onStop()
-	if guiGetVisible(g_Wnd) then
+	if(guiGetVisible(g_Wnd)) then
 		showCursor(false)
-		guiSetInputEnabled(false)
 	end
 end
 
