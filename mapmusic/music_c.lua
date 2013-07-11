@@ -4,6 +4,7 @@ local g_Me = getLocalPlayer ()
 local g_MusicEnabled = false
 local g_Sound = false
 local g_SoundUrl = false
+local g_Volume = 100
 
 g_AutoStart = true
 
@@ -35,6 +36,8 @@ local function setupSound()
 		g_Sound = playSound ( g_SoundUrl, true )
 		if ( not g_Sound ) then
 			outputDebugString ( "playSound failed!", 2 )
+		else
+			setSoundVolume ( g_Sound, g_Volume/100 )
 		end
 	end
 end
@@ -56,7 +59,7 @@ local function setMusicEnabled(enabled)
 		removeEventHandler ( "onClientPlayerRadioSwitch", g_Root, onRadioSwitch )
 		removeEventHandler ( "onClientPlayerVehicleEnter", g_Me, onPlayerVehicleEnter )
 	else
-		setSoundVolume ( g_Sound, 1 )
+		setSoundVolume ( g_Sound, g_Volume/100 )
 		g_MusicEnabled = true
 		setRadioChannel ( 0 )
 		addEventHandler ( "onClientPlayerRadioSwitch", g_Root, onRadioSwitch )
@@ -66,6 +69,13 @@ end
 
 local function toggleMusic ()
 	setMusicEnabled(not g_MusicEnabled)
+end
+
+function setMusicVolume(volume)
+	g_Volume = volume
+	if(g_MusicEnabled and g_Sound) then
+		setSoundVolume ( g_Sound, g_Volume/100 )
+	end
 end
 
 local function startMusicReq ( url )
