@@ -26,7 +26,7 @@ function showCursor(visible)
 			_showCursor(false)
 		end
 		
-		assert(g_Counter >= 0, tostring(g_Counter))
+		assert(g_InputCounter >= 0, tostring(g_InputCounter))
 	end
 end
 
@@ -231,12 +231,6 @@ function openDbgLogWnd()
 	showCursor(true)
 end
 
-local function onStop()
-	if(guiGetVisible(g_Wnd)) then
-		showCursor(false)
-	end
-end
-
 addEventHandler("dbg_onDisplayReq", resourceRoot, function(data)
 	openDbgLogWnd()
 	onLogSync(data, localPlayer)
@@ -245,5 +239,3 @@ end)
 addEventHandler("dbg_onLogSync", root, function(data)
 	onLogSync(data, source)
 end)
-
-addEventHandler ("onClientResourceStop", resourceRoot, onStop)
