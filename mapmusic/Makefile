@@ -1,6 +1,4 @@
-include $(CURDIR)/../config.mk
-
 PROJECT_NAME := mapmusic
-OUTPUT := $(RESOURCES_PATH)$(PROJECT_NAME)
+PROJECT_DIR  := [toxic2]
 
-include $(CURDIR)/../generic.mk
+include $(TXBUILD)/generic.mak
