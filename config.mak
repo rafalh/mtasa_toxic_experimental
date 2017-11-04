@@ -1,5 +1,3 @@
-SELF := $(dir $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))
-
 PREPROCESS     := 1
 COMPILE        := 1
 UTF8_BOM       := 0
