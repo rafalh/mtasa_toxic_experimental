@@ -170,6 +170,20 @@ local function setupRoomResourceMeta(destResName, srcResName, roomId, dim)
     return serverFiles, clientFiles
 end
 
+local function copyResourceAclGroups(srcResName, destResName)
+    for i, group in ipairs(aclGroupList()) do
+        if isObjectInACLGroup('resource.'..srcResName, group) then
+            aclGroupAddObject(group, 'resource.'..destResName)
+        end
+    end
+end
+
+local function removeResourceFromAclGroups(resName)
+    for i, group in ipairs(aclGroupList()) do
+        aclGroupRemoveObject(group, 'resource.'..resName)
+    end
+end
+
 function startResourceInRoom(res, roomId)
     -- create resource to start
     -- sandbox
@@ -197,8 +211,10 @@ function startResourceInRoom(res, roomId)
         error('Failed to copy resource')
     end
 
+    -- Update meta.xml
     local serverFiles, clientFiles = setupRoomResourceMeta(roomResName, resName, roomId, dim)
 
+    -- Copy files
     for i, info in ipairs(serverFiles) do
         fileCopy(':'..resName..'/'..info.src, ':'..roomResName..'/'..info.src, true)
         if info.kind == 'map' then
@@ -209,6 +225,10 @@ function startResourceInRoom(res, roomId)
         fileCopy(':'..resName..'/'..info.src, ':'..roomResName..'/'..info.src, true)
     end
 
+    -- Setup permissions
+    copyResourceAclGroups(resName, roomResName)
+
+    -- Start the resource
     return startResource(roomRes)
 end
 
@@ -217,7 +237,9 @@ local function stopAndDeleteResource(res)
     -- Delete resource after stopping is finished
     setTimer(function ()
         if getResourceState(res) == 'loaded' then
-            deleteResource(getResourceName(res))
+            local resName = getResourceName(res)
+            deleteResource(resName)
+            removeResourceFromAclGroups(resName)
         end
     end, 50, 1)
     return result

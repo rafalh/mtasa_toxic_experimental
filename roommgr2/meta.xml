@@ -15,5 +15,7 @@
         <right name="function.copyResource" access="true" />
         <right name="function.startResource" access="true" />
         <right name="function.stopResource" access="true" />
+        <right name="function.aclGroupAddObject" access="true" />
+        <right name="function.aclGroupRemoveObject" access="true" />
     </aclrequest>
 </meta>
