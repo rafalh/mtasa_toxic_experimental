@@ -20,14 +20,15 @@ local function destroyAllElements()
 	end
 	outputDebugString("Destroyed "..destroyedCount.." elements", 3)
 	
-	local cnt = #getElementsByType("sound", g_resourceRoot)
-	if(cnt ~= 0) then outputDebugString("Found "..cnt.." sounds", 2) end
-	cnt = #getElementsByType("checkpoint", g_resourceRoot)
-	if(cnt ~= 0) then outputDebugString("Found "..cnt.." checkpoints", 2) end
-	cnt = #getElementsByType("spawnpoint", g_resourceRoot)
-	if(cnt ~= 0) then outputDebugString("Found "..cnt.." spawnpoints", 2) end
-	cnt = #getElementsByType("racepickup", g_resourceRoot)
-	if(cnt ~= 0) then outputDebugString("Found "..cnt.." pickups", 2) end
+	-- Server-side elements?
+	-- local cnt = #getElementsByType("sound", g_resourceRoot)
+	-- if(cnt ~= 0) then outputDebugString("Found "..cnt.." sounds", 2) end
+	-- cnt = #getElementsByType("checkpoint", g_resourceRoot)
+	-- if(cnt ~= 0) then outputDebugString("Found "..cnt.." checkpoints", 2) end
+	-- cnt = #getElementsByType("spawnpoint", g_resourceRoot)
+	-- if(cnt ~= 0) then outputDebugString("Found "..cnt.." spawnpoints", 2) end
+	-- cnt = #getElementsByType("racepickup", g_resourceRoot)
+	-- if(cnt ~= 0) then outputDebugString("Found "..cnt.." pickups", 2) end
 end
 
 local function killAllTimers()

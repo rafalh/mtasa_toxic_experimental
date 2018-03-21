@@ -9,15 +9,29 @@ local function buildRoomResourceName(baseResourceName, roomId)
     return '_'..baseResourceName..'@'..roomId
 end
 
+local function getRoomIdFromResourceName(resName)
+    local roomId = resName:match('^_.+@(.+)$')
+    return roomId
+end
+
+local function getRoomIdFromResource(resource)
+    local resName = getResourceName(resource)
+    return getRoomIdFromResourceName(resName)
+end
+
+local function copyNodeAttributes(srcNode, destNode)
+    for k, v in pairs(xmlNodeGetAttributes(srcNode)) do
+        xmlNodeSetAttribute(destNode, k, v)
+    end
+end
+
 local function copyNodeInto(node, parent)
     local name = xmlNodeGetName(node)
     local value = xmlNodeGetValue(node)
     local attr = xmlNodeGetAttributes(node)
     local nodeNew = xmlCreateChild(parent, name)
     xmlNodeSetValue(nodeNew, value)
-    for k, v in pairs(attr) do
-        xmlNodeSetAttribute(nodeNew, k, v)
-    end
+    copyNodeAttributes(node, nodeNew)
     return nodeNew
 end
 
@@ -39,8 +53,14 @@ local function fixMapFile(src, roomId, dim)
     for i, subnode in ipairs(xmlNodeGetChildren(mapNode)) do
         local id = xmlNodeGetAttribute(subnode, 'id')
         if id then
-            xmlNodeSetAttribute(subnode, 'id', roomId..'-'..id)
+            xmlNodeSetAttribute(subnode, 'id', '_'..id..'@'..roomId)
         end
+
+        local nextid = xmlNodeGetAttribute(subnode, 'nextid')
+        if nextid then
+            xmlNodeSetAttribute(subnode, 'nextid', '_'..nextid..'@'..roomId)
+        end
+
         xmlNodeSetAttribute(subnode, 'dimension', dim)
     end
     xmlSaveFile(mapNode)
@@ -84,6 +104,72 @@ local function getRoomDimension(roomId)
     return dim
 end
 
+local function setupRoomResourceMeta(destResName, srcResName, roomId, dim)
+    local clientFiles = {}
+    local serverFiles = {}
+    local srcMeta = xmlLoadFile(':'..srcResName..'/meta.xml')
+    local destMeta = xmlLoadFile(':'..destResName..'/meta.xml')
+    local settingsNode
+
+    for i, srcNode in ipairs(xmlNodeGetChildren(srcMeta)) do
+        local nodeName = xmlNodeGetName(srcNode)
+        local attr = xmlNodeGetAttributes(srcNode)
+        local flagClientFile, flagServerFile = false, false
+        if nodeName == 'script' then
+            if attr.type == 'client' or attr.type == 'shared' then
+                flagClientFile = true
+            end
+            if attr.type ~= 'client' then
+                local destNode = copyNodeInto(srcNode, destMeta)
+                xmlNodeSetAttribute(destNode, 'type', 'server')
+                flagServerFile = true
+            end
+        elseif nodeName == 'map' then
+            local destNode = copyNodeInto(srcNode, destMeta)
+            xmlNodeSetAttribute(destNode, 'dimension', tostring(dim))
+            flagServerFile = true
+        elseif nodeName == 'file' then
+            flagClientFile = true
+        elseif nodeName == 'config' or nodeName == 'html' then
+            copyNodeInto(srcNode, destMeta)
+            flagServerFile = true
+        elseif nodeName == 'settings' then
+            settingsNode = xmlCreateChild(destMeta, 'settings')
+            copyNodeChildren(srcNode, settingsNode)
+        elseif nodeName == 'info' then
+            -- Note: we have info from roombase and we can't have two...
+            local infoNode = xmlFindChild(destMeta, 'info', 0)
+            copyNodeAttributes(srcNode, infoNode)
+        else
+            -- Copy all unknown nodes
+            copyNodeInto(srcNode, destMeta)
+        end
+
+        if flagServerFile then
+            table.insert(serverFiles, { kind = nodeName, src = attr.src })
+        end
+        if flagClientFile then
+            local fileNode = xmlCreateChild(destMeta, 'file')
+            xmlNodeSetAttribute(fileNode, 'download', 'false')
+            xmlNodeSetAttribute(fileNode, 'src', attr.src)
+            table.insert(clientFiles, { kind = nodeName, src = attr.src })
+        end
+    end
+    xmlUnloadFile(srcMeta)
+    
+    if not settingsNode then
+        settingsNode = xmlCreateChild(destMeta, 'settings')
+    end
+    createSettingNode(settingsNode, '#_clientFiles', clientFiles)
+    createSettingNode(settingsNode, '#_roomId', roomId)
+    createSettingNode(settingsNode, '#_roomDim', dim)
+
+    xmlSaveFile(destMeta)
+    xmlUnloadFile(destMeta)
+
+    return serverFiles, clientFiles
+end
+
 function startResourceInRoom(res, roomId)
     -- create resource to start
     -- sandbox
@@ -103,123 +189,116 @@ function startResourceInRoom(res, roomId)
     if roomRes then
         deleteResource(roomResName)
     end
+
+    -- Note: we copy roombase resource instead of original resource to skip reinserting all server-scripts
+    -- (there is no function to insert XML node at arbitrary place)
     roomRes = copyResource(roomBaseRes, roomResName, '[rooms]')
     if not roomRes then
         error('Failed to copy resource')
     end
 
-    local clientFiles = {}
-    local serverFiles = {}
-    local meta = xmlLoadFile(':'..resName..'/meta.xml')
-    local metaNew = xmlLoadFile(':'..roomResName..'/meta.xml')
-    local settingsNode = xmlCreateChild(metaNew, 'settings')
+    local serverFiles, clientFiles = setupRoomResourceMeta(roomResName, resName, roomId, dim)
 
-    for i, node in ipairs(xmlNodeGetChildren(meta)) do
-        local nodeName = xmlNodeGetName(node)
-        local attr = xmlNodeGetAttributes(node)
-        local flagClient, flagServer = false, false
-        if nodeName == 'map' then
-            copyNodeInto(node, metaNew)
-            flagServer = true
-        elseif nodeName == 'script' then
-            if attr.type == 'client' or attr.type == 'shared' then
-                flagClient = true
-            end
-            if attr.type ~= 'client' then
-                flagServer = true
-            end
-        elseif nodeName == 'file' then
-            flagClient = true
-        elseif nodeName == 'settings' then
-            copyNodeChildren(node, settingsNode)
-        elseif nodeName ~= 'info' and nodeName == 'oop' then
-            -- Note: we have info from roombase and we can't have two...
-            copyNodeInto(node, metaNew)
-        elseif nodeName == 'config' then
-            copyNodeInto(node, metaNew)
-            flagServer = true
-        end
-        if flagServer then
-            table.insert(serverFiles, { kind = nodeName, src = attr.src })
-        end
-        if flagClient then
-            table.insert(clientFiles, { kind = nodeName, src = attr.src })
-        end
-    end
-    local infoNode = xmlFindChild(meta, 'info', 0)
-    local infoAttr = xmlNodeGetAttributes(infoNode)
-    xmlUnloadFile(meta)
-    
     for i, info in ipairs(serverFiles) do
         fileCopy(':'..resName..'/'..info.src, ':'..roomResName..'/'..info.src, true)
         if info.kind == 'map' then
             fixMapFile(':'..roomResName..'/'..info.src, roomId, dim)
-        elseif info.kind == 'script' then
-            local node = xmlCreateChild(metaNew, 'script')
-            xmlNodeSetAttribute(node, 'type', 'server')
-            xmlNodeSetAttribute(node, 'src', info.src)
         end
     end
     for i, info in ipairs(clientFiles) do
-        local node = xmlCreateChild(metaNew, 'file')
-        xmlNodeSetAttribute(node, 'download', 'false')
-        xmlNodeSetAttribute(node, 'src', info.src)
         fileCopy(':'..resName..'/'..info.src, ':'..roomResName..'/'..info.src, true)
     end
-    
-    createSettingNode(settingsNode, '#_clientFiles', clientFiles)
-    createSettingNode(settingsNode, '#_roomId', roomId)
-    createSettingNode(settingsNode, '#_roomDim', dim)
-
-    -- Copy info node attributes
-    infoNode = xmlFindChild(metaNew, 'info', 0)
-    for k, v in pairs(infoAttr) do
-        xmlNodeSetAttribute(infoNode, k, v)
-    end
-
-    xmlSaveFile(metaNew)
-    xmlUnloadFile(metaNew)
 
     return startResource(roomRes)
+end
+
+local function stopAndDeleteResource(res)
+    local result = stopResource(res)
+    -- Delete resource after stopping is finished
+    setTimer(function ()
+        if getResourceState(res) == 'loaded' then
+            deleteResource(getResourceName(res))
+        end
+    end, 50, 1)
+    return result
 end
 
 function stopResourceInRoom(res, roomId)
     local resName = getResourceName(res)
     local roomResName = buildRoomResourceName(resName, roomId)
     local roomRes = getResourceFromName(roomResName)
-    stopResource(roomRes)
-    -- FIXME: cleanup?
-    --setTimer(function ()
-    --    deleteResource(roomRes)
-    --end, 50, 1)
+    return stopAndDeleteResource(roomRes)
 end
 
 addEvent('onPlayerLeaveRoom')
 addEvent('onPlayerEnterRoom')
 
 function setPlayerRoom(player, roomId)
+    assert(getElementType(player) == 'player')
+
     local prevRoomId = getElementData(player, 'roomid')
-    triggerEvent('onPlayerLeaveRoom', player, prevRoomId)
-    triggerClientEvent(player, 'onClientPlayerLeaveRoom', player, prevRoomId)
+    if prevRoomId then
+        triggerEvent('onPlayerLeaveRoom', player, prevRoomId)
+        triggerClientEvent(player, 'onClientPlayerLeaveRoom', player, prevRoomId)
+    end
     
     setElementData(player, 'roomid', roomId)
-    local dim = getRoomDimension(roomId)
-    setElementDimension(player, dim)
-    triggerEvent('onPlayerEnterRoom', player, roomId)
-    triggerClientEvent(player, 'onClientPlayerEnterRoom', player, roomId)
+    if roomId then
+        local dim = getRoomDimension(roomId)
+        setElementDimension(player, dim)
+        triggerEvent('onPlayerEnterRoom', player, roomId)
+        triggerClientEvent(player, 'onClientPlayerEnterRoom', player, roomId)
+    end
+end
+
+function getPlayerRoom(player)
+    return getElementData(player, 'roomid')
+end
+
+function getRooms()
+    return {}
 end
 
 addCommandHandler('startinroom', function (player, cmdName, resName, roomId)
     local res = getResourceFromName(resName)
     if not res then
-        outputChatBox('not found')
+        outputConsole('startinroom: Resource not found')
         return
     end
+    outputConsole('startinroom: Starting resource')
     restartResourceInRoom(res, roomId)
-    outputChatBox('OK')
+end)
+
+addCommandHandler('stopinroom', function (player, cmdName, resName, roomId)
+    local res = getResourceFromName(resName)
+    if not res then
+        outputConsole('stopinroom: Resource not found')
+        return
+    end
+    outputConsole('stopinroom: Stopping resource')
+    stopResourceInRoom(res, roomId)
+end)
+
+addCommandHandler('stopallinroom', function (player, cmdName, roomId)
+    outputConsole('stopallinroom: Stopping all resources in room')
+    local resources = getResources()
+    for i, res in ipairs(resources) do
+        local resName = getResourceName(res)
+        local resRoomId = resName:match('^_.+@(.+)$')
+        if resRoomId == roomId then
+            outputConsole('stopallinroom: Stopping '..resName)
+            stopAndDeleteResource(res)
+        end
+    end
 end)
 
 addCommandHandler('joinroom', function (player, cmdName, roomId)
+    outputConsole('joinroom: Joining room')
     setPlayerRoom(player, roomId)
-    outputChatBox('OK')
 end)
+
+addEventHandler('onPlayerJoin', root, function ()
+    -- Set lobby room for new players
+    assert(getElementType(source) == 'player')
+    setElementData(source, 'roomid', '_lobby')
+end, true, 'high+100')

@@ -4,6 +4,11 @@
 	<script src="roomMgr_s.lua" type="server" />
 	<script src="roomMgr_c.lua" type="client" />
 
+    <export function="startResourceInRoom" type="server"/>
+    <export function="stopResourceInRoom" type="server"/>
+    <export function="getPlayerRoom" type="server"/>
+    <export function="getRooms" type="server"/>
+
     <aclrequest>
         <right name="general.ModifyOtherObjects" access="true" />
         <right name="function.fetchRemote" access="true" />

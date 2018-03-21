@@ -1,8 +1,8 @@
 local g_clientFiles
 local g_downloadCounter = 0
 local g_resName = getResourceName(resource)
-g_roomDim = 0
 local g_resourceRoot = getResourceRootElement(getThisResource())
+g_roomDim = 0
 
 local function fileGetContents(path)
 	local file = fileOpen(path, true)
@@ -50,7 +50,7 @@ local function tableSize(tbl)
 end
 
 local function startAfterDownload()
-	outputDebugString('Starting client-side resource in room!', 3)
+	outputDebugString('Starting client-side scripts in '..g_resName, 3)
 
 	-- Setup environment
 	local env = {}
@@ -77,23 +77,26 @@ local function startAfterDownload()
 		end
 	end
 
-	outputDebugString('Calling onClientResourceStart in room (bootstrap)', 3)
+	--outputDebugString('Calling onClientResourceStart in room (bootstrap)', 3)
 	_room_runEventHandlers('onClientResourceStart', g_resourceRoot)
-	outputDebugString('Calling onClientResourceStart in room done', 3)
+	--outputDebugString('Calling onClientResourceStart in room done', 3)
 end
 
 addEvent('_onClientFiles', true)
 
 addEventHandler('onClientResourceStart', g_resourceRoot, function ()
+	local roomId = g_resName:match('^_.+@(.+)$')
+	setElementData(g_resourceRoot, 'roomid', roomId)
+	-- Make sure resource root has roomid corectly set
 	triggerServerEvent('_onReady', g_resourceRoot)
-end)
+end, false, 'high+100')
 
 addEventHandler('_onClientFiles', g_resourceRoot, function (clientFiles, roomId, roomDim)
 	g_roomId = roomId
 	g_roomDim = roomDim
 	-- TODO: compare?
 	if g_downloadCounter == #clientFiles then
-		outputDebugString('Downloaded all files before!', 3)
+		--outputDebugString('Downloaded all files before in '..g_resName, 3)
 		startAfterDownload()
 	else
 		g_clientFiles = clientFiles
@@ -108,7 +111,7 @@ addEventHandler('onClientFileDownloadComplete', g_resourceRoot, function (fileNa
 		g_downloadCounter = g_downloadCounter + 1
 		--outputDebugString('Download completed for '..fileName, 3)
 		if g_downloadCounter == #g_clientFiles then
-			outputDebugString('Downloaded all files!', 3)
+			--outputDebugString('Downloaded all files in '..g_resName, 3)
 			startAfterDownload()
 		end
 	else

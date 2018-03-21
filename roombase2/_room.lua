@@ -33,9 +33,6 @@ function _room_removeAllEventHandlers()
         if isElement(el) then -- fixme: hack?
             for name, funcList in pairs(events or {}) do
 				for i, func in pairs(funcList or {}) do
-					if name == 'onClientResourceStart' then
-						outputDebugString('removeEventHandler '..name..' '..tostring(func), 3)
-					end
                     _removeEventHandler(name, el, func)
                     removedHandlers = removedHandlers + 1
                 end
@@ -53,25 +50,39 @@ end
 local _addEventHandler = addEventHandler
 _room_addEventHandler = _addEventHandler
 function addEventHandler(name, attachedTo, func, ...)
-	-- filter element related events
-	local filteredEvent = name:match('^onClientPlayer') or name:match('^onClientElement') or name:match('^onClientMarker')
-	--if filteredEvent then
-		local wrapper = g_eventHandlerWrappers[func]
-		if not wrapper and func then
-			local originalFunc = func
-			wrapper = function (...)
-				if not filteredEvent or getElementData(source, 'roomid') == g_roomId then
-					originalFunc(...)
-				end
-				if _room_clearEventHandlerEnv then
-					_room_clearEventHandlerEnv()
+	local wrapper = g_eventHandlerWrappers[func]
+	if not wrapper and func then
+		local originalFunc = func
+		wrapper = function (...)
+			local sourceResourceRoomId = sourceResourceRoot and getElementData(sourceResourceRoot, 'roomid')
+			if sourceResourceRoomId and sourceResourceRoomId ~= g_roomId then 
+				--outputDebugString('event blocked#1 '..name, 3)
+				return
+			end
+
+			local elRoomId = getElementData(source, 'roomid')
+			if elRoomId and elRoomId ~= g_roomId then
+				--outputDebugString('event blocked#2 '..name..' '..tostring(elRoomId)..' '..tostring(source), 3)
+				return
+			end
+
+			if name == 'onResourcePreStart' then
+				local res = ({...})[1]
+				local resRoomId = getResourceName(res):match('^_.+@(.+)$')
+				if resRoomId and resRoomId ~= g_roomId then
+					--outputDebugString('event blocked#3 '..name..' '..tostring(elRoomId)..' '..tostring(source), 3)
+					return
 				end
 			end
-			g_eventHandlerWrappers[func] = wrapper
+
+			originalFunc(...)
+			if _room_clearEventHandlerEnv then
+				_room_clearEventHandlerEnv()
+			end
 		end
-		if name == 'onClientResourceStart' then outputDebugString('addEventHandler '..name..' '..tostring(func)..' wrapper '..tostring(wrapper)) end
-		func = wrapper
-	--end
+		g_eventHandlerWrappers[func] = wrapper
+	end
+	func = wrapper
 
 	local ret = _addEventHandler(name, attachedTo, func, ...)
 	if not ret then
@@ -127,6 +138,16 @@ function getElementsByType(type, ...)
 end
 if Element then Element.getAllByType = getElementsByType end
 
+local _getElementByID = getElementByID
+function getElementByID(id, ...)
+	local el = getElementByID('_'..id..'@'..g_roomId)
+	if not el then
+		el = getElementByID(id)
+	end
+	return el
+end
+if Element then Element.getByID = getElementByID end
+
 local _setElementDimension = setElementDimension
 function setElementDimension(el, dim)
 	if dim == 0 then
@@ -161,6 +182,18 @@ local function hookCreateElementFunction(funName, oopName)
 		oop.create = _G[funName]
 	end
 end
+
+local _createElement = createElement
+function createElement(elementType, elementID, ...)
+	elementID = elementID and '_'..g_roomId..'@'..elementID
+	local el = _createElement(elementType, elementID, ...)
+	if el then
+		_setElementDimension(el, g_roomDim)
+		setElementData(el, 'roomid', g_roomId)
+	end
+	return el
+end
+if Element then Element.create = createElement end
 
 hookCreateElementFunction('createBlip', 'Blip')
 hookCreateElementFunction('createColCircle', 'ColShape.Circle')
