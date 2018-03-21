@@ -1,0 +1,9 @@
+<meta>
+	<info type="misc" name="Server Room" author="rafalh" version="0.1" />
+	
+	<script src="_roomBootstrap_c.lua" type="client" />
+	<script src="_room_s.lua" type="server" />
+	<script src="_room_c.lua" type="client" load="false" />
+	<script src="_room.lua" type="server" />
+	<script src="_room.lua" type="client" load="false" />
+</meta>

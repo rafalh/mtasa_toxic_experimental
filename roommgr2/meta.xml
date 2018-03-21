@@ -1,0 +1,14 @@
+<meta>
+	<info type="script" name="Toxic Room Manager" author="rafalh" version="1.0" />
+	
+	<script src="roomMgr_s.lua" type="server" />
+	<script src="roomMgr_c.lua" type="client" />
+
+    <aclrequest>
+        <right name="general.ModifyOtherObjects" access="true" />
+        <right name="function.fetchRemote" access="true" />
+        <right name="function.copyResource" access="true" />
+        <right name="function.startResource" access="true" />
+        <right name="function.stopResource" access="true" />
+    </aclrequest>
+</meta>
