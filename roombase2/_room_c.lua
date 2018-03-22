@@ -1,3 +1,4 @@
+local g_root = getRootElement()
 local g_resource = getThisResource()
 local g_resourceRoot = getResourceRootElement()
 local g_localPlayer = getLocalPlayer()
@@ -18,7 +19,9 @@ local function destroyAllElements()
 			end
 		end
 	end
-	outputDebugString("Destroyed "..destroyedCount.." elements", 3)
+	if destroyedCount > 0 then
+		outputDebugString("Destroyed "..destroyedCount.." elements", 3)
+	end
 	
 	-- Server-side elements?
 	-- local cnt = #getElementsByType("sound", g_resourceRoot)
@@ -36,7 +39,9 @@ local function killAllTimers()
 	for i, timer in ipairs(timers) do
 		killTimer(timer)
 	end
-	outputDebugString("Killed "..tostring(#timers).." timers", 3)
+	if #timers > 0 then
+		outputDebugString("Killed "..tostring(#timers).." timers", 3)
+	end
 end
 
 local function removeAllCommandHandlers()
@@ -74,15 +79,21 @@ end
 
 local function destroyRuntimeObjects()
 	local removedHandlers = _room_removeAllEventHandlers()
-	outputDebugString("Removed "..tostring(removedHandlers).." event handlers", 3)
+	if removedHandlers > 0 then
+		outputDebugString("Removed "..tostring(removedHandlers).." event handlers", 3)
+	end
 	
 	destroyAllElements()
 	killAllTimers()
 	removeAllCommandHandlers()
 	unbindAllKeys()
+
+	-- Run Lua garbage collector
+	collectgarbage()
 end
 
 addEventHandler('onClientPlayerEnterRoom', g_localPlayer, function ()
+	-- Note: this is called by bootstrap
 	--outputDebugString('Calling onClientResourceStart in room (after onClientPlayerEnterRoom)', 3)
 	--_room_runEventHandlers('onClientResourceStart', g_resourceRoot)
 end)

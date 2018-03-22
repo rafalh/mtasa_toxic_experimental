@@ -1,5 +1,7 @@
 local g_roomToDim = {}
 local g_lastUsedDim = 0
+local g_readyPlayers = {}
+local g_roomWorldState = {}
 
 function createRoom(id)
 
@@ -137,9 +139,13 @@ local function setupRoomResourceMeta(destResName, srcResName, roomId, dim)
             settingsNode = xmlCreateChild(destMeta, 'settings')
             copyNodeChildren(srcNode, settingsNode)
         elseif nodeName == 'info' then
-            -- Note: we have info from roombase and we can't have two...
-            local infoNode = xmlFindChild(destMeta, 'info', 0)
-            copyNodeAttributes(srcNode, infoNode)
+            -- Note: only one node is allowed
+            local existingNode = xmlFindChild(destMeta, nodeName, 0)
+            copyNodeAttributes(srcNode, existingNode)
+        elseif nodeName == 'min_mta_version' then
+            -- Note: only one node is allowed
+            local existingNode = xmlFindChild(destMeta, nodeName, 0)
+            copyNodeAttributes(srcNode, existingNode)
         else
             -- Copy all unknown nodes
             copyNodeInto(srcNode, destMeta)
@@ -252,6 +258,24 @@ function stopResourceInRoom(res, roomId)
     return stopAndDeleteResource(roomRes)
 end
 
+local function getRoomReadyPlayers(roomId)
+    local result = {}
+    for i, player in ipairs(getElementsByType('player')) do
+        if getElementData(player, 'roomid') == roomId and g_readyPlayers[player] then
+            table.insert(result, player)
+        end
+    end
+    return result
+end
+
+local function sendRoomWorldState(roomId, player)
+    local worldState = g_roomWorldState[roomId] or {}
+    for stateName, stateValue in pairs(worldState) do
+        --outputDebugString('sending world state '..stateName..' for room '..roomId)
+        triggerClientEvent(player, '_room_onWorldSettingChange', resourceRoot, 'set'..stateName, unpack(stateValue))
+    end
+end
+
 addEvent('onPlayerLeaveRoom')
 addEvent('onPlayerEnterRoom')
 
@@ -264,12 +288,20 @@ function setPlayerRoom(player, roomId)
         triggerClientEvent(player, 'onClientPlayerLeaveRoom', player, prevRoomId)
     end
     
+    if isPedInVehicle(player) then
+        removePedFromVehicle(player)
+    end
+
     setElementData(player, 'roomid', roomId)
     if roomId then
         local dim = getRoomDimension(roomId)
         setElementDimension(player, dim)
         triggerEvent('onPlayerEnterRoom', player, roomId)
         triggerClientEvent(player, 'onClientPlayerEnterRoom', player, roomId)
+
+        if g_readyPlayers[player] then
+            sendRoomWorldState(roomId, player)
+        end
     end
 end
 
@@ -279,6 +311,46 @@ end
 
 function getRooms()
     return {}
+end
+
+function getRoomWorldState(roomId, getFnName)
+    local prefix, stateName = getFnName:match('^(%l+)(.+)$')
+    if not prefix == 'get' and not prefix == 'is' and not prefix == 'are' then return end
+    local worldState = g_roomWorldState[roomId] or {}
+    local result = worldState[stateName]
+	if not result then
+		result = { _G[getFnName]() }
+		g_worldSettings[stateName] = result
+	end
+	return unpack(result)
+end
+
+function setRoomWorldState(roomId, getFnName, setFnName, ...)
+    local prefix, stateName = getFnName:match('^(%l+)(.+)$')
+    if not prefix == 'get' and not prefix == 'is' and not prefix == 'are' then return end
+    local worldState = g_roomWorldState[roomId]
+    if not worldState then
+        worldState = {}
+        g_roomWorldState[roomId] = worldState
+    end
+    worldState[stateName] = { ... }
+    local roomPlayers = getRoomReadyPlayers(roomId)
+	triggerClientEvent(roomPlayers, '_room_onWorldSettingChange', resourceRoot, setFnName, ...)
+	return true
+end
+
+function resetRoomWorldState(roomId, getFnName, resetFnName)
+    local prefix, stateName = getFnName:match('^(%l+)(.+)$')
+    if not prefix == 'get' and not prefix == 'is' and not prefix == 'are' then return end
+    local worldState = g_roomWorldState[roomId]
+    if not worldState then
+        worldState = {}
+        g_roomWorldState[roomId] = worldState
+    end
+    worldState[stateName] = nil
+    local roomPlayers = getRoomReadyPlayers(roomId)
+	triggerClientEvent(roomPlayers, '_room_onWorldSettingChange', resourceRoot, resetFnName)
+	return true
 end
 
 addCommandHandler('startinroom', function (player, cmdName, resName, roomId)
@@ -324,3 +396,20 @@ addEventHandler('onPlayerJoin', root, function ()
     assert(getElementType(source) == 'player')
     setElementData(source, 'roomid', '_lobby')
 end, true, 'high+100')
+
+addEventHandler('onResourceStart', resourceRoot, function ()
+    -- Set lobby room for new players
+    for i, player in ipairs(getElementsByType('player')) do
+        local playerRoomId = getElementData(player, 'roomid')
+        if not playerRoomId then
+            setElementData(player, 'roomid', '_lobby')
+        end
+    end
+end, true, 'high+100')
+
+addEvent('onReady', true)
+addEventHandler('onReady', resourceRoot, function ()
+    g_readyPlayers[client] = true
+    local roomId = getPlayerRoom(client)
+    sendRoomWorldState(roomId, client)
+end)

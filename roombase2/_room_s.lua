@@ -4,6 +4,8 @@ local g_resourceRoot = getResourceRootElement()
 local g_resourceName = getResourceName(g_resource)
 local g_readyPlayers = {}
 
+local g_wrappers = {}
+setmetatable(g_wrappers, { __mode = 'v' })
 
 g_roomDim = get('#'..g_resourceName..'._roomDim')
 g_roomId = get('#'..g_resourceName..'._roomId')
@@ -28,7 +30,6 @@ addEventHandler('_onReady', g_resourceRoot, function ()
 end)
 
 addEventHandler('onResourceStart', g_resourceRoot, function ()
-	outputDebugString('onResourceStart in '..g_resourceName)
 	setElementData(g_resourceRoot, 'roomid', g_roomId)
 end, false, 'high+100')
 
@@ -54,7 +55,7 @@ function spawnPlayer(player, x, y, z, rotation, skinID, interior, dimension, ...
 	end
 	return _spawnPlayer(player, x, y, z, rotation, skinID, interior, dimension, ...)
 end
-if Player then getmetatable(Player).__index.spawn = spawnPlayer end
+if Player then Player.spawn = spawnPlayer end
 
 local _get = get
 function get(name)
@@ -66,6 +67,171 @@ function get(name)
 		value = _get('*'..baseResName..'.'..settingName)
 	end
 	return _get(name)
+end
+
+local function createPlayerFunctionWrapper(funName, fun, playerArgIndex, assumeRoot)
+	playerArgIndex = playerArgIndex or 1
+	assumeRoot = assumeRoot or false
+	return function (...)
+		local args = { ... }
+		local playerArg = args[playerArgIndex]
+		if assumeRoot and playerArg == nil then
+			playerArg = g_root
+		end
+		if isElement(playerArg) and getElementType(playerArg) ~= 'player' then
+			local result = true
+			local players = getElementsByType('player', playerArg)
+			--outputDebugString(funName..': changing player arg - num players '..#players..' in '..getResourceName(getThisResource()))
+			
+			for i, player in ipairs(players) do
+				args[playerArgIndex] = player
+				result = result and fun(unpack(args))
+			end
+			return result
+		else
+			--outputDebugString(funName..': not changing player arg in '..getResourceName(getThisResource()))
+			return fun(...)
+		end
+	end
+end
+
+local function hookPlayerFunction(funName, ...)
+	_G[funName] = createPlayerFunctionWrapper(funName, _G[funName], ...)
+end
+
+hookPlayerFunction('playSoundFrontEnd')
+hookPlayerFunction('outputChatBox', 2)
+hookPlayerFunction('fadeCamera', 1)
+hookPlayerFunction('setCameraInterior', 1)
+hookPlayerFunction('setCameraMatrix', 1)
+hookPlayerFunction('setCameraTarget', 1)
+hookPlayerFunction('showCursor', 1)
+hookPlayerFunction('forcePlayerMap', 1)
+hookPlayerFunction('setPlayerBlurLevel', 1)
+hookPlayerFunction('setPlayerHudComponentVisible', 1)
+hookPlayerFunction('setPlayerMoney', 1)
+hookPlayerFunction('setPlayerMuted', 1)
+hookPlayerFunction('setPlayerWantedLevel', 1)
+hookPlayerFunction('showPlayerHudComponent', 1)
+hookPlayerFunction('takePlayerMoney', 1)
+hookPlayerFunction('detonateSatchels', 1)
+hookPlayerFunction('outputConsole', 2, true)
+hookPlayerFunction('showChat', 1)
+hookPlayerFunction('resetMapInfo', 1, true)
+
+
+-- Block setting global server state
+local function dummy()
+	return false
+end
+setGameType = dummy
+setMapName = dummy
+setFPSLimit = dummy
+setGlitchEnabled = dummy
+
+local function hookWorldFunction(getFnName, setFnName, resetFnName)
+	local orgGetFn = _G[getFnName]
+	_G[getFnName] = function ()
+		return exports.roommgr:getRoomWorldState(g_roomId, getFnName)
+	end
+
+	_G[setFnName] = function (...)
+		return exports.roommgr:setRoomWorldState(g_roomId, getFnName, setFnName, ...)
+	end
+
+	if resetFnName then
+		_G[resetFnName] = function ()
+			return exports.roommgr:resetRoomWorldState(g_roomId, getFnName, setFnName)
+		end
+	end
+end
+
+hookWorldFunction('areTrafficLightsLocked', 'setTrafficLightsLocked')
+hookWorldFunction('getCloudsEnabled', 'setCloudsEnabled')
+hookWorldFunction('getGameSpeed', 'setGameSpeed')
+hookWorldFunction('getGravity', 'setGravity')
+hookWorldFunction('getHeatHaze', 'setHeatHaze', 'resetHeatHaze')
+hookWorldFunction('getJetpackMaxHeight', '')
+hookWorldFunction('getMinuteDuration', 'setMinuteDuration')
+hookWorldFunction('getSkyGradient', 'setSkyGradient', 'resetSkyGradient')
+hookWorldFunction('getTime', 'setTime')
+hookWorldFunction('getTrafficLightState', 'setTrafficLightState')
+hookWorldFunction('getWeather', 'setWeather')
+--TODO setWeatherBlended
+-- TODO: hookWorldFunction('isGarageOpen', 'setGarageOpen')
+hookWorldFunction('getInteriorSoundsEnabled', 'setInteriorSoundsEnabled')
+hookWorldFunction('getRainLevel', 'setRainLevel', 'resetRainLevel')
+hookWorldFunction('getSunSize', 'setSunSize', 'resetSunSize')
+hookWorldFunction('getSunColor', 'setSunColor', 'resetSunColor')
+hookWorldFunction('getWindVelocity', 'setWindVelocity', 'resetWindVelocity')
+hookWorldFunction('getFarClipDistance', 'setFarClipDistance', 'resetFarClipDistance')
+hookWorldFunction('getFogDistance', 'setFogDistance', 'resetFogDistance')
+-- FIXME removeWorldModel restoreWorldModel restoreAllWorldModels
+hookWorldFunction('getOcclusionsEnabled', 'setOcclusionsEnabled')
+-- FIXME setJetpackWeaponEnabled getJetpackWeaponEnabled
+hookWorldFunction('getAircraftMaxVelocity', 'setAircraftMaxVelocity')
+hookWorldFunction('getMoonSize', 'setMoonSize', 'resetMoonSize')
+
+
+
+local _triggerClientEvent = triggerClientEvent
+function triggerClientEvent(sendTo, ...)
+	-- Note: not using createPlayerFunctionWrapper because _triggerClientEvent can use array
+	if type(sendTo) == 'string' then
+		return triggerClientEvent(g_root, sendTo, ...)
+	end
+	if isElement(sendTo) then
+		sendTo = getElementsByType('player', sendTo)
+	end
+	return _triggerClientEvent(sendTo, ...)
+end
+
+local _addCommandHandler = addCommandHandler
+function addCommandHandler(commandName, handlerFunction, ...)
+	local wrapper = g_wrappers[handlerFunction]
+	if not wrapper then
+		wrapper = function (playerSource, ...)
+			local playerRoomId = getElementData(playerSource, 'roomid')
+			if playerRoomId ~= g_roomId then return end
+			handlerFunction(playerSource, ...)
+		end
+		g_wrappers[handlerFunction] = wrapper
+	end
+	handlerFunction = wrapper
+	return _addCommandHandler(commandName, handlerFunction, ...)
+end
+
+local _removeCommandHandler = removeCommandHandler
+function removeCommandHandler(commandName, handlerFunction)
+	local wrapper = handlerFunction and g_wrappers[handlerFunction]
+	if wrapper then
+		handlerFunction = wrapper
+	end
+	return _removeCommandHandler(commandName, handlerFunction)
+end
+
+local _bindKey = bindKey
+function bindKey(thePlayer, key, keyState, handlerFunction, ...)
+	local wrapper = g_wrappers[handlerFunction]
+	if not wrapper then
+		wrapper = function (player, ...)
+			local playerRoomId = getElementData(player, 'roomid')
+			if playerRoomId ~= g_roomId then return end
+			handlerFunction(player, ...)
+		end
+		g_wrappers[handlerFunction] = wrapper
+	end
+	handlerFunction = wrapper
+	return _bindKey(thePlayer, key, keyState, handlerFunction, ...)
+end
+
+local _unbindKey = unbindKey
+function unbindKey(thePlayer, key, keyState, handlerFunction, ...)
+	local wrapper = handlerFunction and g_wrappers[handlerFunction]
+	if wrapper then
+		handlerFunction = wrapper
+	end
+	return _unbindKey(thePlayer, key, keyState, handlerFunction, ...)
 end
 
 local _getResources = getResources

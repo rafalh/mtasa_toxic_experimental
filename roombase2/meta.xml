@@ -6,4 +6,6 @@
 	<script src="_room_c.lua" type="client" load="false" />
 	<script src="_room.lua" type="server" />
 	<script src="_room.lua" type="client" load="false" />
+	
+	<min_mta_version client="1.5.0" server="1.5.0" />
 </meta>

@@ -1,6 +1,8 @@
 <meta>
 	<info type="script" name="Toxic Room Manager" author="rafalh" version="1.0" />
 	
+    <min_mta_version client="1.5.0" server="1.5.0"/>
+
 	<script src="roomMgr_s.lua" type="server" />
 	<script src="roomMgr_c.lua" type="client" />
 
@@ -8,6 +10,10 @@
     <export function="stopResourceInRoom" type="server"/>
     <export function="getPlayerRoom" type="server"/>
     <export function="getRooms" type="server"/>
+
+    <export function="getRoomWorldState" type="server"/>
+    <export function="setRoomWorldState" type="server"/>
+    <export function="resetRoomWorldState" type="server"/>
 
     <aclrequest>
         <right name="general.ModifyOtherObjects" access="true" />

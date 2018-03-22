@@ -86,6 +86,7 @@ function addEventHandler(name, attachedTo, func, ...)
 
 	local ret = _addEventHandler(name, attachedTo, func, ...)
 	if not ret then
+		--outputDebugString('_addEventHandler failed '..tostring(name)..' '..tostring(attachedTo)..' '..tostring(func), 2)
 		outputDebugString(debug.traceback(), 2)
 		return ret
 	end
@@ -156,6 +157,11 @@ function setElementDimension(el, dim)
 	return _setElementDimension(el, dim)
 end
 if Element then Element.setDimension = setElementDimension end
+
+-- function fadeCamera()
+-- --dummy
+-- 	outputDebugString('fadeCamera ignored')
+-- end
 
 local function hookCreateElementFunction(funName, oopName)
 	local oldFun = _G[funName]
