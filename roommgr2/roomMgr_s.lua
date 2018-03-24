@@ -432,6 +432,12 @@ addEventHandler('onPlayerJoin', root, function ()
 end, true, 'high+100')
 
 addEventHandler('onResourceStart', resourceRoot, function ()
+    -- Add scoreboard column
+    local scoreboardRes = getResourceFromName('scoreboard')
+    if scoreboardRes and getResourceState(scoreboardRes) == 'running' then
+        call(scoreboardRes, 'scoreboardAddColumn', 'roomid', g_Root, 50, 'Room')
+    end
+
     -- Set lobby room for new players
     for i, player in ipairs(getElementsByType('player')) do
         local playerRoomId = getElementData(player, 'roomid')
