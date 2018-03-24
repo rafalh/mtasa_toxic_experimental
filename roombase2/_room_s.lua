@@ -10,6 +10,19 @@ setmetatable(g_wrappers, { __mode = 'v' })
 g_roomDim = get('#'..g_resourceName..'._roomDim')
 g_roomId = get('#'..g_resourceName..'._roomId')
 
+local function startIncludedResources()
+	local resources = get('#'..g_resourceName..'._includedResources')
+	for i, resName in ipairs(resources) do
+		local res = getResourceFromName(resName)
+		if res then
+			local roomRes = call(getResourceFromName('roommgr'), 'getResourceForRoom', res, g_roomId)
+			if getResourceState(roomRes) == 'loaded' then
+				startResource(roomRes)
+			end
+		end
+	end
+end
+startIncludedResources()
 
 local function loadClientFiles(player)
 	local clientFiles = get('#'..g_resourceName..'._clientFiles')
@@ -157,8 +170,8 @@ hookWorldFunction('getSkyGradient', 'setSkyGradient', 'resetSkyGradient')
 hookWorldFunction('getTime', 'setTime')
 hookWorldFunction('getTrafficLightState', 'setTrafficLightState')
 hookWorldFunction('getWeather', 'setWeather')
---TODO setWeatherBlended
--- TODO: hookWorldFunction('isGarageOpen', 'setGarageOpen')
+setWeatherBlended = dummy -- TODO
+-- TODO: isGarageOpen setGarageOpen
 hookWorldFunction('getInteriorSoundsEnabled', 'setInteriorSoundsEnabled')
 hookWorldFunction('getRainLevel', 'setRainLevel', 'resetRainLevel')
 hookWorldFunction('getSunSize', 'setSunSize', 'resetSunSize')
@@ -166,9 +179,9 @@ hookWorldFunction('getSunColor', 'setSunColor', 'resetSunColor')
 hookWorldFunction('getWindVelocity', 'setWindVelocity', 'resetWindVelocity')
 hookWorldFunction('getFarClipDistance', 'setFarClipDistance', 'resetFarClipDistance')
 hookWorldFunction('getFogDistance', 'setFogDistance', 'resetFogDistance')
--- FIXME removeWorldModel restoreWorldModel restoreAllWorldModels
+-- TODO: removeWorldModel restoreWorldModel restoreAllWorldModels
 hookWorldFunction('getOcclusionsEnabled', 'setOcclusionsEnabled')
--- FIXME setJetpackWeaponEnabled getJetpackWeaponEnabled
+-- TODO: setJetpackWeaponEnabled getJetpackWeaponEnabled
 hookWorldFunction('getAircraftMaxVelocity', 'setAircraftMaxVelocity')
 hookWorldFunction('getMoonSize', 'setMoonSize', 'resetMoonSize')
 
@@ -190,10 +203,11 @@ local _addCommandHandler = addCommandHandler
 function addCommandHandler(commandName, handlerFunction, ...)
 	local wrapper = g_wrappers[handlerFunction]
 	if not wrapper then
+		local originalFunc = handlerFunction
 		wrapper = function (playerSource, ...)
 			local playerRoomId = getElementData(playerSource, 'roomid')
 			if playerRoomId ~= g_roomId then return end
-			handlerFunction(playerSource, ...)
+			originalFunc(playerSource, ...)
 		end
 		g_wrappers[handlerFunction] = wrapper
 	end
@@ -214,10 +228,11 @@ local _bindKey = bindKey
 function bindKey(thePlayer, key, keyState, handlerFunction, ...)
 	local wrapper = g_wrappers[handlerFunction]
 	if not wrapper then
+		local originalFunc = handlerFunction
 		wrapper = function (player, ...)
 			local playerRoomId = getElementData(player, 'roomid')
 			if playerRoomId ~= g_roomId then return end
-			handlerFunction(player, ...)
+			originalFunc(player, ...)
 		end
 		g_wrappers[handlerFunction] = wrapper
 	end
@@ -257,27 +272,21 @@ function getResourceFromName(resName)
 end
 
 local _startResource = startResource
-function startResource(res)
-	local resName = getResourceName(res)
-	local resRoomId = resName:match('^_.+@(.+)$')
-	if resRoomId and resRoomId == g_roomId then
-		return _startResource(res)
-	else
-		assert(not resRoomId, resRoomId)
-		return call(_getResourceFromName('roommgr'), 'startResourceInRoom', res, g_roomId)
-	end
+function startResource(res, ...)
+	local roomRes = call(_getResourceFromName('roommgr'), 'getResourceForRoom', res, g_roomId)
+	return _startResource(roomRes, ...)
+end
+
+local _restartResource = restartResource
+function restartResource(res, ...)
+	local roomRes = call(_getResourceFromName('roommgr'), 'getResourceForRoom', res, g_roomId)
+	return _restartResource(roomRes, ...)
 end
 
 local _stopResource = stopResource
-function stopResource(res)
-	local resName = getResourceName(res)
-	local resRoomId = resName:match('^_.+@(.+)$')
-	if resRoomId and resRoomId == g_roomId then
-		return _stopResource(res)
-	else
-		assert(not resRoomId, resRoomId)
-		return call(_getResourceFromName('roommgr'), 'stopResourceInRoom', res, g_roomId)
-	end
+function stopResource(res, ...)
+	local roomRes = call(_getResourceFromName('roommgr'), 'getResourceForRoom', res, g_roomId)
+	return _stopResource(roomRes, ...)
 end
 
 local exportsMT = getmetatable(exports)

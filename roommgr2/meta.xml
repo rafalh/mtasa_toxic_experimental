@@ -6,10 +6,9 @@
 	<script src="roomMgr_s.lua" type="server" />
 	<script src="roomMgr_c.lua" type="client" />
 
-    <export function="startResourceInRoom" type="server"/>
-    <export function="stopResourceInRoom" type="server"/>
     <export function="getPlayerRoom" type="server"/>
     <export function="getRooms" type="server"/>
+    <export function="getResourceForRoom" type="server"/>
 
     <export function="getRoomWorldState" type="server"/>
     <export function="setRoomWorldState" type="server"/>

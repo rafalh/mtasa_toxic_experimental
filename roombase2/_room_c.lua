@@ -95,11 +95,11 @@ end
 addEventHandler('onClientPlayerEnterRoom', g_localPlayer, function ()
 	-- Note: this is called by bootstrap
 	--outputDebugString('Calling onClientResourceStart in room (after onClientPlayerEnterRoom)', 3)
-	--_room_runEventHandlers('onClientResourceStart', g_resourceRoot)
+	--_room_runEventHandlers('onClientResourceStart', g_resourceRoot, g_resource)
 end)
 
 addEventHandler('onClientPlayerLeaveRoom', g_localPlayer, function ()
-	_room_runEventHandlers('onClientResourceStop', g_resourceRoot)
+	_room_runEventHandlers('onClientResourceStop', g_resourceRoot, g_resource)
 	destroyRuntimeObjects()
 end)
 

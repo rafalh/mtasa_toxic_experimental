@@ -1,7 +1,8 @@
 local g_clientFiles
 local g_downloadCounter = 0
-local g_resName = getResourceName(resource)
-local g_resourceRoot = getResourceRootElement(getThisResource())
+local g_resource = getThisResource()
+local g_resName = getResourceName(g_resource)
+local g_resourceRoot = getResourceRootElement(g_resource)
 g_roomDim = 0
 
 local function fileGetContents(path)
@@ -78,7 +79,7 @@ local function startAfterDownload()
 	end
 
 	--outputDebugString('Calling onClientResourceStart in room (bootstrap)', 3)
-	_room_runEventHandlers('onClientResourceStart', g_resourceRoot)
+	_room_runEventHandlers('onClientResourceStart', g_resourceRoot, g_resource)
 	--outputDebugString('Calling onClientResourceStart in room done', 3)
 end
 

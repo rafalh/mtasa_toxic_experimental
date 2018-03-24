@@ -69,31 +69,14 @@ local function fixMapFile(src, roomId, dim)
     xmlUnloadFile(mapNode)
 end
 
-function getRoomResource(res, roomId)
-    local resName = getResourceName(res)
+local function getRoomResourceByName(resName, roomId)
     local roomResName = buildRoomResourceName(resName, roomId)
     return getResourceFromName(roomResName)
 end
 
-function restartResourceInRoom(res, roomId)
-    -- Stop if resource is running
-    local roomRes = getRoomResource(res, roomId)
-    if roomRes and getResourceState(roomRes) == 'running' then
-        stopResourceInRoom(res, roomId)
-    end
-    -- Delay rest of code in case we are stopping old resource
-    setTimer(function ()
-        startResourceInRoom(res, roomId)
-    end, 50, 1)
-end
-
-function stopResourceInRoom(res, roomId)
-    local roomRes = getRoomResource(res, roomId)
-    if not roomRes then
-        outputDebugString('Room resource does not exist', 2)
-        return false
-    end
-    return stopResource(roomRes)
+local function getRoomResource(res, roomId)
+    local resName = getResourceName(res)
+    return getRoomResourceByName(resName, roomId)
 end
 
 local function getRoomDimension(roomId)
@@ -109,6 +92,7 @@ end
 local function setupRoomResourceMeta(destResName, srcResName, roomId, dim)
     local clientFiles = {}
     local serverFiles = {}
+    local includedResources = {}
     local srcMeta = xmlLoadFile(':'..srcResName..'/meta.xml')
     local destMeta = xmlLoadFile(':'..destResName..'/meta.xml')
     local settingsNode
@@ -146,6 +130,8 @@ local function setupRoomResourceMeta(destResName, srcResName, roomId, dim)
             -- Note: only one node is allowed
             local existingNode = xmlFindChild(destMeta, nodeName, 0)
             copyNodeAttributes(srcNode, existingNode)
+        elseif nodeName == 'include' then
+            table.insert(includedResources, attr.resource)
         else
             -- Copy all unknown nodes
             copyNodeInto(srcNode, destMeta)
@@ -167,6 +153,7 @@ local function setupRoomResourceMeta(destResName, srcResName, roomId, dim)
         settingsNode = xmlCreateChild(destMeta, 'settings')
     end
     createSettingNode(settingsNode, '#_clientFiles', clientFiles)
+    createSettingNode(settingsNode, '#_includedResources', includedResources)
     createSettingNode(settingsNode, '#_roomId', roomId)
     createSettingNode(settingsNode, '#_roomDim', dim)
 
@@ -190,10 +177,7 @@ local function removeResourceFromAclGroups(resName)
     end
 end
 
-function startResourceInRoom(res, roomId)
-    -- create resource to start
-    -- sandbox
-    -- download resources client-side using downloadFile
+local function createRoomResource(res, roomId)
     local resName = getResourceName(res)
     local roomBaseRes = getResourceFromName('roombase')
     local roomResName = buildRoomResourceName(resName, roomId)
@@ -234,6 +218,41 @@ function startResourceInRoom(res, roomId)
     -- Setup permissions
     copyResourceAclGroups(resName, roomResName)
 
+    return roomRes
+end
+
+-- exported
+function getResourceForRoom(res, roomId)
+    local resRoomId = getRoomIdFromResource(res)
+    if resRoomId then
+        if resRoomId == roomId then
+            return res
+        else
+            outputDebugString('Resource from different room! Access denied', 2)
+            return false
+        end
+    else
+        local resName = getResourceName(res)
+        local roomRes = getRoomResourceByName(resName, roomId)
+        if roomRes and getResourceState(roomRes) == 'running' then
+            -- Running resource from this room
+            return roomRes
+        end
+
+        if getResourceState(res) == 'running' then
+            -- Global running resource
+            return res
+        end
+
+        -- (Re)Create room resource
+        return createRoomResource(res, roomId)
+    end
+end
+
+local function startResourceInRoom(res, roomId)
+    -- recreate resource
+    local roomRes = createRoomResource(res, roomId)
+
     -- Start the resource
     return startResource(roomRes)
 end
@@ -251,11 +270,25 @@ local function stopAndDeleteResource(res)
     return result
 end
 
-function stopResourceInRoom(res, roomId)
-    local resName = getResourceName(res)
-    local roomResName = buildRoomResourceName(resName, roomId)
-    local roomRes = getResourceFromName(roomResName)
+local function stopResourceInRoom(res, roomId)
+    local roomRes = getRoomResource(res, roomId)
+    if not roomRes then
+        outputDebugString('Room resource does not exist', 2)
+        return false
+    end
     return stopAndDeleteResource(roomRes)
+end
+
+local function restartResourceInRoom(res, roomId)
+    -- Stop if resource is running
+    local roomRes = getRoomResource(res, roomId)
+    if roomRes and getResourceState(roomRes) == 'running' then
+        stopResourceInRoom(res, roomId)
+    end
+    -- Delay rest of code in case we are stopping old resource
+    setTimer(function ()
+        startResourceInRoom(res, roomId)
+    end, 50, 1)
 end
 
 local function getRoomReadyPlayers(roomId)
@@ -282,14 +315,15 @@ addEvent('onPlayerEnterRoom')
 function setPlayerRoom(player, roomId)
     assert(getElementType(player) == 'player')
 
+    if isPedInVehicle(player) then
+        removePedFromVehicle(player)
+    end
+
     local prevRoomId = getElementData(player, 'roomid')
     if prevRoomId then
         triggerEvent('onPlayerLeaveRoom', player, prevRoomId)
         triggerClientEvent(player, 'onClientPlayerLeaveRoom', player, prevRoomId)
-    end
-    
-    if isPedInVehicle(player) then
-        removePedFromVehicle(player)
+        --resetMapInfo(player)
     end
 
     setElementData(player, 'roomid', roomId)
@@ -403,6 +437,10 @@ addEventHandler('onResourceStart', resourceRoot, function ()
         local playerRoomId = getElementData(player, 'roomid')
         if not playerRoomId then
             setElementData(player, 'roomid', '_lobby')
+            setElementDimension(player, 0)
+        else
+            local dim = getRoomDimension(playerRoomId)
+            setElementDimension(player, dim)
         end
     end
 end, true, 'high+100')

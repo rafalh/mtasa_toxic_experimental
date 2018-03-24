@@ -1,12 +1,12 @@
 local g_root = getRootElement()
+local g_resource = getThisResource()
 local g_eventHandlerWrappers = {}
 local g_eventHandlers = {}
 -- Globals: g_roomId, g_roomDim
 
+setmetatable(g_eventHandlerWrappers, { __mode = 'v' })
 -- it's broken
---setmetatable(g_eventHandlerWrappers, { __mode = 'v' })
 --setmetatable(g_eventHandlers, { __mode = 'v' })
-
 
 function _room_runEventHandlers(eventName, eventSource, ...)
 	local oldSource = source
@@ -38,11 +38,18 @@ function _room_removeAllEventHandlers()
                 end
 			end
 		else
-			outputDebugString('Invalid element in g_eventHandlers '..tostring(el), 2)
+			outputDebugString('Invalid element in g_eventHandlers '..tostring(el)..' in '..getResourceName(g_resource), 2)
         end
 	end
     g_eventHandlers = {}
     return removedHandlers
+end
+
+local function removeEventHandlersForElementTree(rootElement)
+	g_eventHandlers[rootElement] = nil
+	for i, child in ipairs(getElementChildren(rootElement)) do
+		removeEventHandlersForElementTree(child)
+	end
 end
 
 -- hooks
@@ -158,11 +165,6 @@ function setElementDimension(el, dim)
 end
 if Element then Element.setDimension = setElementDimension end
 
--- function fadeCamera()
--- --dummy
--- 	outputDebugString('fadeCamera ignored')
--- end
-
 local function hookCreateElementFunction(funName, oopName)
 	local oldFun = _G[funName]
 	_G[funName] = function (...)
@@ -200,6 +202,13 @@ function createElement(elementType, elementID, ...)
 	return el
 end
 if Element then Element.create = createElement end
+
+local _destroyElement = destroyElement
+function destroyElement(element, ...)
+	removeEventHandlersForElementTree(element)
+	return _destroyElement(element)
+end
+if Element then Element.destroy = destroyElement end
 
 hookCreateElementFunction('createBlip', 'Blip')
 hookCreateElementFunction('createColCircle', 'ColShape.Circle')
