@@ -257,17 +257,27 @@ local function startResourceInRoom(res, roomId)
     return startResource(roomRes)
 end
 
-local function stopAndDeleteResource(res)
-    local result = stopResource(res)
-    -- Delete resource after stopping is finished
-    setTimer(function ()
-        if getResourceState(res) == 'loaded' then
-            local resName = getResourceName(res)
-            deleteResource(resName)
-            removeResourceFromAclGroups(resName)
+local function deleteResourceFiles(resName)
+    local metaNode = xmlLoadFile(':'..resName..'/meta.xml')
+    for i, subnode in ipairs(xmlNodeGetChildren(metaNode)) do
+        local nodeName = xmlNodeGetName(subnode)
+        local attr = xmlNodeGetAttributes(subnode)
+        if nodeName ~= 'info' then
+            xmlDestroyNode(subnode)
+            if attr.src and fileExists(':'..resName..'/'..attr.src) then
+                fileDelete(':'..resName..'/'..attr.src)
+            end
         end
-    end, 50, 1)
-    return result
+    end
+    xmlSaveFile(metaNode)
+    xmlUnloadFile(metaNode)
+end
+
+local function destroyRoomResource(res)
+    local resName = getResourceName(res)
+    deleteResourceFiles(resName)
+    deleteResource(resName)
+    removeResourceFromAclGroups(resName)
 end
 
 local function stopResourceInRoom(res, roomId)
@@ -276,7 +286,11 @@ local function stopResourceInRoom(res, roomId)
         outputDebugString('Room resource does not exist', 2)
         return false
     end
-    return stopAndDeleteResource(roomRes)
+    if getResourceState(roomRes) == 'loaded' then
+        destroyRoomResource(roomRes)
+    end
+
+    return stopResource(roomRes)
 end
 
 local function restartResourceInRoom(res, roomId)
@@ -387,6 +401,55 @@ function resetRoomWorldState(roomId, getFnName, resetFnName)
 	return true
 end
 
+-- Event handlers
+
+addEventHandler('onPlayerJoin', root, function ()
+    -- Set lobby room for new players
+    assert(getElementType(source) == 'player')
+    setElementData(source, 'roomid', '_lobby')
+end, true, 'high+100')
+
+addEventHandler('onResourceStart', resourceRoot, function ()
+    -- Add scoreboard column
+    local scoreboardRes = getResourceFromName('scoreboard')
+    if scoreboardRes and getResourceState(scoreboardRes) == 'running' then
+        call(scoreboardRes, 'scoreboardAddColumn', 'roomid', g_Root, 50, 'Room')
+    end
+
+    -- Set lobby room for new players
+    for i, player in ipairs(getElementsByType('player')) do
+        local playerRoomId = getElementData(player, 'roomid')
+        if not playerRoomId then
+            setElementData(player, 'roomid', '_lobby')
+            setElementDimension(player, 0)
+        else
+            local dim = getRoomDimension(playerRoomId)
+            setElementDimension(player, dim)
+        end
+    end
+end, true, 'high+100')
+
+addEvent('onReady', true)
+addEventHandler('onReady', resourceRoot, function ()
+    g_readyPlayers[client] = true
+    local roomId = getPlayerRoom(client)
+    sendRoomWorldState(roomId, client)
+end)
+
+addEventHandler('onResourceStop', root, function (resource)
+    local roomId = getRoomIdFromResource(resource)
+    if not roomId then return end
+
+    -- Delete resource after stopping is finished
+    setTimer(function ()
+        if getResourceState(res) == 'loaded' then
+            destroyRoomResource(res)
+        end
+    end, 50, 1)
+end, true, 'low+100')
+
+-- Commands
+
 addCommandHandler('startinroom', function (player, cmdName, resName, roomId)
     local res = getResourceFromName(resName)
     if not res then
@@ -423,37 +486,4 @@ end)
 addCommandHandler('joinroom', function (player, cmdName, roomId)
     outputConsole('joinroom: Joining room')
     setPlayerRoom(player, roomId)
-end)
-
-addEventHandler('onPlayerJoin', root, function ()
-    -- Set lobby room for new players
-    assert(getElementType(source) == 'player')
-    setElementData(source, 'roomid', '_lobby')
-end, true, 'high+100')
-
-addEventHandler('onResourceStart', resourceRoot, function ()
-    -- Add scoreboard column
-    local scoreboardRes = getResourceFromName('scoreboard')
-    if scoreboardRes and getResourceState(scoreboardRes) == 'running' then
-        call(scoreboardRes, 'scoreboardAddColumn', 'roomid', g_Root, 50, 'Room')
-    end
-
-    -- Set lobby room for new players
-    for i, player in ipairs(getElementsByType('player')) do
-        local playerRoomId = getElementData(player, 'roomid')
-        if not playerRoomId then
-            setElementData(player, 'roomid', '_lobby')
-            setElementDimension(player, 0)
-        else
-            local dim = getRoomDimension(playerRoomId)
-            setElementDimension(player, dim)
-        end
-    end
-end, true, 'high+100')
-
-addEvent('onReady', true)
-addEventHandler('onReady', resourceRoot, function ()
-    g_readyPlayers[client] = true
-    local roomId = getPlayerRoom(client)
-    sendRoomWorldState(roomId, client)
 end)

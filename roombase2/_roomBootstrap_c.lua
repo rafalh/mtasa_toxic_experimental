@@ -105,7 +105,7 @@ addEventHandler('_onClientFiles', g_resourceRoot, function (clientFiles, roomId,
 			downloadFile(info.src)
 		end
 	end
-end)
+end, false)
 
 addEventHandler('onClientFileDownloadComplete', g_resourceRoot, function (fileName, success)
 	if success then
@@ -118,4 +118,14 @@ addEventHandler('onClientFileDownloadComplete', g_resourceRoot, function (fileNa
 	else
 		outputDebugString('Download failed for '..fileName, 1)
 	end
-end)
+end, false)
+
+addEventHandler('onClientResourceStop', g_resourceRoot, function ()
+	-- Remove client-side files
+	for i, info in ipairs(g_clientFiles) do
+		if fileExists(info.src) then
+			fileDelete(info.src)
+		end
+	end
+	fileDelete('_roomBootstrap_c.lua')
+end, false, 'low-100')
